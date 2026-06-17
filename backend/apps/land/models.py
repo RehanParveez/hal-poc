@@ -53,7 +53,7 @@ class TenantAgreement(BaseModel):
   class Meta:
     db_table = 'tenant_agreements'
     unique_together = [['tenant', 'parcel', 'season']]
-    indexes = [models.Index(fields=['tenant', 'status']), models.Index(fields=['parcel', 'season']),]
+    indexes = [models.Index(fields=['tenant', 'status']), models.Index(fields=['parcel', 'season'])]
 
   def __str__(self):
     return f"{self.tenant.user.full_name}"

@@ -20,4 +20,3 @@ def create_role_profile(sender, instance, created, **kwargs):
   for role, model_cls in PROFILE_MAP.items():
     if role != instance.role:
       model_cls.objects.filter(user=instance).delete()
-    
