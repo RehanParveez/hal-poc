@@ -14,8 +14,10 @@ PROFILE_MAP = {
 
 @receiver(post_save, sender=User)
 def create_role_profile(sender, instance, created, **kwargs):
-  if not created:
-    return
   profile_class = PROFILE_MAP.get(instance.role)
   if profile_class:
     profile_class.objects.get_or_create(user=instance)
+  for role, model_cls in PROFILE_MAP.items():
+    if role != instance.role:
+      model_cls.objects.filter(user=instance).delete()
+    
