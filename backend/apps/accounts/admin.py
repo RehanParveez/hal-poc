@@ -1,4 +1,3 @@
-# apps/accounts/admin.py
 from django.contrib import admin
 from apps.accounts.models import User, FarmerProfile, LandownerProfile, BankProfile, FactoryProfile, ShopkeeperProfile, InsuranceProfile
 

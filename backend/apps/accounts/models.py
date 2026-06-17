@@ -1,5 +1,5 @@
-# apps/accounts/models.py
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser,  PermissionsMixin
+from shared.models import BaseModel
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 import uuid
 from django.db import models
 
@@ -48,29 +48,29 @@ class User(AbstractBaseUser, PermissionsMixin):
     db_table = 'users'
     indexes = [models.Index(fields=['role', 'district'])]
 
-class FarmerProfile(models.Model):
+class FarmerProfile(BaseModel):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'farmer_profile')
   total_owned_acres = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   arazi_ref = models.CharField(max_length=100, blank=True)
 
-class LandownerProfile(models.Model):
+class LandownerProfile(BaseModel):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'landowner_profile')
   total_registered_acres = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-class BankProfile(models.Model):
+class BankProfile(BaseModel):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'bank_profile')
   institution_name = models.CharField(max_length=180, default = 'NRSP Microfinance Bank')
   branch_code = models.CharField(max_length=30, default = 'NRSP-BWP-023')
 
-class FactoryProfile(models.Model):
+class FactoryProfile(BaseModel):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'factory_profile')
   factory_name = models.CharField(max_length=180)
   ntn_number = models.CharField(max_length=30)
 
-class ShopkeeperProfile(models.Model):
+class ShopkeeperProfile(BaseModel):
   user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='shopkeeper_profile')
   shop_name = models.CharField(max_length = 170)
 
-class InsuranceProfile(models.Model):
+class InsuranceProfile(BaseModel):
   user = models.OneToOneField(User, on_delete = models.CASCADE, related_name = 'insurance_profile')
   company_name = models.CharField(max_length = 170, default = 'State Life Insurance')
