@@ -21,5 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('accounts/', include('apps.accounts.urls')),
-    path('land/', include('apps.land.urls'))
+    path('land/', include('apps.land.urls')),
+    path('crops/', include('apps.crops.urls')),
+    path('loans/', include('apps.loans.urls'))
 ]
