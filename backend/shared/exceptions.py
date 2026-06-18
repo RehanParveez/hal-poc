@@ -28,6 +28,9 @@ class AcreageCeilingExceededError(Exception):
 class LoanAlreadyDisbursedError(Exception):
   pass
 
+class NoActivePhaseError(Exception):
+    pass
+
 class ContractFullyAllocatedError(Exception):
   def __init__(self, requested, available):
     self.requested = requested

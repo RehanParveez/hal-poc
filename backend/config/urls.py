@@ -23,5 +23,6 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('land/', include('apps.land.urls')),
     path('crops/', include('apps.crops.urls')),
-    path('loans/', include('apps.loans.urls'))
+    path('loans/', include('apps.loans.urls')),
+    path('escrow/', include('apps.escrow.urls'))
 ]

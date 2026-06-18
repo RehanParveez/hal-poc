@@ -19,7 +19,7 @@ class LoanApplicationViewSet(viewsets.ModelViewSet):
   def get_permissions(self):
     if self.action == 'create':
       return [FarmerPermission()]
-    if self.action in ('approve', 'reject'):
+    if self.action in ('approve', 'reject', 'disburse'):
       return [BankManagerPerm()]
     return [IsAuthenticated()]
 
@@ -97,3 +97,19 @@ class LoanApplicationViewSet(viewsets.ModelViewSet):
       return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'message': 'Loan rejected.', 'loan_id': str(loan.id), 'status': loan.status, 'rejection_reason': loan.rejection_reason})
+
+  @action(detail=True, methods=['post'])
+  def disburse(self, request, pk=None):
+   try:
+    loan, escrow = LoanApplicationService.disburse_loan(loan_id=pk, bank_profile=request.user.bank_profile)
+   except LoanApplication.DoesNotExist:
+    return Response({'error': 'Loan not found.'}, status=status.HTTP_404_NOT_FOUND)
+   except PermissionError as e:
+    raise PermissionDenied(str(e))
+   except ValueError as e:
+    return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+   except Exception as e:
+    return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+   return Response({'message': f"Loan disbursed. Escrow funded with PKR {escrow.remaining_balance}.",
+    'loan_id': str(loan.id), 'loan_status': loan.status, 'disbursed_at': loan.disbursed_at, 'escrow_id': str(escrow.id),
+    'escrow_balance': str(escrow.remaining_balance), 'insurance_premium_deducted': str(escrow.insurance_premium_deducted)}) 
