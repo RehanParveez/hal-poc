@@ -63,24 +63,25 @@ class LoanApplicationViewSet(viewsets.ModelViewSet):
 
   @action(detail=True, methods=['patch'])
   def approve(self, request, pk=None):
-    serializer = LoanApprovalSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
+    # serializer = LoanApprovalSerializer(data=request.data)
+    # serializer.is_valid(raise_exception=True)
+    # print(f"DEBUG: Data being sent to service: {serializer.validated_data.get('approved_amount')}")
+    amount = 50000.00
+    rate = 12.50
+    # try:
+    #   loan = LoanApplicationService.approve_loan(loan_id=pk, bank_profile=request.user.bank_profile,
+    #     approved_amount=serializer.validated_data['approved_amount'], interest_rate_pct=serializer.validated_data['interest_rate_pct'])
+    # except LoanApplication.DoesNotExist:
+    #   return Response({'error': 'Loan not found.'}, status=status.HTTP_404_NOT_FOUND)
+    # except PermissionError as e:
+    #   raise PermissionDenied(str(e))
     try:
-      loan = LoanApplicationService.approve_loan(loan_id=pk, bank_profile=request.user.bank_profile,
-        approved_amount=serializer.validated_data['approved_amount'], interest_rate_pct=serializer.validated_data['interest_rate_pct'])
-    except LoanApplication.DoesNotExist:
-      return Response({'error': 'Loan not found.'}, status=status.HTTP_404_NOT_FOUND)
-    except PermissionError as e:
-      raise PermissionDenied(str(e))
+      loan = LoanApplicationService.approve_loan(loan_id=pk, bank_profile=request.user.bank_profile, approved_amount=amount, 
+        interest_rate_pct=rate)
     except ValueError as e:
       return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    loan_fresh = LoanApplication.objects.select_related(
-      'farmer__user', 'crop', 'bank', 'tenant_agreement__parcel__landowner__user').get(id=loan.id)
-
     return Response({'message': f"the loan is appro. PKR {loan.approved_amount} ready for disbursement.",
-      'loan': LoanApplicationSerializer1(loan_fresh).data})
+      'loan': LoanApplicationSerializer1(loan).data})
 
   @action(detail=True, methods=['patch'])
   def reject(self, request, pk=None):

@@ -3,11 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 class AFOLimitExceededError(Exception):
-  def __init__(self, category, requested, cap, already_spent):
+  def __init__(self, category, requested, cap_total, already_spent):
     self.category = category
     self.requested = requested
-    self.cap = cap
+    self.cap = cap_total
     self.already_spent = already_spent
+    self.remaining_allowed = cap_total - already_spent 
+    super().__init__(f"Cannot spend {requested} on {category}. "
+      f"Cap is {cap_total}, already spent {already_spent}.")
 
 class NotEnoughEscrowError(Exception):
   def __init__(self, requested, available):
@@ -15,10 +18,11 @@ class NotEnoughEscrowError(Exception):
     self.available = available
 
 class WrongPhaseForCategoryError(Exception):
-  def __init__(self, category, current_phase, allowed):
-    self.category = category
-    self.current_phase = current_phase
-    self.allowed = allowed
+  def __init__(self, requested_category, current_phase_name, allowed_categories):
+    self.category = requested_category
+    self.current_phase = current_phase_name
+    self.allowed = allowed_categories
+    super().__init__(f"Category '{requested_category}' not allowed in phase '{current_phase_name}'")
 
 class AcreageCeilingExceededError(Exception):
   def __init__(self, requested, available):

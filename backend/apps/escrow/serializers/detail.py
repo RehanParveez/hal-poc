@@ -10,8 +10,7 @@ class EscrowWalletSerializer(serializers.ModelSerializer):
   loan_acres = serializers.DecimalField(source = 'loan.acres_applied_for', max_digits=12, decimal_places=2, read_only=True)
   loan_season = serializers.CharField(source = 'loan.crop.season', read_only=True)
   farmer_name = serializers.CharField(source = 'loan.farmer.user.full_name', read_only=True)
-  project_district = serializers.CharField(source = 'project_district', read_only=True)
-  
+  project_district = serializers.CharField()
   active_phase = serializers.SerializerMethodField()
   all_phases = serializers.SerializerMethodField()
   spend_percentage = serializers.SerializerMethodField()

@@ -80,7 +80,7 @@ class InputPaymentService:
       if amount > remaining_cap:
         raise AFOLimitExceededError(category=input_category, requested=amount, cap_total=cap_total, already_spent=already_spent)
       if amount > escrow.remaining_balance:
-        raise WrongPhaseForCategoryError(requested=amount, available=escrow.remaining_balance)
+        raise ValueError(f"Insufficient escrow balance. Trying to spend {amount} but only {escrow.remaining_balance} remains.")
       escrow.total_spent_on_inputs += amount
       escrow.remaining_balance -= amount
       escrow.save(update_fields=['total_spent_on_inputs', 'remaining_balance'])

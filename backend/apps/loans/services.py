@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from apps.loans.models import LoanApplication
+from apps.loans.models import LoanApplication
 from shared.exceptions import LoanAlreadyDisbursedError
 from apps.escrow.services import EscrowCreationService
 
@@ -21,7 +22,8 @@ class LoanApplicationService:
         raise PermissionError("You can only approve loans assigned to your bank.")
       if loan.status != 'submitted':
         raise ValueError(f'only the submitted loans can be approv. Current status: {loan.status}.')
-
+      if approved_amount is None or float(approved_amount) <= 0:
+        raise ValueError(f"wrong approved_amount provided: {approved_amount}")
       loan.approved_amount = approved_amount
       loan.interest_rate_pct = interest_rate_pct
       loan.status = 'bank_approved'
@@ -34,7 +36,6 @@ class LoanApplicationService:
 
   @staticmethod
   def reject_loan(loan_id, bank_profile, rejection_reason):
-    from .models import LoanApplication
     with transaction.atomic():
       loan = LoanApplication.objects.select_for_update().get(id=loan_id)
       if loan.bank != bank_profile:
