@@ -27,5 +27,6 @@ urlpatterns = [
     path('escrow/', include('apps.escrow.urls')),
     path('insurance/', include('apps.insurance.urls')),
     path('inputs/', include('apps.inputs.urls')),
-    path('contracts/', include('apps.contracts.urls'))
+    path('contracts/', include('apps.contracts.urls')),
+    path('delivery/', include('apps.delivery.urls'))
 ]

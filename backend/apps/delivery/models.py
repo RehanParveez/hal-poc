@@ -2,7 +2,12 @@ from django.db import models
 from shared.models import BaseModel
 
 class BatchDelivery(BaseModel):
-  STATUS_CHOICES = (('in_transit', 'In Transit'), ('received', 'Received'), ('grade_confirmed', 'Grade Confirmed'), ('payment_triggered', 'Payment Triggered'))
+  STATUS_CHOICES = (
+    ('in_transit', 'In Transit'),
+    ('received', 'Received'),
+    ('grade_confirmed', 'Grade Confirmed'),
+    ('payment_triggered', 'Payment Triggered')
+  )
   allocation = models.ForeignKey('contracts.FarmerContractAllocation', on_delete=models.PROTECT, related_name = 'batches')
   batch_kg = models.DecimalField(max_digits=12, decimal_places=2)
   expected_payout = models.DecimalField(max_digits=14, decimal_places=2)
