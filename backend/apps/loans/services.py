@@ -1,21 +1,19 @@
 from django.db import transaction
 from django.utils import timezone
 from apps.loans.models import LoanApplication
-from apps.loans.models import LoanApplication
 from shared.exceptions import LoanAlreadyDisbursedError
 from apps.escrow.services import EscrowCreationService
+from apps.escrow.models import EscrowWallet
 
 class LoanApplicationService:
   @staticmethod
   def apply_for_loan(farmer_profile, bank_profile, validated_data):
-    from .models import LoanApplication
     with transaction.atomic():
       loan = LoanApplication.objects.create(farmer=farmer_profile, bank=bank_profile, status='submitted', **validated_data)
       return loan
 
   @staticmethod
   def approve_loan(loan_id, bank_profile, approved_amount, interest_rate_pct):
-    print(f"DEBUG: Service received -> amount: {approved_amount}, rate: {interest_rate_pct}")
     with transaction.atomic():
       loan = LoanApplication.objects.select_for_update().get(id=loan_id)
       if loan.bank != bank_profile:
@@ -62,6 +60,7 @@ class LoanApplicationService:
       loan.disbursed_at = timezone.now()
       loan.save(update_fields=['status', 'disbursed_at'])
       loan.refresh_from_db() 
-      
-      escrow = EscrowCreationService.create(loan)
+      escrow = EscrowWallet.objects.filter(loan=loan).first()
+      if not escrow:
+       escrow = EscrowCreationService.create(loan)
       return loan, escrow

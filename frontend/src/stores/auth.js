@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
 
         return this.user
       } catch (err) {
-        this.loginError = err.response?.data?.message || 'The Login failed. Kindly check your phone and password.'
+        this.loginError = err.response?.data?.message || err.response?.data?.detail || 'The Login failed. Kindly check your phone and password.'
         throw err
       } finally {
         this.isLoading = false
