@@ -1,17 +1,58 @@
 <template>
   <div class="p-8">
+    <h1 class="text-2xl font-bold mb-4">Deliveries — Confirm Grade</h1>
+    <div v-if="delivery.isLoading" class="text-gray-500">Loading...</div>
+    <div v-else class="space-y-3">
+      <div v-for="batch in delivery.batches" :key="batch.id" class="bg-white p-4 rounded shadow">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="font-semibold">Batch #{{ batch.id.slice(0, 8) }}</p>
+            <p class="text-sm text-gray-500">{{ batch.batch_kg }} kg — Expected: PKR {{ batch.expected_payout }}</p>
+          </div>
+          <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ batch.status.replace('_', ' ') }}</span>
+        </div>
+
+        <div v-if="batch.status === 'in_transit'" class="mt-3">
+          <button @click="delivery.markReceived(batch.id)" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">
+            Mark Received
+          </button>
+        </div>
+
+        <div v-if="batch.status === 'received'" class="mt-3 border-t pt-3 space-y-2">
+          <select v-model="gradeForm[batch.id].grade_received" class="border rounded px-2 py-1 text-sm w-full">
+            <option value="">Select Grade</option>
+            <option value="Grade A">Grade A</option>
+            <option value="Grade B">Grade B</option>
+            <option value="Grade C">Grade C</option>
+          </select>
+          <input v-model.number="gradeForm[batch.id].grade_deduction_pct" type="number" placeholder="Deduction %" class="border rounded px-2 py-1 text-sm w-full" />
+          <button @click="submitGrade(batch.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
+            Confirm Grade
+          </button>
+        </div>
+      </div>
+      <p v-if="delivery.batches.length === 0" class="text-gray-500">No deliveries yet.</p>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/auth.js'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive } from 'vue'
+import { useDeliveryStore } from '@/stores/delivery.js'
 
-const auth = useAuthStore()
-const router = useRouter()
+const delivery = useDeliveryStore()
+const gradeForm = reactive({})
 
-function handleLogout() {
-  auth.logout()
-  router.push('/login')
+onMounted(async () => {
+  await delivery.fetchBatches()
+  delivery.batches.forEach((b) => {
+    gradeForm[b.id] = { grade_received: '', grade_deduction_pct: 0 }
+  })
+})
+
+async function submitGrade(batchId) {
+  const form = gradeForm[batchId]
+  if (!form.grade_received) return
+  await delivery.confirmGrade(batchId, form.grade_received, form.grade_deduction_pct, '')
 }
 </script>

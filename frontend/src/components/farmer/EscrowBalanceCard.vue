@@ -1,0 +1,42 @@
+<template>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Escrow Balance</p>
+        <p class="text-3xl font-bold text-gray-800 mt-1">₨ {{ formatPKR(escrow.remainingBalance) }}</p>
+        <p class="text-xs text-gray-500 mt-1">of ₨ {{ formatPKR(escrow.totalFunded) }} total</p>
+      </div>
+      <InsuranceBadge />
+    </div>
+
+    <div class="mb-4">
+      <div class="flex justify-between text-xs text-gray-500 mb-1">
+        <span>Spent on inputs: ₨ {{ formatPKR(escrow.totalSpent) }}</span>
+        <span>{{ escrow.spendPercent }}%</span>
+      </div>
+      <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div class="h-full bg-green-600 rounded-full transition-all duration-500" :style="{ width: escrow.spendPercent + '%' }" />
+      </div>
+    </div>
+
+    <div v-if="escrow.activePhase" class="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+      <div>
+        <span class="text-xs font-semibold text-green-700">
+          Phase {{ escrow.activePhase.phase_number }}: {{ escrow.activePhase.phase_name }}
+        </span>
+        <p class="text-xs text-green-700 opacity-75">
+          Allowed: {{ escrow.activePhase.allowed_categories?.join(', ') }}
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { useEscrowStore } from '@/stores/escrow.js'
+import InsuranceBadge from './InsuranceBadge.vue'
+
+const escrow = useEscrowStore()
+const formatPKR = (val) => new Intl.NumberFormat('en-PK').format(Math.round(parseFloat(val) || 0))
+</script>

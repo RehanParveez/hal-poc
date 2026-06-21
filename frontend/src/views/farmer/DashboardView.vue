@@ -1,6 +1,7 @@
 <template>
   <div class="p-8">
     <EscrowDashboardView v-if="auth.isLoggedIn" />
+    <SettlementsList v-if="auth.isLoggedIn" />
   </div>
 </template>
 
@@ -8,6 +9,7 @@
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
 import EscrowDashboardView from './EscrowDashboardView.vue'
+import SettlementsList from '@/components/farmer/SettlementsList.vue'
 
 const auth = useAuthStore()
 const router = useRouter()

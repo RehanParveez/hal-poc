@@ -3,6 +3,7 @@ from django.db.models import Sum
 from decimal import Decimal
 from django.utils import timezone
 from apps.delivery.models import BatchDelivery
+from apps.settlements.services import SettlementService
 
 class BatchDeliveryService:
 
@@ -51,5 +52,5 @@ class BatchDeliveryService:
       batch.status = 'grade_confirmed'
       batch.grade_confirmed_at = timezone.now()
       batch.save(update_fields=['grade_received', 'grade_deduction_pct', 'grade_notes', 'actual_payout', 'status', 'grade_confirmed_at'])
-
+      SettlementService.execute_settlement(batch)
       return batch

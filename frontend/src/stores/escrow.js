@@ -9,6 +9,12 @@ export const useEscrowStore = defineStore('escrow', {
   }),
   getters: {
     spendableCategories: (state) => state.caps.filter((c) => c.is_allowed_now).map((c) => c.category),
+    remainingBalance: (state) => state.wallet?.remaining_balance ?? 0,
+    totalFunded: (state) => state.wallet?.total_funded ?? 0,
+    totalSpent: (state) => state.wallet?.total_spent_on_inputs ?? 0,
+    spendPercent: (state) => state.wallet?.spend_percentage ?? 0,
+    activePhase: (state) => state.wallet?.active_phase ?? null,
+    milestones: (state) => state.wallet?.all_phases ?? [],
   },
   actions: {
     async fetchWallet(escrowId) {
