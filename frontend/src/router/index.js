@@ -20,6 +20,14 @@ const routes = [
     component: () => import('@/views/auth/LoginView.vue'),
     meta: { public: true },
   },
+
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/auth/RegisterView.vue'),
+    meta: { public: true },
+  },
+  
   {
     path: '/farmer/dashboard',
     name: 'farmer-dashboard',

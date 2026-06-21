@@ -23,6 +23,13 @@ export const useDeliveryStore = defineStore('delivery', {
       notify.showSuccess(res.data.message)
       await this.fetchBatches()
     },
+
+    async createBatch(allocationId, batchKg) {
+      const notify = useNotificationsStore()
+      await deliveryApi.createBatch({ allocation: allocationId, batch_kg: batchKg })
+      notify.showSuccess('Delivery batch is logged.')
+    },
+
     async confirmGrade(batchId, gradeReceived, gradeDeductionPct, gradeNotes) {
       const notify = useNotificationsStore()
       const res = await deliveryApi.confirmGrade(batchId, {

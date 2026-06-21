@@ -18,12 +18,17 @@
       </div>
       <p v-if="wallets.transactions.length === 0" class="text-gray-500">No transactions yet.</p>
     </div>
+    <div id="parcels-section"><ParcelsList /></div>
+    <div id="agreements-section"><AgreementsList /></div>
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
 import { useWalletsStore } from '@/stores/wallets.js'
+
+import ParcelsList from '@/components/landowner/ParcelsList.vue'
+import AgreementsList from '@/components/landowner/AgreementsList.vue'
 
 const wallets = useWalletsStore()
 

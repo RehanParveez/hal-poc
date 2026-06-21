@@ -12,9 +12,10 @@
 
       <input v-model.number="form.amount" type="number" placeholder="Amount (PKR)" class="w-full border p-2 mb-2" />
 
-      <div v-if="currentCap" class="text-sm mb-4">
-        Limit: {{ currentCap.remaining }} / {{ currentCap.total_cap }} PKR remaining
-      </div>
+      <AFOLimitDisplay
+        :category="form.input_category"
+        :afoState="{ cap: currentCap?.total_cap || 0, alreadySpent: currentCap?.already_spent || 0, remaining: currentCap?.remaining || 0 }"
+      />
 
       <button @click="submit" :disabled="inputs.isSubmitting || !form.input_category" class="bg-green-600 text-white w-full py-2 rounded">
         {{ inputs.isSubmitting ? 'Processing...' : 'Pay Now' }}
@@ -25,6 +26,7 @@
 </template>
 
 <script setup>
+import AFOLimitDisplay from '@/components/farmer/AFOLimitDisplay.vue'
 import { reactive, computed } from 'vue'
 import { useInputsStore } from '@/stores/inputs.js'
 import { useEscrowStore } from '@/stores/escrow.js'

@@ -19,7 +19,8 @@ export const useNotificationsStore = defineStore('notifications', {
       this.push({ type: 'success', message })
     },
     showError(data) {
-      const message = data?.message || data?.detail || 'Something went wrong. Please try again.'
+      const nonField = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : null
+      const message = data?.message || data?.detail || data?.error || nonField || 'Something went wrong. Please try again.'
       this.push({ type: 'error', message, error: data?.error || null, raw: data })
     },
     showAFOError(data) {

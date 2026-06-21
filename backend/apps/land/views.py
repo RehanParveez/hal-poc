@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from shared import TenantFarmerPerm, LandownerPerm, BankManagerPerm
+from shared.permissions import TenantFarmerPerm, LandownerPerm, BankManagerPerm
 from apps.land.serializers.basic import LandSerializer, TenantAgreementSerializer
 from apps.land.models import Land, TenantAgreement
 from rest_framework.exceptions import PermissionDenied
