@@ -6,6 +6,8 @@ from apps.crops.models import CropInputCap
 from decimal import Decimal
 from django.db.models import Sum
 from apps.inputs.models import InputSupplyRequest
+from apps.wallets.models import Wallet
+from apps.wallets.services import WalletService
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,9 @@ def process_input_request(escrow_id, shopkeeper_profile, input_category, amount,
       afo_cap_snapshot=max_allowed)
     supply_request = InputSupplyRequest.objects.create(escrow=escrow, shopkeeper=shopkeeper_profile, input_category=input_category, item_description=description, 
       requested_amount=amount, afo_cap_at_time=max_allowed, status='paid')
+    shopkeeper_wallet = Wallet.objects.get(user=shopkeeper_profile.user)
+    WalletService.credit_wallet(wallet=shopkeeper_wallet, amount=amount, txn_type='input', reference_id=supply_request.id, 
+      note=f"input payment: {input_category} from farmer {loan.farmer.user.full_name}")
     logger.info(f"[AFO GATE PASSED] Escrow {escrow_id} | Category: {input_category} | Amount: PKR {amount} | Cap: {max_allowed} | Already spent: {already_spent}")
     print(f"[SHOPKEEPER PAYMENT APPROVED] PKR {amount} logged for {shopkeeper_profile.user.full_name}. (Wallet integration pending).")
   return supply_request

@@ -5,6 +5,7 @@ import { useNotificationsStore } from './notifications.js'
 export const useLoansStore = defineStore('loans', {
   state: () => ({
     loans: [],
+    activeLoan: null,
     isLoading: false,
     statusFilter: '',
     districtFilter: '',
@@ -22,7 +23,11 @@ export const useLoansStore = defineStore('loans', {
         this.isLoading = false
       }
     },
-
+     async fetchMyLoan() {
+      const res = await loansApi.listLoans()
+      const loans = res.data.results ?? res.data
+      this.activeLoan = loans.find((l) => ['disbursed', 'repaid'].includes(l.status)) || null
+    },
     async approveLoan(id, approvedAmount, interestRatePct) {
       const notify = useNotificationsStore()
       const res = await loansApi.approveLoan(id, {

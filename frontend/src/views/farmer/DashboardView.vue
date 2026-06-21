@@ -1,16 +1,13 @@
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold">Farmer Dashboard</h1>
-    <p class="text-gray-600 mt-2">Logged in as {{ auth.user?.full_name }} ({{ auth.user?.role }})</p>
-    <button @click="handleLogout" class="mt-4 bg-gray-800 text-white px-4 py-2 rounded">Logout</button>
-    <EscrowDashboardView v-if="auth.isAuthenticated" />
+    <EscrowDashboardView v-if="auth.isLoggedIn" />
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
-import EscrowDashboardView from './EscrowDashboardView.vue' // Import it
+import EscrowDashboardView from './EscrowDashboardView.vue'
 
 const auth = useAuthStore()
 const router = useRouter()

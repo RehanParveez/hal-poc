@@ -1,10 +1,5 @@
 <template>
   <div class="p-8">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-bold">Loan Queue</h1>
-      <button @click="handleLogout" class="bg-gray-800 text-white px-4 py-2 rounded text-sm">Logout</button>
-    </div>
-
     <select v-model="loansStore.statusFilter" @change="loansStore.fetchLoans" class="border rounded px-2 py-1 text-sm mb-4">
       <option value="">All statuses</option>
       <option value="submitted">Submitted</option>

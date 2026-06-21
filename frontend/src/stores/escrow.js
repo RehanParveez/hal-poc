@@ -7,16 +7,25 @@ export const useEscrowStore = defineStore('escrow', {
     caps: [],
     isLoading: false,
   }),
+  getters: {
+    spendableCategories: (state) => state.caps.filter((c) => c.is_allowed_now).map((c) => c.category),
+  },
   actions: {
-    async fetchWallet(id) {
+    async fetchWallet(escrowId) {
       this.isLoading = true
-      const res = await escrowApi.getEscrowBalance(id)
-      this.wallet = res.data
-      this.isLoading = false
+      try {
+       const res = await escrowApi.getEscrowBalance(escrowId)
+       this.wallet = res.data
+      } finally {
+        this.isLoading = false
+      }
     },
-    async fetchCaps(id) {
-      const res = await escrowApi.getAFOCaps(id)
+    async refreshWallet(escrowId) {
+      return this.fetchWallet(escrowId)
+    },
+    async fetchCaps(escrowId) {
+      const res = await escrowApi.getAFOCaps(escrowId)
       this.caps = res.data.caps
-    }
-  }
+    },
+  },
 })

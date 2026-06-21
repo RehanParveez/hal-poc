@@ -57,15 +57,22 @@ class LoanApplicationSerializer1(serializers.ModelSerializer):
   tenant_parcel_ref = serializers.CharField(source = 'tenant_agreement.parcel.parcel_ref', read_only=True)
   landowner_name = serializers.CharField(source = 'tenant_agreement.parcel.landowner.user.full_name', read_only=True)
   landowner_approved = serializers.BooleanField(source = 'tenant_agreement.landowner_approved', read_only=True)
-
+  escrow_id = serializers.SerializerMethodField()
+  
+  def get_escrow_id(self, obj):
+    try:
+      return str(obj.escrow.id)
+    except Exception:
+      return None
+    
   class Meta:
     model = LoanApplication
     fields = ['id', 'farmer', 'bank', 'tenant_agreement', 'crop', 'acres_applied_for', 'requested_amount', 'approved_amount',
       'interest_rate_pct', 'status', 'rejection_reason', 'loan_recovered_to_date', 'approved_at', 'disbursed_at',
       'created_at', 'updated_at', 'farmer_name', 'farmer_phone', 'farmer_district', 'farmer_province', 'farmer_owned_acres',
       'bank_name', 'crop_name', 'crop_code', 'crop_season', 'tenant_agreement_type', 'tenant_agreement_acres',
-      'tenant_parcel_ref', 'landowner_name', 'landowner_approved']
+      'tenant_parcel_ref', 'landowner_name', 'landowner_approved', 'escrow_id']
     read_only_fields = ['id', 'status', 'approved_amount', 'interest_rate_pct', 'rejection_reason', 'loan_recovered_to_date',
       'approved_at', 'disbursed_at', 'created_at', 'updated_at', 'farmer_name', 'farmer_phone', 'farmer_district',
       'farmer_province', 'farmer_owned_acres', 'bank_name', 'crop_name', 'crop_code', 'crop_season',
-      'tenant_agreement_type', 'tenant_agreement_acres', 'tenant_parcel_ref', 'landowner_name', 'landowner_approved']
+      'tenant_agreement_type', 'tenant_agreement_acres', 'tenant_parcel_ref', 'landowner_name', 'landowner_approved', 'escrow_id']
