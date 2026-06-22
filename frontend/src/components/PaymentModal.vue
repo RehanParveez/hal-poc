@@ -8,7 +8,10 @@
         <option v-for="cat in escrow.spendableCategories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
 
-      <input v-model="form.shopkeeper_id" type="text" placeholder="Shopkeeper User ID" class="w-full border p-2 mb-2" />
+      <select v-model="form.shopkeeper_id" class="w-full border p-2 mb-2">
+        <option value="">Select Shopkeeper</option>
+        <option v-for="s in shopkeepersList" :key="s.id" :value="s.id">{{ s.name }} ({{ s.phone }})</option>
+      </select>
 
       <input v-model.number="form.amount" type="number" placeholder="Amount (PKR)" class="w-full border p-2 mb-2" />
 
@@ -27,20 +30,31 @@
 
 <script setup>
 import AFOLimitDisplay from '@/components/farmer/AFOLimitDisplay.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref, onMounted } from 'vue'
 import { useInputsStore } from '@/stores/inputs.js'
 import { useEscrowStore } from '@/stores/escrow.js'
+import { listShopkeepers } from '@/api/accounts.js'
 
 const props = defineProps(['escrowId'])
 const emit = defineEmits(['close', 'success'])
 const inputs = useInputsStore()
 const escrow = useEscrowStore()
+const shopkeepersList = ref([])
 
 const form = reactive({ input_category: '', amount: 0, shopkeeper_id: '' })
 
 const currentCap = computed(() =>
   escrow.caps.find((c) => c.category === form.input_category)
 )
+
+onMounted(async () => {
+  try {
+    const res = await listShopkeepers()
+    shopkeepersList.value = res.data
+  } catch (error) {
+    console.error("Failed to fetch shopkeepers:", error)
+  }
+})
 
 const submit = async () => {
   if (!form.input_category) return

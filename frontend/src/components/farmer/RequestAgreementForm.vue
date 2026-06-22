@@ -2,7 +2,10 @@
   <div class="mt-6 bg-white p-4 rounded shadow">
     <h2 class="text-lg font-bold mb-3">Request a Tenant Agreement</h2>
     <div class="space-y-2">
-      <input v-model="form.parcel" type="text" placeholder="Parcel ID (UUID, ask your landowner)" class="w-full border rounded px-2 py-1 text-sm" />
+      <select v-model="form.parcel" class="w-full border rounded px-2 py-1 text-sm">
+        <option value="">Select Parcel</option>
+        <option v-for="p in land.parcels" :key="p.id" :value="p.id">{{ p.parcel_ref }} — {{ p.district }} ({{ p.available_acres }} acres available)</option>
+      </select>
       <select v-model="form.agreement_type" class="w-full border rounded px-2 py-1 text-sm">
         <option value="">Select Type</option>
         <option value="theka">Theka (Fixed Rent)</option>
@@ -22,7 +25,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useLandStore } from '@/stores/land.js'
 import { useAuthStore } from '@/stores/auth.js'
 
@@ -30,7 +33,9 @@ const land = useLandStore()
 const auth = useAuthStore()
 const errorMessage = ref('')
 const form = reactive({ parcel: '', agreement_type: '', leased_acres: 0, season: '', theka_amount: 0, farmer_share_pct: 0, landowner_share_pct: 0 })
-
+onMounted(() => {
+  land.fetchParcels()
+})
 async function submit() {
   errorMessage.value = ''
   try {

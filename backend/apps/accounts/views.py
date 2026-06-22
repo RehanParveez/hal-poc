@@ -47,3 +47,17 @@ class UserViewSet(viewsets.ModelViewSet):
   def profile(self, request):
     serializer = self.get_serializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
+  
+  @action(detail=False, methods=['get'])
+  def banks(self, request):
+    from apps.accounts.models import BankProfile
+    banks = BankProfile.objects.select_related('user').all()
+    data = [{'id': str(b.id), 'name': b.institution_name, 'branch_code': b.branch_code} for b in banks]
+    return Response(data)
+
+  @action(detail=False, methods=['get'])
+  def shopkeepers(self, request):
+    from apps.accounts.models import ShopkeeperProfile
+    shopkeepers = ShopkeeperProfile.objects.select_related('user').all()
+    data = [{'id': str(s.user.id), 'name': s.shop_name, 'phone': s.user.phone} for s in shopkeepers]
+    return Response(data)

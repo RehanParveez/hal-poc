@@ -11,7 +11,9 @@ from rest_framework.response import Response
 class LandViewSet(viewsets.ModelViewSet):
   def get_permissions(self):
     if self.action == 'create': return [LandownerPerm()]
-    if self.request.user.is_authenticated and self.request.user.role == 'bank': return [BankManagerPerm()]
+    if self.action in ('list', 'retrieve'):
+      comb = LandownerPerm | BankManagerPerm | TenantFarmerPerm
+      return [comb()]
     return [LandownerPerm()]
 
   def get_serializer_class(self):
