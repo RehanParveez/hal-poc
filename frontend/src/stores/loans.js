@@ -9,8 +9,14 @@ export const useLoansStore = defineStore('loans', {
     isLoading: false,
     statusFilter: '',
     districtFilter: '',
+    myLoans: [],
   }),
+
   actions: {
+    async fetchAllMyLoans() {
+      const res = await loansApi.listLoans()
+      this.myLoans = res.data.results ?? res.data
+    },
     async fetchLoans() {
       this.isLoading = true
       try {
@@ -23,6 +29,13 @@ export const useLoansStore = defineStore('loans', {
         this.isLoading = false
       }
     },
+
+    async applyForLoan(payload) {
+      const notify = useNotificationsStore()
+      await loansApi.applyForLoan(payload)
+      notify.showSuccess('Loan application submitted successfully.')
+    },
+
      async fetchMyLoan() {
       const res = await loansApi.listLoans()
       const loans = res.data.results ?? res.data

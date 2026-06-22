@@ -42,7 +42,7 @@
       <button @click="settlements.factorySettle(inv.id)" class="bg-purple-700 text-white px-3 py-1.5 rounded text-sm">Settle with Bank</button>
     </div>
     </div>
-
+    <div id="post-contract-section"><PostContractForm /></div>
   </div>
 </template>
 
@@ -50,6 +50,7 @@
 import { onMounted, reactive } from 'vue'
 import { useDeliveryStore } from '@/stores/delivery.js'
 import { useSettlementsStore } from '@/stores/settlements.js'
+import PostContractForm from '@/components/factory/PostContractForm.vue'
 
 const delivery = useDeliveryStore()
 const settlements = useSettlementsStore()

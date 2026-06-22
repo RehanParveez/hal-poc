@@ -27,6 +27,11 @@ export const useLandStore = defineStore('land', {
       notify.showSuccess('Land parcel registered successfully.')
       await this.fetchParcels()
     },
+    async createAgreement(payload) {
+      const notify = useNotificationsStore()
+      await landApi.createAgreement(payload)
+      notify.showSuccess('Tenant agreement request submitted.')
+    },
     async fetchAgreements() {
       const res = await landApi.listAgreements()
       this.agreements = res.data.results ?? res.data

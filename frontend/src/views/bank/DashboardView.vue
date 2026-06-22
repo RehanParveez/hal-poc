@@ -15,6 +15,7 @@
       <LoanCard v-for="loan in loansStore.loans" :key="loan.id" :loan="loan" />
       <p v-if="loansStore.loans.length === 0" class="text-gray-500">No loan applications found.</p>
     </div>
+    <div id="settlements-section"><SettlementsOverview /></div>
   </div>
 </template>
 
@@ -24,6 +25,7 @@ import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
 import { useLoansStore } from '@/stores/loans.js'
 import LoanCard from '@/components/bank/LoanCard.vue'
+import SettlementsOverview from '@/components/bank/SettlementsOverview.vue'
 
 const auth = useAuthStore()
 const router = useRouter()

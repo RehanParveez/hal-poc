@@ -1,5 +1,8 @@
 import apiClient from './client.js'
 
+export function createContract(payload) {
+  return apiClient.post('/contracts/cropcontracts/', payload)
+}
 export function listContracts(params) {
   return apiClient.get('/contracts/cropcontracts/', { params })
 }

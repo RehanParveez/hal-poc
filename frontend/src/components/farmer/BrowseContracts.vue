@@ -1,0 +1,36 @@
+<template>
+  <div class="mt-6">
+    <h2 class="text-lg font-bold mb-3">Open Contracts</h2>
+    <div class="space-y-2">
+      <div v-for="c in contracts.openContracts" :key="c.id" class="bg-white p-3 rounded shadow">
+        <p class="font-medium">{{ c.crop_name }} — PKR {{ c.base_price_per_kg }}/kg</p>
+        <p class="text-sm text-gray-500">Remaining: {{ c.remaining_kg }} kg — Deadline: {{ c.delivery_deadline }}</p>
+        <div class="mt-2 flex gap-2">
+          <input v-model.number="kgForm[c.id]" type="number" placeholder="Committed kg" class="border rounded px-2 py-1 text-sm flex-1" />
+          <button @click="handleAllocate(c.id)" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">Allocate</button>
+        </div>
+      </div>
+      <p v-if="contracts.openContracts.length === 0" class="text-gray-500">No open contracts available.</p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { onMounted, reactive } from 'vue'
+import { useContractsStore } from '@/stores/contracts.js'
+import { useLoansStore } from '@/stores/loans.js'
+
+const contracts = useContractsStore()
+const loans = useLoansStore()
+const kgForm = reactive({})
+
+onMounted(() => {
+  contracts.fetchOpenContracts()
+})
+
+async function handleAllocate(contractId) {
+  const kg = kgForm[contractId]
+  if (!kg || !loans.activeLoan) return
+  await contracts.allocate(contractId, loans.activeLoan.id, kg)
+}
+</script>

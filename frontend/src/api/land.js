@@ -6,6 +6,9 @@ export function listLands(params) {
 export function createLand(payload) {
   return apiClient.post('/land/lands/', payload)
 }
+export function createAgreement(payload) {
+  return apiClient.post('/land/agreements/', payload)
+}
 export function listAgreements(params) {
   return apiClient.get('/land/agreements/', { params })
 }
