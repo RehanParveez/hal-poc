@@ -36,8 +36,10 @@ class LandViewSet(viewsets.ModelViewSet):
 
 class TenantAgreementViewSet(viewsets.ModelViewSet):
   def get_permissions(self):
-    if self.action == 'create': return [TenantFarmerPerm()]
-    if self.action in ('approve', 'reject'): return [LandownerPerm()]
+    if self.action == 'create':
+      return [(TenantFarmerPerm | LandownerPerm)()]
+    if self.action in ('approve', 'reject'):
+      return [LandownerPerm()]
     return []
 
   def get_serializer_class(self):

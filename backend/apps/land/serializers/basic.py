@@ -23,17 +23,21 @@ class LandSerializer(serializers.ModelSerializer):
     return value.strip()
 
 class TenantAgreementSerializer(serializers.ModelSerializer):
-  tenant = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+  tenant_phone = serializers.CharField(write_only=True)
   class Meta:
     model = TenantAgreement
     fields = [
-      'id', 'tenant', 'parcel', 'agreement_type', 'leased_acres', 'season', 'theka_amount', 'farmer_share_pct', 'landowner_share_pct',
+      'id', 'tenant_phone', 'parcel', 'agreement_type', 'leased_acres', 'season', 'theka_amount', 'farmer_share_pct', 'landowner_share_pct',
       'status', 'landowner_approved', 'approved_at', 'rejected_reason', 'created_at']
     read_only_fields = ['id', 'status', 'landowner_approved', 'approved_at', 'rejected_reason', 'created_at']
     
   def create(self, validated_data):
-    user_instance = validated_data.pop('tenant')
-    profile = FarmerProfile.objects.get(user=user_instance)
+    phone = validated_data.pop('tenant_phone')
+    try:
+      user_instance = User.objects.get(phone=phone)
+      profile = FarmerProfile.objects.get(user=user_instance)
+    except (User.DoesNotExist, FarmerProfile.DoesNotExist):
+      raise serializers.ValidationError({"tenant_phone": "no farmer pres. with this phone number."})
     validated_data['tenant'] = profile
     return super().create(validated_data)
 

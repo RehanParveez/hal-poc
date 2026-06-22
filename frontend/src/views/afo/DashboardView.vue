@@ -38,7 +38,11 @@
           <option value="irrigation">Irrigation</option>
           <option value="labour">Labour</option>
         </select>
-        <input v-model="capForm.valid_season" type="text" placeholder="Season (e.g. kharif)" class="w-full border rounded px-2 py-1 text-sm" />
+        <select v-model="capForm.valid_season" class="w-full border rounded px-2 py-1 text-sm">
+          <option value="">Select Season</option>
+          <option value="rabi">Rabi</option>
+          <option value="kharif">Kharif</option>
+        </select>
         <input v-model.number="capForm.max_cost_per_acre" type="number" placeholder="Max Cost per Acre (PKR)" class="w-full border rounded px-2 py-1 text-sm" />
         <button @click="submitCap" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Save Cap</button>
       </div>

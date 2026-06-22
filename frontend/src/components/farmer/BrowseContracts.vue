@@ -3,8 +3,8 @@
     <h2 class="text-lg font-bold mb-3">Open Contracts</h2>
     <div class="space-y-2">
       <div v-for="c in contracts.openContracts" :key="c.id" class="bg-white p-3 rounded shadow">
-        <p class="font-medium">{{ c.crop_name }} — PKR {{ c.base_price_per_kg }}/kg</p>
-        <p class="text-sm text-gray-500">Remaining: {{ c.remaining_kg }} kg — Deadline: {{ c.delivery_deadline }}</p>
+        <p class="font-medium">{{ cropName(c.crop) }} — PKR {{ c.base_price_per_kg }}/kg</p>
+        <p class="text-sm text-gray-500">Remaining: {{ c.required_kg - c.allocated_kg }} kg — Deadline: {{ c.delivery_deadline }}</p>
         <div class="mt-2 flex gap-2">
           <input v-model.number="kgForm[c.id]" type="number" placeholder="Committed kg" class="border rounded px-2 py-1 text-sm flex-1" />
           <button @click="handleAllocate(c.id)" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">Allocate</button>
@@ -19,14 +19,24 @@
 import { onMounted, reactive } from 'vue'
 import { useContractsStore } from '@/stores/contracts.js'
 import { useLoansStore } from '@/stores/loans.js'
+import { useCropsStore } from '@/stores/crops.js'
 
 const contracts = useContractsStore()
 const loans = useLoansStore()
+const crops = useCropsStore()
 const kgForm = reactive({})
 
-onMounted(() => {
-  contracts.fetchOpenContracts()
+onMounted(async () => {
+  await contracts.fetchOpenContracts()
+  if (crops.cropTypes.length === 0) {
+    await crops.fetchCropTypes()
+  }
 })
+
+function cropName(cropId) {
+  const crop = crops.cropTypes.find((c) => c.id === cropId)
+  return crop ? `${crop.name} (${crop.code})` : 'Unknown crop'
+}
 
 async function handleAllocate(contractId) {
   const kg = kgForm[contractId]
