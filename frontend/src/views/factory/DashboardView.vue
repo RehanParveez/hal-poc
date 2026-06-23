@@ -20,12 +20,14 @@
         </div>
 
         <div v-if="batch.status === 'received'" class="mt-3 border-t pt-3 space-y-2">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Quality Grade</label>
           <select v-model="gradeForm[batch.id].grade_received" class="border rounded px-2 py-1 text-sm w-full">
             <option value="">Select Grade</option>
             <option value="Grade A">Grade A</option>
             <option value="Grade B">Grade B</option>
             <option value="Grade C">Grade C</option>
           </select>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Deduction Percentage</label>
           <input v-model.number="gradeForm[batch.id].grade_deduction_pct" type="number" placeholder="Deduction %" class="border rounded px-2 py-1 text-sm w-full" />
           <button @click="submitGrade(batch.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
             Confirm Grade

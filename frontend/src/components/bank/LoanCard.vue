@@ -18,9 +18,15 @@
 
     <div v-if="loan.status === 'submitted'" class="mt-4 border-t pt-3 space-y-2">
       <div class="grid grid-cols-2 gap-2">
-        <input v-model="approvedAmount" type="number" placeholder="Approved amount" class="border rounded px-2 py-1 text-sm" />
-        <input v-model="interestRate" type="number" placeholder="Interest rate %" class="border rounded px-2 py-1 text-sm" />
-      </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Approved Amount (PKR)</label>
+            <input v-model="approvedAmount" type="number" placeholder="e.g. 50000" class="w-full border rounded px-2 py-1 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Interest Rate (%)</label>
+            <input v-model="interestRate" type="number" placeholder="e.g. 12.5" class="w-full border rounded px-2 py-1 text-sm" />
+          </div>
+        </div>
       <div class="flex gap-2">
         <button @click="handleApprove" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
         <button @click="handleReject" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">Reject</button>

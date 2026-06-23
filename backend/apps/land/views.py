@@ -62,6 +62,16 @@ class TenantAgreementViewSet(viewsets.ModelViewSet):
   def create(self, request, *args, **kwargs):
     serializer = TenantAgreementSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    
+    if request.user.role == 'landowner':
+      parcel = serializer.validated_data.get('parcel')
+      if parcel.landowner != request.user.landowner_profile:
+        raise PermissionDenied("you can only create agreems for your own land parcels.")
+
+    if request.user.role in ('smallholder', 'tenant'):
+      if request.data.get('tenant_phone') != request.user.phone:
+        raise PermissionDenied("you can only request agreems using your own phone number.")
+      
     agreement = serializer.save()
     agreement_fresh = TenantAgreement.objects.select_related('tenant__user', 'parcel', 'parcel__landowner__user').get(id=agreement.id)
     return Response(TenantAgreementDetailSerializer(agreement_fresh).data, status=status.HTTP_201_CREATED)

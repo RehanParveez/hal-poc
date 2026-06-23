@@ -30,6 +30,8 @@ class FarmerContractAllocationService:
         raise ValueError(f"the loan s/h be disbursed before alloca. to a contract. Current status: {loan.status}.")
       if loan.crop != contract.crop:
         raise ValueError(f"your loan is for {loan.crop.code} but this contr is for {contract.crop.code}.")
+      if FarmerContractAllocation.objects.filter(contract=contract, farmer=farmer_profile).exists():
+        raise ValueError("you are already allocated to this contract.")
       remaining_kg = contract.required_kg - contract.allocated_kg
       if committed_kg > remaining_kg:
         raise ContractFullyAllocatedError(requested=committed_kg, available=remaining_kg)

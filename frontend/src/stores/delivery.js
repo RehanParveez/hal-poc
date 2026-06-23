@@ -32,13 +32,18 @@ export const useDeliveryStore = defineStore('delivery', {
 
     async confirmGrade(batchId, gradeReceived, gradeDeductionPct, gradeNotes) {
       const notify = useNotificationsStore()
-      const res = await deliveryApi.confirmGrade(batchId, {
-        grade_received: gradeReceived,
-        grade_deduction_pct: gradeDeductionPct,
-        grade_notes: gradeNotes,
-      })
-      notify.showSuccess(res.data.message)
-      await this.fetchBatches()
-    },
-  },
+      try {
+       const res = await deliveryApi.confirmGrade(batchId, {
+         grade_received: gradeReceived,
+         grade_deduction_pct: gradeDeductionPct,
+         grade_notes: gradeNotes,
+        })
+       notify.showSuccess(res.data.message)
+       await this.fetchBatches()
+    } catch (error) {
+    console.error("Backend Error Details:", error.response?.data || error.message)
+    notify.showError("Failed to confirm grade: " + (error.response?.data?.error || "Server error"))
+  }
+},
+}, 
 })

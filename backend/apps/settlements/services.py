@@ -22,10 +22,16 @@ class SettlementService:
       farmer_wallet = Wallet.objects.select_for_update().get(user=loan.farmer.user)
       platform_wallet = Wallet.objects.select_for_update().get(wallet_type='platform')
       loan_locked = LoanApplication.objects.select_for_update().get(id=loan.id)
+      if loan_locked.approved_amount is None or loan_locked.interest_rate_pct is None:
+        raise ValueError(f"Loan {loan_locked.id} is missing approved_amount or interest_rate_pct — it must be approved through the proper approval flow before settlement.")
       gross = batch.actual_payout
       batch_proportion = batch.batch_kg / batch.allocation.committed_kg
       principal = (loan_locked.approved_amount * batch_proportion).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
-      days_out = (timezone.now().date() - loan_locked.approved_at.date()).days
+      if loan_locked.approved_at:
+        start_date = loan_locked.approved_at.date()
+      else:
+        start_date = loan_locked.created_at.date()
+      days_out = (timezone.now().date() - start_date).days
       interest = (principal * (loan_locked.interest_rate_pct / Decimal('100')) * days_out / Decimal('365')).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
       bank_commission = (gross * FACTORING_COMMISSION_RATE).quantize(Decimal('0.01'))
       platform_fee = (gross * PLATFORM_FEE_RATE).quantize(Decimal('0.01'))

@@ -2,17 +2,20 @@
   <div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-96">
       <h2 class="text-lg font-bold mb-4">Pay Shopkeeper</h2>
-
+      
+      <label class="block text-xs font-medium text-gray-600 mb-1">Input Category</label>
       <select v-model="form.input_category" class="w-full border p-2 mb-2">
         <option value="">Select Category</option>
         <option v-for="cat in escrow.spendableCategories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
-
+      
+      <label class="block text-xs font-medium text-gray-600 mb-1">Shopkeeper</label>
       <select v-model="form.shopkeeper_id" class="w-full border p-2 mb-2">
         <option value="">Select Shopkeeper</option>
         <option v-for="s in shopkeepersList" :key="s.id" :value="s.id">{{ s.name }} ({{ s.phone }})</option>
       </select>
-
+      
+      <label class="block text-xs font-medium text-gray-600 mb-1">Amount (PKR)</label>
       <input v-model.number="form.amount" type="number" placeholder="Amount (PKR)" class="w-full border p-2 mb-2" />
 
       <AFOLimitDisplay

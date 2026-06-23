@@ -97,7 +97,6 @@ async function submit() {
 }
 
 function handleReject(id) {
-  console.log("Submitting form:", form);
   const reason = window.prompt('Rejection reason:')
   if (reason) {
     land.rejectAgreement(id, reason)
