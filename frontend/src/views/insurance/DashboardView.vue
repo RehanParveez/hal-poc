@@ -11,7 +11,7 @@
               <p class="font-semibold">{{ claim.farmer_name }}</p>
               <p class="text-sm text-gray-500">Claim Amount: PKR {{ claim.claim_amount }}</p>
             </div>
-            <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ claim.status }}</span>
+            <StatusBadge :status="claim.status" />
           </div>
 
           <div v-if="claim.status === 'pending'" class="mt-3 border-t pt-3 space-y-2">
@@ -32,7 +32,7 @@
       <div class="space-y-2">
         <div v-for="p in insurance.policies" :key="p.id" class="bg-white p-3 rounded shadow flex justify-between text-sm">
           <span>{{ p.farmer_name }} — Coverage PKR {{ p.coverage_amount }}</span>
-          <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ p.status }}</span>
+          <StatusBadge :status="p.status" />
         </div>
         <p v-if="insurance.policies.length === 0" class="text-gray-500">No policies yet.</p>
       </div>
@@ -43,6 +43,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const insurance = useInsuranceStore()
 const reviewForm = reactive({})

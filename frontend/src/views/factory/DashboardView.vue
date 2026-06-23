@@ -10,7 +10,7 @@
             <p class="font-semibold">Batch #{{ batch.id.slice(0, 8) }}</p>
             <p class="text-sm text-gray-500">{{ batch.batch_kg }} kg — Expected: PKR {{ batch.expected_payout }}</p>
           </div>
-          <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ batch.status.replace('_', ' ') }}</span>
+          <StatusBadge :status="batch.status" />
         </div>
 
         <div v-if="batch.status === 'in_transit'" class="mt-3">
@@ -53,6 +53,7 @@ import { onMounted, reactive } from 'vue'
 import { useDeliveryStore } from '@/stores/delivery.js'
 import { useSettlementsStore } from '@/stores/settlements.js'
 import PostContractForm from '@/components/factory/PostContractForm.vue'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const delivery = useDeliveryStore()
 const settlements = useSettlementsStore()

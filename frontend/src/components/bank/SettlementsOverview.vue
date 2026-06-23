@@ -7,7 +7,7 @@
           <p class="font-medium">Invoice #{{ inv.id.slice(0, 8) }}</p>
           <p class="text-gray-500">Gross: PKR {{ inv.gross_payout }}</p>
         </div>
-        <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize self-start">{{ inv.status }}</span>
+        <StatusBadge :status="inv.status" class="self-start" />
       </div>
       <p v-if="settlements.invoices.length === 0" class="text-gray-500">No settlements yet.</p>
     </div>
@@ -17,6 +17,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useSettlementsStore } from '@/stores/settlements.js'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const settlements = useSettlementsStore()
 

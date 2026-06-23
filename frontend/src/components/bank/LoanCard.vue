@@ -6,7 +6,7 @@
         <p class="text-sm text-gray-500">{{ loan.farmer_phone }} • {{ loan.farmer_district }}</p>
         <p class="text-sm text-gray-500">{{ loan.crop_name }} ({{ loan.crop_season }})</p>
       </div>
-      <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ loan.status.replace('_', ' ') }}</span>
+      <StatusBadge :status="loan.status" />
     </div>
 
     <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
@@ -40,8 +40,10 @@
 </template>
 
 <script setup>
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const props = defineProps({
   loan: { type: Object, required: true },

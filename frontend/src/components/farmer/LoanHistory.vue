@@ -7,7 +7,7 @@
           <p class="font-medium">Requested: PKR {{ loan.requested_amount }}</p>
           <p class="text-gray-500">{{ loan.acres_applied_for }} acres</p>
         </div>
-        <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize self-start">{{ loan.status.replace('_', ' ') }}</span>
+        <StatusBadge :status="loan.status" class="self-start" />
       </div>
       <p v-if="loans.myLoans.length === 0" class="text-gray-500">No loan applications yet.</p>
     </div>
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { onMounted } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
 

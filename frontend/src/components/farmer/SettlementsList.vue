@@ -9,7 +9,10 @@
         @click="settlements.fetchInvoice(inv.id)"
         class="w-full text-left bg-white p-3 rounded shadow flex justify-between text-sm hover:bg-gray-50"
       >
-        <span>Invoice #{{ inv.id.slice(0, 8) }} — {{ inv.status }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400 text-xs">#{{ inv.id.slice(0, 8) }}</span>
+          <StatusBadge :status="inv.status" />
+        </div>
         <span class="font-semibold text-green-700">PKR {{ inv.farmer_net_profit }}</span>
       </button>
     </div>
@@ -21,6 +24,7 @@
 import { onMounted } from 'vue'
 import { useSettlementsStore } from '@/stores/settlements.js'
 import WaterfallBreakdown from './WaterfallBreakdown.vue'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const settlements = useSettlementsStore()
 

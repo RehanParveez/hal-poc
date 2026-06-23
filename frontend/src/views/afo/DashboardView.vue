@@ -5,8 +5,10 @@
     <div id="crop-types-section" class="mb-8">
       <h2 class="text-xl font-bold mb-3">Crop Types</h2>
       <div class="bg-white p-4 rounded shadow mb-4 space-y-2">
-        <input v-model="cropForm.name" type="text" placeholder="Crop Name" class="w-full border rounded px-2 py-1 text-sm" />
-        <input v-model="cropForm.code" type="text" placeholder="Code (e.g. MAIZE)" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Crop Name</label>
+        <input v-model="cropForm.name" type="text" placeholder="e.g. Maize" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Crop Code</label>
+        <input v-model="cropForm.code" type="text" placeholder="e.g. MAIZE" class="w-full border rounded px-2 py-1 text-sm" />
         <select v-model="cropForm.season" class="w-full border rounded px-2 py-1 text-sm">
           <option value="">Select Season</option>
           <option value="rabi">Rabi</option>
@@ -29,7 +31,8 @@
           <option value="">Select Crop</option>
           <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
         </select>
-        <input v-model="capForm.district" type="text" placeholder="District" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">District</label>
+        <input v-model="capForm.district" type="text" placeholder="e.g. Multan" class="w-full border rounded px-2 py-1 text-sm" />
         <select v-model="capForm.input_category" class="w-full border rounded px-2 py-1 text-sm">
           <option value="">Select Category</option>
           <option value="seed">Seed</option>
@@ -61,13 +64,23 @@
           <option value="">Select Crop</option>
           <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
         </select>
-        <input v-model.number="milestoneForm.phase_number" type="number" placeholder="Phase Number" class="w-full border rounded px-2 py-1 text-sm" />
-        <input v-model="milestoneForm.phase_name" type="text" placeholder="Phase Name" class="w-full border rounded px-2 py-1 text-sm" />
-        <input v-model.number="milestoneForm.day_offset" type="number" placeholder="Day Offset" class="w-full border rounded px-2 py-1 text-sm" />
-        <input v-model.number="milestoneForm.unlock_pct" type="number" placeholder="Unlock % (0-100)" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Phase Number</label>
+        <input v-model.number="milestoneForm.phase_number" type="number" placeholder="e.g. 1" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Phase Name</label>
+        <input v-model="milestoneForm.phase_name" type="text" placeholder="e.g. Mid-Season Growth" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Day Offset (days after sowing)</label>
+        <input v-model.number="milestoneForm.day_offset" type="number" placeholder="e.g. 30" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Unlock Percentage (0-100)</label>
+        <input v-model.number="milestoneForm.unlock_pct" type="number" placeholder="e.g. 40" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">Allowed Categories This Phase</label>
         <div class="flex gap-2 flex-wrap">
-          <label v-for="cat in ['seed', 'fertilizer', 'pesticide', 'irrigation', 'labour']" :key="cat" class="text-sm flex items-center gap-1">
-            <input type="checkbox" :value="cat" v-model="milestoneForm.allowed_input_categories" />
+          <label
+            v-for="cat in ['seed', 'fertilizer', 'pesticide', 'irrigation', 'labour']"
+            :key="cat"
+            class="text-sm px-3 py-1.5 border rounded-full cursor-pointer flex items-center gap-1.5"
+            :class="milestoneForm.allowed_input_categories.includes(cat) ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 border-gray-300'"
+          >
+            <input type="checkbox" :value="cat" v-model="milestoneForm.allowed_input_categories" class="hidden" />
             {{ cat }}
           </label>
         </div>

@@ -1,8 +1,8 @@
 <template>
-  <aside class="w-64 bg-green-800 text-white flex flex-col shadow-lg">
-    <div class="p-5 border-b border-green-700">
-      <h1 class="text-xl font-bold">🌾 FasalPay</h1>
-      <p class="text-xs text-green-200 mt-1">Pakistan</p>
+  <aside class="w-64 min-h-screen bg-slate-900 text-slate-300 flex flex-col shadow-xl">
+    <div class="p-5 border-b border-slate-800 bg-slate-950">
+      <h1 class="text-xl font-bold text-white tracking-wide">FasalPay</h1>
+      <p class="text-xs text-slate-500 mt-1">Pakistan</p>
     </div>
 
     <nav class="flex-1 py-4 px-3 space-y-1">
@@ -11,7 +11,7 @@
           v-if="item.path"
           :to="item.path"
           class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors"
-          :class="route.path === item.path ? 'bg-white text-green-800' : 'text-green-100 hover:bg-green-700'"
+          :class="route.path === item.path ? 'bg-slate-800 text-white font-semibold shadow-sm' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'"
         >
           <span class="text-lg">{{ item.icon }}</span>
           <span>{{ item.label }}</span>
@@ -19,7 +19,7 @@
         <a
           v-else
           :href="item.anchor"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-green-100 hover:bg-green-700 transition-colors"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white transition-colors"
         >
           <span class="text-lg">{{ item.icon }}</span>
           <span>{{ item.label }}</span>
@@ -27,10 +27,10 @@
       </template>
     </nav>
 
-    <div class="p-4 border-t border-green-700">
-      <p class="text-sm font-medium truncate">{{ auth.user?.full_name }}</p>
-      <p class="text-xs text-green-300 mb-3 capitalize">{{ auth.user?.role }}</p>
-      <button @click="handleLogout" class="w-full text-xs text-green-200 hover:text-white">
+    <div class="p-4 border-t border-slate-800 bg-slate-950/50">
+      <p class="text-sm font-medium text-slate-200 truncate">{{ auth.user?.full_name }}</p>
+      <p class="text-xs text-slate-500 mb-3 capitalize">{{ auth.user?.role }}</p>
+      <button @click="handleLogout" class="w-full text-xs text-slate-400 hover:text-white transition-colors">
         Sign out →
       </button>
     </div>
@@ -44,48 +44,48 @@ import { useAuthStore } from '@/stores/auth.js'
 
 const NAV_CONFIGS = {
   smallholder: [
-    { path: '/farmer/dashboard', icon: '🏠', label: 'Dashboard' },
-    { anchor: '#escrow-section', icon: '🔐', label: 'Escrow' },
-    { anchor: '#settlements-section', icon: '💰', label: 'Settlements' },
-    { anchor: '#delivery-section', icon: '🚛', label: 'Log Delivery' },
-    { anchor: '#loan-section', icon: '🏦', label: 'My Loans' },
-    { anchor: '#contracts-section', icon: '📄', label: 'Contracts' },
+    { path: '/farmer/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#escrow-section', icon: '⌏', label: 'Escrow' },
+    { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
+    { anchor: '#delivery-section', icon: '❖', label: 'Log Delivery' },
+    { anchor: '#loan-section', icon: '⚿', label: 'My Loans' },
+    { anchor: '#contracts-section', icon: '☰', label: 'Contracts' },
   ],
   tenant: [
-    { path: '/farmer/dashboard', icon: '🏠', label: 'Dashboard' },
-    { anchor: '#escrow-section', icon: '🔐', label: 'Escrow' },
-    { anchor: '#settlements-section', icon: '💰', label: 'Settlements' },
-    { anchor: '#delivery-section', icon: '🚛', label: 'Log Delivery' },
-    { anchor: '#loan-section', icon: '🏦', label: 'My Loans' },
-    { anchor: '#contracts-section', icon: '📄', label: 'Contracts' },
+    { path: '/farmer/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#escrow-section', icon: '⌏', label: 'Escrow' },
+    { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
+    { anchor: '#delivery-section', icon: '❖', label: 'Log Delivery' },
+    { anchor: '#loan-section', icon: '⚿', label: 'My Loans' },
+    { anchor: '#contracts-section', icon: '☰', label: 'Contracts' },
   ],
   landowner: [
-    { path: '/landowner/dashboard', icon: '🏠', label: 'Dashboard' },
-    { anchor: '#parcels-section', icon: '🗺️', label: 'Land Parcels' },
+    { path: '/landowner/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#parcels-section', icon: '⚃', label: 'Land Parcels' },
     { anchor: '#agreements-section', icon: '🤝', label: 'Agreements' },
   ],
   bank: [
-    { path: '/bank/dashboard', icon: '🏦', label: 'Loan Queue' },
-    { anchor: '#settlements-section', icon: '💰', label: 'Settlements' },
+    { path: '/bank/dashboard', icon: '⚿', label: 'Loan Queue' },
+    { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
   ],
-  admin: [{ path: '/bank/dashboard', icon: '🏦', label: 'Loan Queue' }],
+  admin: [{ path: '/bank/dashboard', icon: '⚿', label: 'Loan Queue' }],
   factory: [
-    { path: '/factory/dashboard', icon: '🏭', label: 'Dashboard' },
-    { anchor: '#deliveries-section', icon: '📦', label: 'Deliveries' },
-    { anchor: '#settlements-section', icon: '💰', label: 'Settlements' },
-    { anchor: '#post-contract-section', icon: '📝', label: 'Post Contract' },
+    { path: '/factory/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#deliveries-section', icon: '⎔', label: 'Deliveries' },
+    { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
+    { anchor: '#post-contract-section', icon: '☰', label: 'Post Contract' },
   ],
-  shopkeeper: [{ path: '/shopkeeper/dashboard', icon: '🏪', label: 'Dashboard' }],
+  shopkeeper: [{ path: '/shopkeeper/dashboard', icon: '⌂', label: 'Dashboard' }],
   insurance: [
-    { path: '/insurance/dashboard', icon: '🛡️', label: 'Dashboard' },
-    { anchor: '#claims-section', icon: '📋', label: 'Claims' },
-    { anchor: '#policies-section', icon: '🛡️', label: 'Policies' },
+    { path: '/insurance/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#claims-section', icon: '☰', label: 'Claims' },
+    { anchor: '#policies-section', icon: '⌏', label: 'Policies' },
   ],
   afo: [
-    { path: '/afo/dashboard', icon: '📊', label: 'Dashboard' },
-    { anchor: '#crop-types-section', icon: '🌾', label: 'Crop Types' },
-    { anchor: '#input-caps-section', icon: '💰', label: 'Spending Caps' },
-    { anchor: '#milestones-section', icon: '📅', label: 'Milestones' },
+    { path: '/afo/dashboard', icon: '⌂', label: 'Dashboard' },
+    { anchor: '#crop-types-section', icon: '❖', label: 'Crop Types' },
+    { anchor: '#input-caps-section', icon: '◆', label: 'Spending Caps' },
+    { anchor: '#milestones-section', icon: '☰', label: 'Milestones' },
   ],
 }
 

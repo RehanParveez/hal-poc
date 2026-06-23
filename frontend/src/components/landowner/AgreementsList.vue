@@ -40,13 +40,12 @@
       <div v-for="a in land.agreements" :key="a.id" class="bg-white p-4 rounded shadow">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-[10px] text-gray-400 font-mono">ID: {{ a.id }}</p>
             <p class="font-semibold">{{ a.tenant_name }} — {{ a.parcel_ref }}</p>
             <p class="text-sm text-gray-500">{{ a.agreement_type }} — {{ a.leased_acres }} acres — {{ a.season }}</p>
             <p v-if="a.agreement_type === 'theka'" class="text-sm text-gray-500">Rent: PKR {{ a.theka_amount }}</p>
             <p v-else class="text-sm text-gray-500">Farmer {{ a.farmer_share_pct }}% / Landowner {{ a.landowner_share_pct }}%</p>
           </div>
-          <span class="text-xs px-2 py-1 rounded bg-gray-100 capitalize">{{ a.status }}</span>
+          <StatusBadge :status="a.status" />
         </div>
 
         <div v-if="a.status === 'pending'" class="mt-3 flex gap-2">
@@ -62,6 +61,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useLandStore } from '@/stores/land.js'
+import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const land = useLandStore()
 const availableParcels = computed(() => land.parcels)
