@@ -57,6 +57,9 @@ onMounted(async () => {
   } catch (error) {
     console.error("Failed to fetch shopkeepers:", error)
   }
+  if (escrow.caps.length === 0) {
+    await escrow.fetchCaps(props.escrowId)
+  }
 })
 
 const submit = async () => {

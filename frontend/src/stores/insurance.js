@@ -22,6 +22,21 @@ export const useInsuranceStore = defineStore('insurance', {
       const res = await insuranceApi.listClaims(params)
       this.claims = res.data.results ?? res.data
     },
+    async submitClaim(payload) {
+      const notify = useNotificationsStore()
+      this.isLoading = true
+      try {
+        await insuranceApi.fileClaim(payload) 
+        
+        notify.showSuccess('insurance claim submitted successfully.')
+        await this.fetchClaims()
+      } catch (error) {
+        notify.showError('failed to submit claim. Please try again.')
+        console.error(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     async reviewClaim(id, decision, approvedAmount, reviewerNote) {
       const notify = useNotificationsStore()
       const payload = { decision, reviewer_note: reviewerNote }

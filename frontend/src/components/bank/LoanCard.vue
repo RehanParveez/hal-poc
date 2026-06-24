@@ -43,7 +43,6 @@
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
-import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const props = defineProps({
   loan: { type: Object, required: true },

@@ -41,19 +41,28 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, watch } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const insurance = useInsuranceStore()
 const reviewForm = reactive({})
 
-onMounted(async () => {
-  await insurance.fetchClaims()
-  await insurance.fetchPolicies()
-  insurance.claims.forEach((c) => {
-    reviewForm[c.id] = { approved_amount: 0, reviewer_note: '' }
-  })
+watch(
+  () => insurance.claims,
+  (claims) => {
+    claims.forEach((c) => {
+      if (!reviewForm[c.id]) {
+        reviewForm[c.id] = { approved_amount: 0, reviewer_note: '' }
+      }
+    })
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  insurance.fetchClaims()
+  insurance.fetchPolicies()
 })
 
 async function handleReview(claimId, decision) {

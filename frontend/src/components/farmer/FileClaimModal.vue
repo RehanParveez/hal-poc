@@ -1,0 +1,57 @@
+<template>
+  <div class="fixed inset-0 bg-slate-900/70 flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
+      <h3 class="text-lg font-bold text-slate-200 mb-4">File Crop Insurance Claim</h3>
+      
+      <label class="block text-xs font-semibold text-slate-400 mb-1">Select Linked Loan Account</label>
+      <input v-model="form.loan_id" type="text" placeholder="Enter Loan/Agreement ID" 
+             class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3" />
+      <label class="block text-xs font-semibold text-slate-400 mb-1">Insurance Policy ID</label>
+      <input v-model="form.policy_id" type="text" placeholder="Enter Policy ID (e.g. 1)" 
+            class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3" />
+
+      <label class="block text-xs font-semibold text-slate-400 mb-1">Reason for Loss</label>
+      <select v-model="form.reason" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3">
+        <option value="">Select event type...</option>
+        <option value="heavy_rainfall_and_flood">Flash Flooding / Heavy Rainfall</option>
+        <option value="extended_drought_season">Extended Drought Condition</option>
+        <option value="severe_locust_pest_attack">Locust / Pest Outbreak</option>
+      </select>
+
+      <label class="block text-xs font-semibold text-slate-400 mb-1">Requested Claim Amount (PKR)</label>
+      <input v-model.number="form.claim_amount" type="number" min="1" placeholder="e.g. 50000" 
+            class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-4" />
+
+      <div class="flex gap-2">
+        <button @click="handleSubmit" :disabled="insurance.isLoading || !form.loan_id" 
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded text-sm transition-colors">
+          {{ insurance.isLoading ? 'Submitting...' : 'Submit Claim' }}
+        </button>
+        <button @click="$emit('close')" class="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { reactive } from 'vue'
+import { useInsuranceStore } from '@/stores/insurance.js'
+
+const emit = defineEmits(['close', 'success'])
+const insurance = useInsuranceStore()
+
+const form = reactive({
+  loan_id: '',
+  policy_id: '',
+  reason: '',
+  claim_amount: null
+})
+
+const handleSubmit = async () => {
+  if (!form.loan_id || !form.reason) return
+  await insurance.submitClaim({ ...form })
+  emit('success')
+}
+</script>
