@@ -16,6 +16,7 @@ class NotEnoughEscrowError(Exception):
   def __init__(self, requested, available):
     self.requested = requested
     self.available = available
+    super().__init__(f"not enough escrow: requested {requested}, available {available}")
 
 class WrongPhaseForCategoryError(Exception):
   def __init__(self, requested_category, current_phase_name, allowed_categories):
@@ -28,17 +29,21 @@ class AcreageCeilingExceededError(Exception):
   def __init__(self, requested, available):
     self.requested = requested
     self.available = available
+    super().__init__(f"Acreage ceiling exceeded: requested {requested}, available {available}")
 
 class LoanAlreadyDisbursedError(Exception):
-  pass
+  def __init__(self):
+    super().__init__("this loan has already been disbursed.")
 
 class NoActivePhaseError(Exception):
-    pass
+  def __init__(self):
+    super().__init__("there is no active phase for this operation.")
 
 class ContractFullyAllocatedError(Exception):
   def __init__(self, requested, available):
     self.requested = requested
     self.available = available
+    super().__init__(f"contract fully allocated: requested {requested}, available {available}")
 
 def custom_exception_handler(exc, context):
   response = exception_handler(exc, context)
@@ -73,4 +78,7 @@ def custom_exception_handler(exc, context):
   if isinstance(exc, ContractFullyAllocatedError):
     return Response({'error': 'CONTRACT_FULLY_ALLOCATED', 'requested_kg': str(exc.requested), 'available_kg': str(exc.available),
       'message': f"Contract has only {exc.available} kg remaining." }, status=status.HTTP_409_CONFLICT)
+  if isinstance(exc, NoActivePhaseError):
+    return Response({'error': 'NO_ACTIVE_PHASE', 'message': "there is no active phase for this operation."
+    }, status=status.HTTP_400_BAD_REQUEST)
   return response
