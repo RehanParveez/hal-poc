@@ -10,11 +10,16 @@ class WalletViewSet(viewsets.ReadOnlyModelViewSet):
   queryset = Wallet.objects.select_related('user').all()
   serializer_class = WalletSerializer1
   permission_classes = [IsAuthenticated]
+  
+  def get_queryset(self):
+    if self.request.user.role == 'admin':
+      return Wallet.objects.select_related('user').all().order_by('-created_at')
+    return Wallet.objects.select_related('user').filter(user=self.request.user).order_by('-created_at')
 
   def get_serializer_class(self):
     if self.action == 'retrieve':
       return WalletSerializer
-    return WalletSerializer
+    return WalletSerializer1
 
   @action(detail=False, methods=['get'])
   def my_balance(self, request):
@@ -28,7 +33,7 @@ class WalletTransactionViewSet(viewsets.ReadOnlyModelViewSet):
   queryset = WalletTransaction.objects.select_related('wallet__user').all()
   serializer_class = WalletTransactionSerializer
   permission_classes = [IsAuthenticated]
-
+  
   def get_serializer_class(self):
     if self.action == 'retrieve':
       return WalletTransactionSerializer
