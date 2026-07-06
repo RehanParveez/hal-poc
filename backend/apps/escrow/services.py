@@ -4,13 +4,15 @@ from apps.escrow.models import EscrowWallet, EscrowTransaction, EscrowMilestoneU
 from django.db import transaction
 from django.utils import timezone
 from django.db.models import Sum
-from shared.exceptions import AFOLimitExceededError, WrongPhaseForCategoryError, NoActivePhaseError
+from shared.exceptions import AFOLimitExceededError, WrongPhaseForCategoryError, NoActivePhaseError, NotEnoughEscrowError
+from apps.wallets.services import WalletService
 
 INSURANCE_PREMIUM_RATE = Decimal('0.025')
 
 class EscrowCreationService:
   @staticmethod
   def create(loan):
+   with transaction.atomic():
     loan.refresh_from_db()
     if loan.approved_amount is None:
       raise ValueError(f"Cannot create escrow: Loan {loan.id} has no 'approved_amount'. Check your 'approve_loan' service logic.")
@@ -25,8 +27,8 @@ class EscrowCreationService:
     escrow.remaining_balance -= premium
     escrow.save(update_fields=['insurance_premium_deducted', 'remaining_balance'])
 
-    EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=loan.bank.user,
-      input_category='',)
+    insurance_txn = EscrowTransaction.objects.create(escrow=escrow, txn_type = 'insurance', amount=premium, recipient=loan.bank.user, input_category='')
+    WalletService.credit_wallet(loan.bank.user.wallet, amount=premium, txn_type = 'insurance', reference_id=insurance_txn.id, note='Insurance premium')
     unlock_amount = (escrow.total_funded * phase_1.unlock_pct / Decimal('100')).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
     EscrowMilestoneUnlock.objects.create(escrow=escrow, milestone=phase_1, unlocked_amount=unlock_amount, unlocked_at=timezone.now(),
       is_active=True)
@@ -64,6 +66,10 @@ class InputPaymentService:
       allowed = active_unlock.milestone.allowed_input_categories
       if input_category not in allowed:
         raise WrongPhaseForCategoryError(requested_category=input_category, current_phase_name=active_unlock.milestone.phase_name, allowed_categories=allowed)
+      cumulative_unlocked = escrow.unlocks.aggregate(total=Sum('unlocked_amount'))['total'] or Decimal('0')
+      phase_available = cumulative_unlocked - escrow.total_spent_on_inputs
+      if amount > phase_available:
+        raise NotEnoughEscrowError(requested=amount, available=max(phase_available, Decimal('0')))
       try:
         cap_record = CropInputCap.objects.get(crop=escrow.loan.crop, district=escrow.loan.farmer.user.district, input_category=input_category,
           valid_season=escrow.loan.crop.season)
@@ -87,5 +93,6 @@ class InputPaymentService:
 
       txn = EscrowTransaction.objects.create(escrow=escrow, txn_type='input', amount=amount, recipient=shopkeeper_user,
         input_category=input_category, afo_cap_snapshot=cap_record.max_cost_per_acre)
+      WalletService.credit_wallet(shopkeeper_user.wallet, amount=amount, txn_type='input', reference_id=txn.id, note=f"Escrow input payment: {input_category}")
 
     return txn

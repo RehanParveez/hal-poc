@@ -22,6 +22,9 @@ class EscrowWalletViewSet(viewsets.GenericViewSet):
     if user.role in ('smallholder', 'tenant'):
       if obj.loan.farmer.user != user:
         self.permission_denied(self.request)
+    if user.role == 'bank':
+      if obj.loan.bank.user != user:
+        self.permission_denied(self.request)
     return obj
 
   @action(detail=True, methods=['get'])
@@ -89,9 +92,10 @@ class EscrowWalletViewSet(viewsets.GenericViewSet):
 
   @action(detail=True, methods=['patch'], permission_classes=[BankManagerPerm])
   def unlock_next_phase(self, request, pk=None):
+    escrow = self.get_object()
     try:
-      next_milestone = EscrowCreationService.unlock_next_phase(pk)
-      escrow = self.get_object()
+      next_milestone = EscrowCreationService.unlock_next_phase(escrow.id)
+      escrow.refresh_from_db()
       return Response({'message': f"Phase {next_milestone.phase_number} active.", 'new_phase_number': next_milestone.phase_number,
         'escrow': EscrowWalletSerializer(escrow).data})
     except ValueError as e:

@@ -1,5 +1,5 @@
 import factory
-from apps.accounts.models import User
+from apps.accounts.models import User, FarmerProfile, BankProfile
 
 class UserFactory(factory.django.DjangoModelFactory):
   class Meta:
@@ -15,3 +15,15 @@ class UserFactory(factory.django.DjangoModelFactory):
   def _create(cls, model_class, *args, **kwargs):
     password = kwargs.pop('password', 'testpass123')
     return model_class.objects.create_user(password=password, **kwargs)
+  
+class FarmerProfileFactory(factory.django.DjangoModelFactory):
+  class Meta:
+    model = FarmerProfile
+    django_get_or_create = ('user',)
+  user = factory.SubFactory(UserFactory, role = 'smallholder')
+
+class BankProfileFactory(factory.django.DjangoModelFactory):
+  class Meta:
+    model = BankProfile
+    django_get_or_create = ('user',)
+  user = factory.SubFactory(UserFactory, role = 'bank')
