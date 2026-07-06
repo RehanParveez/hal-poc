@@ -10,7 +10,7 @@ class Wallet(BaseModel):
     ('bank', 'Bank'),
     ('bank_clearing', 'Bank Clearing'),
   )
-  user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, related_name = 'wallet')
+  user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, null=True, blank=True, related_name = 'wallet')
   wallet_type = models.CharField(max_length=25, choices=WALLET_TYPES, db_index=True)
   balance = models.DecimalField(max_digits=16, decimal_places=2, default=0)
 
