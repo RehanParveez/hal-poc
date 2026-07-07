@@ -25,14 +25,16 @@ class LoanApplicationViewSet(viewsets.ModelViewSet):
 
   def get_queryset(self):
     user = self.request.user
-    role = user.role
+    if user.is_anonymous:
+      return LoanApplication.objects.none()
+    queryset = LoanApplication.objects.select_related('crop', 'bank', 'tenant_agreement__parcel__landowner__user', 'farmer__user'
+    ).order_by('-created_at')
 
-    if role in ('smallholder', 'tenant'):
-      return LoanApplication.objects.filter(farmer=user.farmer_profile).select_related(
-        'crop', 'bank', 'tenant_agreement__parcel__landowner__user').order_by('-created_at')
-    if role == 'bank':
-      queryset = LoanApplication.objects.filter(
-        bank=user.bank_profile).select_related('farmer__user', 'crop', 'tenant_agreement__parcel__landowner__user')
+    if user.role in ('smallholder', 'tenant'):
+      return queryset.filter(farmer=user.farmer_profile)
+    if user.role == 'bank':
+      if hasattr(user, 'bank_profile'):
+        queryset = queryset.filter(bank=user.bank_profile)
       status_filter = self.request.query_params.get('status')
       district = self.request.query_params.get('district')
       

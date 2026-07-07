@@ -87,7 +87,13 @@ class CropLifecycleMilestoneViewSet(viewsets.ModelViewSet):
     return queryset.order_by('crop__code', 'phase_number')
 
   def create(self, request, *args, **kwargs):
-    serializer = CropLifecycleMilestoneSerializer(data=request.data)
+    existing_milestone = CropLifecycleMilestone.objects.filter(crop_id=request.data.get('crop'), phase_number=request.data.get('phase_number')
+    ).first()
+
+    if existing_milestone:
+      serializer = CropLifecycleMilestoneSerializer(existing_milestone, data=request.data, partial=True)
+    else:
+      serializer = CropLifecycleMilestoneSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     milestone, created = CropLifecycleMilestoneService.set_milestone(serializer.validated_data)
     response_status = status.HTTP_201_CREATED if created else status.HTTP_200_OK

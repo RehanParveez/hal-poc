@@ -53,7 +53,7 @@ class LoanApplicationService:
       if loan.bank != bank_profile:
         raise PermissionError("You can only disburse loans assigned to your bank.")
       if loan.status == 'disbursed':
-        raise LoanAlreadyDisbursedError(f"Loan {loan_id} is already disbursed.")
+        raise LoanAlreadyDisbursedError()
       if loan.status != 'bank_approved':
         raise ValueError(f"Loan must be bank_approved. Current: {loan.status}.")
       loan.status = 'disbursed'

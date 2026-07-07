@@ -20,6 +20,7 @@ class CropInputCapSerializer(serializers.ModelSerializer):
     model = CropInputCap
     fields = ['id', 'crop', 'crop_name', 'crop_code', 'district', 'input_category', 'max_cost_per_acre', 'valid_season', 'created_at']
     read_only_fields = ['id', 'created_at', 'crop_name', 'crop_code']
+    validators = []
 
   def validate_max_cost_per_acre(self, value):
     if value <= 0:
