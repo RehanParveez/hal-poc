@@ -39,6 +39,9 @@ class BatchDeliveryViewSet(viewsets.ModelViewSet):
       return BatchDelivery.objects.filter(allocation__contract__factory=user.factory_profile).select_related('allocation__farmer__user',
         'allocation__contract__crop').order_by('-created_at')
     return BatchDelivery.objects.none()
+  
+  def partial_update(self, request, *args, **kwargs):
+    raise PermissionDenied("the direct updates are not allowed. kindly use specific actions.")
 
   def create(self, request, *args, **kwargs):
     allocation_id = request.data.get('allocation')
