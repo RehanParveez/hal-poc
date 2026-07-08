@@ -49,6 +49,8 @@ class CropContractViewSet(viewsets.ModelViewSet):
     committed_kg = request.data.get('committed_kg')
     if not loan_id or not committed_kg:
       return Response({'error': 'the loan_id & committed_kg are need.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not hasattr(request.user, 'farmer_profile'):
+      return Response({'error': 'User does not have a farmer profile.'}, status=status.HTTP_403_FORBIDDEN)
     committed_kg = Decimal(str(committed_kg))
     try:
       loan = LoanApplication.objects.get(id=loan_id)

@@ -21,6 +21,12 @@ class CropContractSerializer(serializers.ModelSerializer):
     if value < 1 or value > 30:
       raise serializers.ValidationError("the payment defer days s/h be b/w 1 & 30.")
     return value
+  
+  def validate_delivery_deadline(self, value):
+    from django.utils import timezone
+    if value < timezone.now().date():
+      raise serializers.ValidationError("the delivery deadline s/h be in the future.")
+    return value
 
 class FarmerContractAllocationSerializer(serializers.ModelSerializer):
   class Meta:
