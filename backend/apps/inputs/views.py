@@ -21,7 +21,9 @@ class InputSupplyRequestViewSet(viewsets.ModelViewSet):
       return base_qs.filter(escrow__loan__farmer__user=user)
     if user.role == 'shopkeeper':
       return base_qs.filter(shopkeeper__user=user)
-    if user.role in ('bank', 'admin'):
+    if user.role in ('bank'):
+      return base_qs.filter(escrow__loan__bank=user.bank_profile)
+    if user.role == 'admin':
       return base_qs.all()
     return InputSupplyRequest.objects.none()
 

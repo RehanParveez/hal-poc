@@ -12,17 +12,21 @@ class InsurancePremiumService:
 
   @staticmethod
   def enroll_and_deduct(loan, escrow):
-    premium = (loan.approved_amount * PREMIUM_RATE).quantize(Decimal('0.01'))
-    escrow.insurance_premium_deducted = premium
-    escrow.remaining_balance -= premium
-    escrow.save(update_fields=['insurance_premium_deducted', 'remaining_balance'])
-    insurer = InsuranceProfile.objects.first()
-    EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=insurer.user if insurer else loan.bank.user)
-    policy = InsurancePolicy.objects.create(loan=loan, insurer=insurer, coverage_amount=loan.approved_amount, premium_amount=premium, status='active',
-      policy_start=timezone.now().date(), policy_end=timezone.now().date() + timedelta(days=180))
+    with transaction.atomic():
+      if InsurancePolicy.objects.filter(loan=loan).exists():
+        raise ValueError(f"Loan {loan.id} already has an insurance policy. Cannot enroll twice.")
+      premium = (loan.approved_amount * PREMIUM_RATE).quantize(Decimal('0.01'))
+      escrow_locked = type(escrow).objects.select_for_update().get(id=escrow.id)
+      escrow_locked.insurance_premium_deducted = premium
+      escrow_locked.remaining_balance -= premium
+      escrow_locked.save(update_fields=['insurance_premium_deducted', 'remaining_balance'])
+      insurer = InsuranceProfile.objects.first()
+      EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=insurer.user if insurer else loan.bank.user)
+      policy = InsurancePolicy.objects.create(loan=loan, insurer=insurer, coverage_amount=loan.approved_amount, premium_amount=premium, status='active',
+        policy_start=timezone.now().date(), policy_end=timezone.now().date() + timedelta(days=180))
 
-    print(f"[MOCK INSURANCE API] Policy {policy.id} created. Coverage: PKR {loan.approved_amount}. Premium: PKR {premium}.")
-    return policy
+      print(f"[MOCK INSURANCE API] Policy {policy.id} created. Coverage: PKR {loan.approved_amount}. Premium: PKR {premium}.")
+      return policy
 
 class InsuranceClaimService:
   @staticmethod
@@ -58,8 +62,8 @@ class InsuranceClaimService:
         claim.policy.status = 'claimed'
         claim.policy.save(update_fields=['status'])
       else:
-        still_has_pending = claim.policy.claims.filter(status='pending').exclude(id=claim.id).exists()
-        if not still_has_pending:
+        has_other_active_claims = claim.policy.claims.filter(status__in=['pending', 'approved']).exclude(id=claim.id).exists()
+        if not has_other_active_claims:
           claim.policy.status = 'active'
           claim.policy.save(update_fields=['status'])
       claim.save()

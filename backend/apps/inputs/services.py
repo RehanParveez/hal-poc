@@ -12,6 +12,8 @@ from apps.wallets.services import WalletService
 logger = logging.getLogger(__name__)
 
 def process_input_request(escrow_id, shopkeeper_profile, input_category, amount, description=''):
+  if amount <= 0:
+    raise ValueError(f"the input payment amount must be > than zero. got: {amount}")
   with transaction.atomic():
     escrow = EscrowWallet.objects.select_for_update().get(id=escrow_id)
     loan = escrow.loan
@@ -21,7 +23,11 @@ def process_input_request(escrow_id, shopkeeper_profile, input_category, amount,
     allowed = active_unlock.milestone.allowed_input_categories
     if input_category not in allowed:
       raise WrongPhaseForCategoryError(requested_category=input_category, current_phase_name=active_unlock.milestone.phase_name, allowed_categories=allowed)
-  
+    cumulative_unlocked = escrow.unlocks.aggregate(total=Sum('unlocked_amount'))['total'] or Decimal('0')
+    phase_available = cumulative_unlocked - escrow.total_spent_on_inputs
+    if amount > phase_available:
+      raise NotEnoughEscrowError(requested=amount, available=max(phase_available, Decimal('0')))
+    
     try:
       cap_obj = CropInputCap.objects.get(crop=loan.crop, district=escrow.project_district, input_category=input_category, valid_season=loan.crop.season)
     except CropInputCap.DoesNotExist:
@@ -37,12 +43,11 @@ def process_input_request(escrow_id, shopkeeper_profile, input_category, amount,
     escrow.remaining_balance -= amount
     escrow.save(update_fields=['total_spent_on_inputs', 'remaining_balance'])
     EscrowTransaction.objects.create(escrow=escrow, txn_type='input', amount=amount, recipient=shopkeeper_profile.user, input_category=input_category, 
-      afo_cap_snapshot=max_allowed)
+      afo_cap_snapshot=cap_obj.max_cost_per_acre)
     supply_request = InputSupplyRequest.objects.create(escrow=escrow, shopkeeper=shopkeeper_profile, input_category=input_category, item_description=description, 
       requested_amount=amount, afo_cap_at_time=max_allowed, status='paid')
-    shopkeeper_wallet = Wallet.objects.get(user=shopkeeper_profile.user)
+    shopkeeper_wallet, _ = WalletService.create_wallet_for_user(shopkeeper_profile.user, 'shopkeeper')
     WalletService.credit_wallet(wallet=shopkeeper_wallet, amount=amount, txn_type='input', reference_id=supply_request.id, 
       note=f"input payment: {input_category} from farmer {loan.farmer.user.full_name}")
     logger.info(f"[AFO GATE PASSED] Escrow {escrow_id} | Category: {input_category} | Amount: PKR {amount} | Cap: {max_allowed} | Already spent: {already_spent}")
-    print(f"[SHOPKEEPER PAYMENT APPROVED] PKR {amount} logged for {shopkeeper_profile.user.full_name}. (Wallet integration pending).")
   return supply_request

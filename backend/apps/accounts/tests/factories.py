@@ -1,5 +1,5 @@
 import factory
-from apps.accounts.models import User, FarmerProfile, BankProfile, FactoryProfile, LandownerProfile
+from apps.accounts.models import User, FarmerProfile, BankProfile, FactoryProfile, LandownerProfile, ShopkeeperProfile
 
 class UserFactory(factory.django.DjangoModelFactory):
   class Meta:
@@ -41,3 +41,10 @@ class LandownerProfileFactory(factory.django.DjangoModelFactory):
     model = LandownerProfile
     django_get_or_create = ('user',)
   user = factory.SubFactory(UserFactory, role = 'landowner')
+  
+class ShopkeeperProfileFactory(factory.django.DjangoModelFactory):
+  class Meta:
+    model = ShopkeeperProfile
+    django_get_or_create = ('user',)
+  user = factory.SubFactory(UserFactory, role = 'shopkeeper')
+  shop_name = 'Zeen Agri Store'
