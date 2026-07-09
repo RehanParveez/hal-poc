@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <form @submit.prevent="handleSubmit" class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4">
-      <h1 class="text-2xl font-bold text-center">FasalPay Login</h1>
+      <h1 class="text-2xl font-bold text-center">Hal Login</h1>
 
       <div>
         <label class="block text-sm font-medium mb-1">Phone</label>
