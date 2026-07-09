@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import * as inputsApi from '@/api/inputs.js' 
 import { useNotificationsStore } from './notifications.js'
+import { useEscrowStore } from './escrow.js'
 
 export const useInputsStore = defineStore('inputs', {
   state: () => ({
@@ -19,7 +20,13 @@ export const useInputsStore = defineStore('inputs', {
           item_description: payload.item_description || '',
         })
         notify.showSuccess(res.data.message)
+        const escrowStore = useEscrowStore()
+        await escrowStore.fetchWallet(payload.escrow_id)
         return res.data
+      } catch (err) {
+        notify.showError(err.response?.data?.message ?? 'Payment failed.')
+        throw err
+        
       } finally {
         this.isSubmitting = false
       }

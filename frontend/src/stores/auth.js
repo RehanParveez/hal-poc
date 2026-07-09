@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', {
     refreshToken: null,
     isLoading: false,
     loginError: null,
+    registerError: null,
   }),
   getters: {
     isLoggedIn: (state) => !!state.accessToken,
@@ -45,6 +46,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register(payload) {
       this.isLoading = true
+      this.registerError = null
       try {
         const res = await authApi.register(payload)
         this.accessToken = res.data.access
@@ -53,6 +55,10 @@ export const useAuthStore = defineStore('auth', {
         sessionStorage.setItem('accessToken', this.accessToken)
         localStorage.setItem('refreshToken', this.refreshToken)
         return this.user
+      } catch (err) {
+        this.registerError = err.response?.data?.message || err.response?.data?.detail || 'Registration failed.'
+        throw err
+
       } finally {
         this.isLoading = false
       }
@@ -64,6 +70,10 @@ export const useAuthStore = defineStore('auth', {
       const res = await authApi.refreshToken(storedRefresh)
       this.accessToken = res.data.access
       sessionStorage.setItem('accessToken', this.accessToken)
+      if (res.data.refresh) {
+        this.refreshToken = res.data.refresh
+        localStorage.setItem('refreshToken', this.refreshToken)
+      }
       return this.accessToken
     },
 
@@ -88,9 +98,15 @@ export const useAuthStore = defineStore('auth', {
         const profileRes = await authApi.fetchProfile()
         this.user = profileRes.data
       } catch {
+        try {
+          await this.refreshAccessToken()
+          const profileRes = await authApi.fetchProfile()
+          this.user = profileRes.data
+        } catch {
         this.logout()
       }
-    },
+    }
+  },
 
     logout() {
       this.user = null

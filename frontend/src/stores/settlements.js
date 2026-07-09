@@ -7,6 +7,7 @@ export const useSettlementsStore = defineStore('settlements', {
     invoices: [],
     currentInvoice: null,
     isLoading: false,
+    isSettling: false,
   }),
   actions: {
     async fetchInvoices(params) {
@@ -19,14 +20,33 @@ export const useSettlementsStore = defineStore('settlements', {
       }
     },
     async fetchInvoice(id) {
-      const res = await settlementsApi.getInvoice(id)
-      this.currentInvoice = res.data
+      this.isLoading = true
+      try {
+        const res = await settlementsApi.getInvoice(id)
+        this.currentInvoice = res.data
+        this.currentInvoice = res.data
+      } finally {
+        this.isLoading = false
+      }
     },
+  
     async factorySettle(id) {
       const notify = useNotificationsStore()
-      const res = await settlementsApi.factorySettle(id)
-      notify.showSuccess(res.data.message)
-      await this.fetchInvoices()
+      this.isSettling = true
+      try {
+        const res = await settlementsApi.factorySettle(id)
+        notify.showSuccess(res.data.message)
+        if (this.currentInvoice?.id === id) {
+          this.currentInvoice = res.data.invoice
+        }
+        await this.fetchInvoices()
+        return res.data
+      } catch (err) {
+        notify.showError(err.response?.data?.error ?? 'Settlement failed.')
+        throw err
+      } finally {
+        this.isSettling = false
+      }
     }
   },
 })
