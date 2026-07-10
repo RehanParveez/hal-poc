@@ -1,7 +1,11 @@
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-    <div class="flex items-start justify-between mb-4">
+    <div v-if="escrow.isLoading" class="text-sm text-gray-400 text-center py-6">Loading escrow balance…</div>
+    <div v-else-if="escrow.error" class="text-sm text-red-600 text-center py-6">{{ escrow.error }}</div>
+    <template v-else>
+     <div class="flex items-start justify-between mb-4">
       <div>
+      
         <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Escrow Balance</p>
         <p class="text-3xl font-bold text-gray-800 mt-1">₨ {{ formatPKR(escrow.remainingBalance) }}</p>
         <p class="text-xs text-gray-500 mt-1">of ₨ {{ formatPKR(escrow.totalFunded) }} total</p>
@@ -26,10 +30,11 @@
           Phase {{ escrow.activePhase.phase_number }}: {{ escrow.activePhase.phase_name }}
         </span>
         <p class="text-xs text-green-700 opacity-75">
-          Allowed: {{ escrow.activePhase.allowed_categories?.join(', ') }}
+          Allowed: {{ escrow.activePhase.allowed_input_categories?.join(', ') }}
         </p>
       </div>
     </div>
+    </template>
   </div>
 </template>
 

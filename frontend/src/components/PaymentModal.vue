@@ -17,13 +17,15 @@
       
       <label class="block text-xs font-medium text-gray-600 mb-1">Amount (PKR)</label>
       <input v-model.number="form.amount" type="number" placeholder="Amount (PKR)" class="w-full border p-2 mb-2" />
+      <p v-if="amountExceedsCap" class="text-xs text-red-600 mb-2">Amount exceeds the remaining AFO cap for this category.</p>
 
       <AFOLimitDisplay
         :category="form.input_category"
         :afoState="{ cap: currentCap?.total_cap || 0, alreadySpent: currentCap?.already_spent || 0, remaining: currentCap?.remaining || 0 }"
+        :isLoading="escrow.isLoading"
       />
 
-      <button @click="submit" :disabled="inputs.isSubmitting || !form.input_category" class="bg-green-600 text-white w-full py-2 rounded">
+      <button @click="submit" :disabled="inputs.isSubmitting || !isFormValid" class="bg-green-600 text-white w-full py-2 rounded">
         {{ inputs.isSubmitting ? 'Processing...' : 'Pay Now' }}
       </button>
       <button @click="$emit('close')" class="mt-2 w-full text-gray-500">Cancel</button>
@@ -36,12 +38,14 @@ import AFOLimitDisplay from '@/components/farmer/AFOLimitDisplay.vue'
 import { reactive, computed, ref, onMounted } from 'vue'
 import { useInputsStore } from '@/stores/inputs.js'
 import { useEscrowStore } from '@/stores/escrow.js'
+import { useNotificationsStore } from '@/stores/notifications.js'
 import { listShopkeepers } from '@/api/accounts.js'
 
 const props = defineProps(['escrowId'])
 const emit = defineEmits(['close', 'success'])
 const inputs = useInputsStore()
 const escrow = useEscrowStore()
+const notify = useNotificationsStore()
 const shopkeepersList = ref([])
 
 const form = reactive({ input_category: '', amount: 0, shopkeeper_id: '' })
@@ -50,16 +54,28 @@ const currentCap = computed(() =>
   escrow.caps.find((c) => c.category === form.input_category)
 )
 
+const amountExceedsCap = computed(() => {
+  if (!currentCap.value || !form.amount) return false
+  return Number(form.amount) > Number(currentCap.value.remaining)
+})
+
+const isFormValid = computed(() => {
+  if (!form.input_category || !form.shopkeeper_id) return false
+  if (!form.amount || Number(form.amount) <= 0) return false
+  if (amountExceedsCap.value) return false
+  return true
+})
+
 onMounted(async () => {
   try {
     const res = await listShopkeepers()
     shopkeepersList.value = res.data
   } catch (error) {
     console.error("Failed to fetch shopkeepers:", error)
+    notify.showError('Failed to load shopkeeper list. Please try again.')
   }
-  if (escrow.caps.length === 0) {
+  
     await escrow.fetchCaps(props.escrowId)
-  }
 })
 
 const submit = async () => {
@@ -70,6 +86,9 @@ const submit = async () => {
     input_category: form.input_category,
     amount: form.amount,
   })
+  form.input_category = ''
+  form.amount = 0
+  form.shopkeeper_id = ''
   emit('success')
 }
 </script>

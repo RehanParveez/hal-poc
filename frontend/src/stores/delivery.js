@@ -6,6 +6,7 @@ export const useDeliveryStore = defineStore('delivery', {
   state: () => ({
     batches: [],
     isLoading: false,
+    isMutating: false,
   }),
   actions: {
     async fetchBatches(params) {
@@ -19,19 +20,39 @@ export const useDeliveryStore = defineStore('delivery', {
     },
     async markReceived(batchId) {
       const notify = useNotificationsStore()
-      const res = await deliveryApi.markReceived(batchId)
-      notify.showSuccess(res.data.message)
-      await this.fetchBatches()
+      this.isMutating = true
+      try {
+        const res = await deliveryApi.markReceived(batchId)
+        notify.showSuccess(res.data.message)
+        await this.fetchBatches()
+        return res.data
+      } catch (error) {
+        notify.showError(error.response?.data?.error ?? 'Failed to mark batch received.')
+        throw error
+      } finally {
+        this.isMutating = false
+      }
     },
 
     async createBatch(allocationId, batchKg) {
       const notify = useNotificationsStore()
-      await deliveryApi.createBatch({ allocation: allocationId, batch_kg: batchKg })
-      notify.showSuccess('Delivery batch is logged.')
+      this.isMutating = true
+      try {
+        const res = await deliveryApi.createBatch({ allocation: allocationId, batch_kg: batchKg })
+        notify.showSuccess('Delivery batch is logged.')
+        await this.fetchBatches()
+        return res.data
+      } catch (error) {
+        notify.showError(error.response?.data?.error ?? 'Failed to log delivery batch.')
+        throw error
+      } finally {
+        this.isMutating = false
+      }
     },
 
     async confirmGrade(batchId, gradeReceived, gradeDeductionPct, gradeNotes) {
       const notify = useNotificationsStore()
+      this.isMutating = true
       try {
        const res = await deliveryApi.confirmGrade(batchId, {
          grade_received: gradeReceived,
@@ -40,10 +61,14 @@ export const useDeliveryStore = defineStore('delivery', {
         })
        notify.showSuccess(res.data.message)
        await this.fetchBatches()
+       return res.data
     } catch (error) {
     console.error("Backend Error Details:", error.response?.data || error.message)
     notify.showError("Failed to confirm grade: " + (error.response?.data?.error || "Server error"))
-  }
-},
-}, 
+    throw error
+    } finally {
+      this.isMutating = false
+    }
+   },
+  },
 })
