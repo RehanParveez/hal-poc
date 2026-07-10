@@ -25,13 +25,15 @@
       </template>
 
       <label class="block text-xs font-medium text-gray-600 mb-1">Acres Applied For</label>
-      <input v-model.number="form.acres_applied_for" type="number" placeholder="e.g. 5" class="w-full border rounded px-2 py-1 text-sm" />
+      <input v-model.number="form.acres_applied_for" type="number" min="0" step="0.01" placeholder="e.g. 5" class="w-full border rounded px-2 py-1 text-sm" />
 
       <label class="block text-xs font-medium text-gray-600 mb-1">Requested Amount (PKR)</label>
-      <input v-model.number="form.requested_amount" type="number" placeholder="e.g. 50000" class="w-full border rounded px-2 py-1 text-sm" />
+      <input v-model.number="form.requested_amount" type="number" min="0" step="0.01" placeholder="e.g. 50000" class="w-full border rounded px-2 py-1 text-sm" />
 
       <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
-      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Application</button>
+      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Application
+        {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+      </button>
     </div>
   </div>
 </template>
@@ -50,30 +52,64 @@ const land = useLandStore()
 const auth = useAuthStore()
 const errorMessage = ref('')
 const banksList = ref([])
+const isSubmitting = ref(false)
 const form = reactive({ bank: '', crop: '', tenant_agreement: '', acres_applied_for: 0, requested_amount: 0 })
 
 const activeAgreements = computed(() => land.agreements.filter((a) => a.status === 'active'))
 
+const isFormValid = computed(() =>
+  !!form.bank && !!form.crop && Number(form.acres_applied_for) > 0 && Number(form.requested_amount) > 0
+)
+
 onMounted(async () => {
-  const res = await listBanks()
-  banksList.value = res.data
-  if (crops.cropTypes.length === 0) {
-    await crops.fetchCropTypes()
+  try {
+    const res = await listBanks()
+    banksList.value = res.data
+  } catch (err) {
+    console.error('Failed to load banks:', err)
   }
-  if (auth.user?.role === 'tenant') {
-    await land.fetchAgreements()
+  try {
+    if (crops.cropTypes.length === 0) {
+      await crops.fetchCropTypes()
+  }
+  } catch (err) {
+    console.error('Failed to load crop types:', err)
+  }
+  try {
+    if (auth.user?.role === 'tenant') {
+     await land.fetchAgreements()
+  }
+  } catch (err) {
+    console.error('Failed to load tenant agreements:', err)
   }
 })
 
 async function submit() {
+  if (!isFormValid.value) return
   errorMessage.value = ''
+  isSubmitting.value = true
   try {
     const payload = { ...form }
     if (!payload.tenant_agreement) delete payload.tenant_agreement
     await loans.applyForLoan(payload)
   } catch (err) {
     const data = err.response?.data
-    errorMessage.value = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : (data?.message || 'Failed to submit loan application.')
+
+    if (Array.isArray(data?.non_field_errors)) {
+      errorMessage.value = data.non_field_errors[0]
+    } else if (data?.message) {
+      errorMessage.value = data.message
+    } else if (data?.detail) {
+      errorMessage.value = data.detail
+    } else if (data && typeof data === 'object') {
+      // Safely flattens the dictionary of field arrays and grabs the first error message string
+      const firstError = Object.values(data).flat()[0]
+      errorMessage.value = firstError || 'Failed to submit loan application.'
+    } else {
+      errorMessage.value = 'Failed to submit loan application.'
+    }
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>

@@ -30,10 +30,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useEscrowStore } from '@/stores/escrow.js'
 
 const escrow = useEscrowStore()
-const milestones = escrow.milestones
+const milestones = computed(() => escrow.milestones)
 
 function milestoneState(m) {
   if (m.is_active) return 'active'

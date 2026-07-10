@@ -17,6 +17,7 @@
 
       <label class="block text-xs font-medium text-gray-600 mb-1">Leased Acres</label>
       <input v-model.number="form.leased_acres" type="number" placeholder="e.g. 5" class="w-full border rounded px-2 py-1 text-sm" />
+      <p v-if="acreageExceedsAvailable" class="text-xs text-red-600">Leased acres exceeds this parcel's available acres.</p>
 
       <label class="block text-xs font-medium text-gray-600 mb-1">Season</label>
       <select v-model="form.season" class="w-full border rounded px-2 py-1 text-sm">
@@ -27,45 +28,86 @@
 
       <template v-if="form.agreement_type === 'theka'">
         <label class="block text-xs font-medium text-gray-600 mb-1">Theka Amount (PKR)</label>
-        <input v-model.number="form.theka_amount" type="number" placeholder="e.g. 80000" class="w-full border rounded px-2 py-1 text-sm" />
+        <input v-model.number="form.theka_amount" type="number" min="0" step="0.01" placeholder="e.g. 80000" class="w-full border rounded px-2 py-1 text-sm" />
       </template>
+
       <template v-if="form.agreement_type === 'batai'">
         <label class="block text-xs font-medium text-gray-600 mb-1">Farmer Share (%)</label>
-        <input v-model.number="form.farmer_share_pct" type="number" placeholder="e.g. 60" class="w-full border rounded px-2 py-1 text-sm" />
+        <input v-model.number="form.farmer_share_pct" type="number" min="0" max="100" step="0.01" placeholder="e.g. 60" class="w-full border rounded px-2 py-1 text-sm" />
         <label class="block text-xs font-medium text-gray-600 mb-1">Landowner Share (%)</label>
-        <input v-model.number="form.landowner_share_pct" type="number" placeholder="e.g. 40" class="w-full border rounded px-2 py-1 text-sm" />
+        <input v-model.number="form.landowner_share_pct" type="number" min="0" max="100" step="0.01" placeholder="e.g. 40" class="w-full border rounded px-2 py-1 text-sm" />
+        <p v-if="!bataiSharesValid" class="text-xs text-red-600">Farmer and landowner shares must add up to 100%.</p>
       </template>
 
       <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
-      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Request</button>
+      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Request
+        {{ isSubmitting ? 'Submitting...' : 'Submit Request' }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed, watch } from 'vue'
 import { useLandStore } from '@/stores/land.js'
 import { useAuthStore } from '@/stores/auth.js'
 
 const land = useLandStore()
 const auth = useAuthStore()
 const errorMessage = ref('')
-const form = reactive({ parcel: '', agreement_type: '', leased_acres: 0, season: '', theka_amount: 0, farmer_share_pct: 0, landowner_share_pct: 0 })
+const isSubmitting = ref(false)
+
+function initialForm() {
+  return { parcel: '', agreement_type: '', leased_acres: 0, season: '', theka_amount: 0, farmer_share_pct: 0, landowner_share_pct: 0 }
+}
+
+const form = reactive(initialForm())
+watch(() => land.parcels, (newParcels) => {
+  if (newParcels && newParcels.length > 0 && !form.parcel) {
+    form.parcel = newParcels[0].id
+  }
+}, { immediate: true })
 
 onMounted(() => {
   land.fetchParcels()
 })
 
+const selectedParcel = computed(() => land.parcels.find((p) => p.id === form.parcel))
+
+const acreageExceedsAvailable = computed(() => {
+  if (!selectedParcel.value || !form.leased_acres) return false
+  return Number(form.leased_acres) > Number(selectedParcel.value.available_acres)
+})
+
+const bataiSharesValid = computed(() => {
+  const sum = Number(form.farmer_share_pct) + Number(form.landowner_share_pct)
+  return Math.abs(sum - 100) <= 0.01
+})
+
+const isFormValid = computed(() => {
+  if (!form.parcel || !form.agreement_type || !form.season) return false
+  if (!form.leased_acres || Number(form.leased_acres) <= 0) return false
+  if (acreageExceedsAvailable.value) return false
+  if (form.agreement_type === 'theka' && (!form.theka_amount || Number(form.theka_amount) <= 0)) return false
+  if (form.agreement_type === 'batai' && !bataiSharesValid.value) return false
+  return true
+})
+
 async function submit() {
+  if (!isFormValid.value) return
   errorMessage.value = ''
+  isSubmitting.value = true
   try {
     const payload = { ...form, tenant_phone: auth.user.phone }
     if (payload.agreement_type !== 'theka') delete payload.theka_amount
     if (payload.agreement_type !== 'batai') { delete payload.farmer_share_pct; delete payload.landowner_share_pct }
     await land.createAgreement(payload)
+    Object.assign(form, initialForm())
   } catch (err) {
     const data = err.response?.data
     errorMessage.value = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : (data?.message || 'Failed to submit request.')
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>

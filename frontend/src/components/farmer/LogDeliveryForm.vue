@@ -11,8 +11,8 @@
         </option>
       </select>
       <label class="block text-xs font-medium text-gray-600 mb-1">Batch Weight (kg)</label>
-      <input v-model.number="form.batchKg" type="number" placeholder="Batch weight (kg)" class="w-full border rounded px-2 py-1 text-sm" />
-      <button @click="submit" :disabled="isSubmitting" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">
+      <input v-model.number="form.batchKg" type="number" min="0" step="0.01" placeholder="Batch weight (kg)" class="w-full border rounded px-2 py-1 text-sm" />
+      <button @click="submit" :disabled="isSubmitting || !form.allocationId || !form.batchKg || form.batchKg <= 0" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">
         {{ isSubmitting ? 'Logging...' : 'Log Delivery' }}
       </button>
     </div>
@@ -34,12 +34,13 @@ onMounted(() => {
 })
 
 async function submit() {
-  if (!form.allocationId || !form.batchKg) return
+  if (!form.allocationId || !form.batchKg || !form.batchKg <= 0) return
   isSubmitting.value = true
   try {
     await delivery.createBatch(form.allocationId, form.batchKg)
     form.allocationId = ''
     form.batchKg = 0
+  } catch (err) {
   } finally {
     isSubmitting.value = false
   }
