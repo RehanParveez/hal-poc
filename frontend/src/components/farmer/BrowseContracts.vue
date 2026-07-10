@@ -45,7 +45,7 @@ function cropName(cropId) {
 
 async function handleAllocate(contractId) {
   const kg = kgForm[contractId]
-  if (!kg) {
+  if(!kg || kg <= 0) {
     notify.showError({ message: 'enter the committed kg amount first.' })
     return
   }

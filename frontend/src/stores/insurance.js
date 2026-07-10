@@ -39,7 +39,7 @@ export const useInsuranceStore = defineStore('insurance', {
       } catch (err) {
         this.error = err.response?.data?.error ?? 'Failed to load insurance claims.'
         throw err
-        } finally {
+      } finally {
         this.isLoading = false
       }
     },
@@ -54,7 +54,6 @@ export const useInsuranceStore = defineStore('insurance', {
         await this.fetchClaims()
       } catch (err) {
         this.error = err.response?.data?.error ?? 'Failed to file claim.'
-        notify.showError(this.error)
         throw err
       } finally {
         this.isLoading = false

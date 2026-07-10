@@ -23,8 +23,8 @@
             class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-4" />
 
       <div class="flex gap-2">
-        <button @click="handleSubmit" :disabled="insurance.isLoading || !form.loan_id" 
-                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded text-sm transition-colors">
+        <button @click="handleSubmit" :disabled="insurance.isLoading || !form.policy_id || !form.reason" 
+            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded text-sm transition-colors">
           {{ insurance.isLoading ? 'Submitting...' : 'Submit Claim' }}
         </button>
         <button @click="$emit('close')" class="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors">
@@ -38,9 +38,11 @@
 <script setup>
 import { reactive } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
+import { useNotificationsStore } from '@/stores/notifications.js'
 
 const emit = defineEmits(['close', 'success'])
 const insurance = useInsuranceStore()
+const notify = useNotificationsStore()
 
 const form = reactive({
   loan_id: '',
@@ -50,8 +52,19 @@ const form = reactive({
 })
 
 const handleSubmit = async () => {
-  if (!form.loan_id || !form.reason) return
-  await insurance.submitClaim({ ...form })
-  emit('success')
+  if (!form.policy_id || !form.reason) {
+    notify.showError('Policy ID and reason are required.')
+    return
+  }
+  if (!form.claim_amount || form.claim_amount <= 0) {
+    notify.showError('Enter a claim amount greater than zero.')
+    return
+  }
+  try {
+    await insurance.submitClaim({ ...form })
+    emit('success')
+  } catch (error) {
+    notify.showError(error.response?.data?.message ?? 'Failed to submit claim. Please try again.')
+  }
 }
 </script>
