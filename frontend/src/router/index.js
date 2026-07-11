@@ -80,11 +80,11 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
   if (to.meta.public) {
-    if (to.name === 'login' && auth.isLoggedIn) {
+    if ((to.name === 'login' || to.name === 'register') && auth.isLoggedIn && auth.user) {
       return ROLE_HOME[auth.user?.role] || '/login'
     }
     return true
@@ -92,6 +92,17 @@ router.beforeEach((to) => {
 
   if (!auth.isLoggedIn) {
     return { name: 'login' }
+  }
+
+  if (!auth.user) {
+    try {
+      await auth.restoreSession()
+    } catch {
+      return { name: 'login' }
+    }
+    if (!auth.user) {
+      return { name: 'login' }
+    }
   }
 
   if (to.meta.roles && !to.meta.roles.includes(auth.user?.role)) {

@@ -43,27 +43,51 @@
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
+import { useNotificationsStore } from '@/stores/notifications.js'
 
 const props = defineProps({
   loan: { type: Object, required: true },
 })
-
 const loansStore = useLoansStore()
+const notify = useNotificationsStore()
 const approvedAmount = ref('')
 const interestRate = ref('')
 
 async function handleApprove() {
+  if (!approvedAmount.value || Number(approvedAmount.value) <= 0) {
+    notify.showError('Enter an approved amount greater than zero.')
+    return
+  }
+  if (!interestRate.value || Number(interestRate.value) <= 0 || Number(interestRate.value) > 50) {
+    notify.showError('Enter an interest rate between 0 and 50.')
+    return
+  }
+
+  try {
   await loansStore.approveLoan(props.loan.id, approvedAmount.value, interestRate.value)
+
+  } catch (error) {
+    notify.showError(error.response?.data?.error ?? 'Failed to approve loan.')
+  }
 }
 
 async function handleReject() {
   const reason = window.prompt('Rejection reason:')
   if (reason) {
+    try {
     await loansStore.rejectLoan(props.loan.id, reason)
+    } catch (error) {
+      notify.showError(error.response?.data?.error ?? 'Failed to reject loan.')
+    }
   }
 }
 
 async function handleDisburse() {
+  try {
   await loansStore.disburseLoan(props.loan.id)
+  } catch (error) {
+    notify.showError(error.response?.data?.error ?? 'Failed to disburse loan.')
+  }
 }
+
 </script>

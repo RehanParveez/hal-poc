@@ -49,7 +49,7 @@
         </div>
 
         <div v-if="a.status === 'pending'" class="mt-3 flex gap-2">
-          <button @click="land.approveAgreement(a.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
+          <button @click="handleApprove(a.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
           <button @click="handleReject(a.id)" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">Reject</button>
         </div>
       </div>
@@ -61,9 +61,11 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useLandStore } from '@/stores/land.js'
+import { useNotificationsStore } from '@/stores/notifications.js'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const land = useLandStore()
+const notify = useNotificationsStore()
 const availableParcels = computed(() => land.parcels)
 const showForm = ref(false)
 const form = reactive({ 
@@ -83,23 +85,49 @@ onMounted(async () => {
 })
 
 async function submit() {
-  await land.createAgreement(form)
-  showForm.value = false
-  form.tenant_phone = ''
-  form.parcel = ''
-  form.agreement_type = 'theka'
-  form.season = ''
-  form.leased_acres = 0
-  form.farmer_share_pct = 0
-  form.landowner_share_pct = 0
-  form.theka_amount = 0
-  await land.fetchAgreements()
+  if (!form.tenant_phone.trim() || !form.parcel || !form.season) {
+    notify.showError('Tenant phone, parcel, and season are all required.')
+    return
+  }
+  if (!form.leased_acres || form.leased_acres <= 0) {
+    notify.showError('Leased acres must be greater than zero.')
+    return
+  }
+  if (form.agreement_type === 'theka' && (!form.theka_amount || form.theka_amount <= 0)) {
+    notify.showError('Enter a theka amount greater than zero.')
+    return
+  }
+  try {
+    await land.createAgreement({ ...form })
+    showForm.value = false
+    form.tenant_phone = ''
+    form.parcel = ''
+    form.agreement_type = 'theka'
+    form.season = ''
+    form.leased_acres = 0
+    form.farmer_share_pct = 0
+    form.landowner_share_pct = 0
+    form.theka_amount = 0
+    await land.fetchAgreements()
+  } catch (error) {
+    notify.showError(error.response?.data?.error ?? 'Failed to create agreement.')
+  }
+}
+
+async function handleApprove(id) {
+  try {
+    await land.approveAgreement(id)
+  } catch (error) {
+    notify.showError(error.response?.data?.error ?? 'Failed to approve agreement.')
+  }
 }
 
 function handleReject(id) {
   const reason = window.prompt('Rejection reason:')
   if (reason) {
-    land.rejectAgreement(id, reason)
+    land.rejectAgreement(id, reason).catch((error) => {
+      notify.showError(error.response?.data?.error ?? 'Failed to reject agreement.')
+    })
   }
 }
 </script>

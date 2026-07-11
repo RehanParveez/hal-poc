@@ -24,7 +24,8 @@
         </div>
         <span v-if="p.arazi_verified" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full self-start">Verified</span>
       </div>
-      <p v-if="land.parcels.length === 0" class="text-gray-500">No parcels registered yet.</p>
+      <div v-if="land.isLoading" class="text-gray-500">Loading parcels...</div>
+      <div v-else-if="land.parcels.length === 0" class="text-gray-500">No parcels registered yet.</div>
     </div>
   </div>
 </template>
@@ -44,6 +45,14 @@ onMounted(() => {
 
 async function submit() {
   errorMessage.value = ''
+  if (!form.parcel_ref.trim() || !form.district.trim()) {
+    errorMessage.value = 'Parcel reference and district are required.'
+    return
+  }
+  if (!form.total_acres || form.total_acres <= 0) {
+    errorMessage.value = 'Total acres must be greater than zero.'
+    return
+  }
   try {
     await land.createParcel({ ...form })
     showForm.value = false
@@ -52,7 +61,7 @@ async function submit() {
     form.tehsil = ''
     form.total_acres = 0
   } catch (err) {
-    errorMessage.value = err.response?.data?.parcel_ref?.[0] || err.response?.data?.total_acres?.[0] || 'Failed to register parcel.'
+    errorMessage.value = Object.values(err.response?.data || {})[0]?.[0] || 'Failed to register parcel.'
   }
 }
 </script>

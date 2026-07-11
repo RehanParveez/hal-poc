@@ -47,6 +47,11 @@ onMounted(async () => {
 
 async function submit() {
   errorMessage.value = ''
+  if (!form.crop) { errorMessage.value = 'Select a crop first.'; return }
+  if (!form.required_kg || form.required_kg <= 0) { errorMessage.value = 'Required quantity must be greater than zero.'; return }
+  if (!form.base_price_per_kg || form.base_price_per_kg <= 0) { errorMessage.value = 'Base price per kg must be greater than zero.'; return }
+  if (!form.payment_defer_days || form.payment_defer_days < 1 || form.payment_defer_days > 30) { errorMessage.value = 'Payment defer days must be between 1 and 30.'; return }
+  if (!form.delivery_deadline) { errorMessage.value = 'Select a delivery deadline.'; return }
   try {
     await contracts.createContract({ ...form })
   } catch (err) {

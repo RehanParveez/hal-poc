@@ -9,7 +9,8 @@
         </div>
         <StatusBadge :status="inv.status" class="self-start" />
       </div>
-      <p v-if="settlements.invoices.length === 0" class="text-gray-500">No settlements yet.</p>
+      <p v-if="settlements.isLoading" class="text-gray-500">Loading settlements...</p>
+      <p v-else-if="settlements.invoices.length === 0" class="text-gray-500">No settlements yet.</p>
     </div>
   </div>
 </template>
