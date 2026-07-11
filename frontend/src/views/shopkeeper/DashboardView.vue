@@ -4,7 +4,7 @@
 
     <div v-if="wallets.wallet" class="bg-white p-4 rounded shadow mb-6">
       <p class="text-sm text-gray-500">Current Balance</p>
-      <h1 class="text-3xl font-bold text-green-700">PKR {{ wallets.wallet.balance }}</h1>
+      <h1 class="text-3xl font-bold text-green-700">PKR {{ formatPKR(wallets.wallet.balance) }}</h1>
     </div>
 
     <h3 class="font-semibold mb-2">Recent Transactions</h3>
@@ -15,22 +15,36 @@
           <p class="text-gray-500">{{ new Date(txn.created_at).toLocaleString() }}</p>
         </div>
         <p :class="txn.direction === 'credit' ? 'text-green-700' : 'text-red-600'" class="font-semibold">
-          {{ txn.direction === 'credit' ? '+' : '-' }} PKR {{ txn.amount }}
+          {{ txn.direction === 'credit' ? '+' : '-' }} PKR {{ formatPKR(txn.amount) }}
         </p>
       </div>
-      <p v-if="wallets.transactions.length === 0" class="text-gray-500">No transactions yet.</p>
+      <div v-if="isInitialLoading" class="text-gray-500">Loading transactions...</div>
+      <p v-else-if="wallets.transactions.length === 0" class="text-gray-500">No transactions yet.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useWalletsStore } from '@/stores/wallets.js'
 
 const wallets = useWalletsStore()
+const isInitialLoading = ref(true)
+
+const formatPKR = (val) => new Intl.NumberFormat('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(val) || 0)
 
 onMounted(async () => {
-  await wallets.fetchMyBalance()
-  await wallets.fetchTransactions()
+  try {
+    await wallets.fetchMyBalance()
+  } catch (err) {
+    console.error('Failed to load wallet balance:', err)
+  }
+  try {
+    await wallets.fetchTransactions()
+  } catch (err) {
+    console.error('Failed to load transactions:', err)
+  }
+  isInitialLoading.value = false
 })
+
 </script>

@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">Insurance Claims</h1>
 
     <div id="claims-section">
-      <div v-if="insurance.isLoading" class="text-gray-500">Loading...</div>
+      <div v-if="isInitialLoading" class="text-gray-500">Loading...</div>
       <div v-else class="space-y-3">
         <div v-for="claim in insurance.claims" :key="claim.id" class="bg-white p-4 rounded shadow">
           <div class="flex justify-between items-start">
@@ -15,58 +15,82 @@
           </div>
 
           <div v-if="claim.status === 'pending'" class="mt-3 border-t pt-3 space-y-2">
-            <input v-model.number="reviewForm[claim.id].approved_amount" type="number" placeholder="Approved Amount (if approving)" class="border rounded px-2 py-1 text-sm w-full" />
+            <input v-model.number="reviewForm[claim.id].approved_amount" type="number" min="0" step="0.01" placeholder="Approved Amount (if approving)" class="border rounded px-2 py-1 text-sm w-full" />
             <input v-model="reviewForm[claim.id].reviewer_note" type="text" placeholder="Reviewer note (optional)" class="border rounded px-2 py-1 text-sm w-full" />
             <div class="flex gap-2">
-              <button @click="handleReview(claim.id, 'approved')" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
-              <button @click="handleReview(claim.id, 'rejected')" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">Reject</button>
+              <button @click="handleReview(claim.id, 'approved')" :disabled="reviewForm[claim.id].isSubmitting || !reviewForm[claim.id].approved_amount" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
+                {{ reviewForm[claim.id].isSubmitting ? 'Submitting...' : 'Approve' }}
+              </button>
+              <button @click="handleReview(claim.id, 'rejected')" :disabled="reviewForm[claim.id].isSubmitting" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">
+                {{ reviewForm[claim.id].isSubmitting ? 'Submitting...' : 'Reject' }}
+              </button>
             </div>
+            <p v-if="reviewForm[claim.id].error" class="text-red-600 text-sm mt-1">{{ reviewForm[claim.id].error }}</p>
+          </div>
           </div>
         </div>
-        <p v-if="insurance.claims.length === 0" class="text-gray-500">No claims yet.</p>
+        <p v-if="!isInitialLoading && insurance.claims.length === 0" class="text-gray-500">No claims yet.</p>
       </div>
-    </div>
 
     <div id="policies-section">
       <h2 class="text-2xl font-bold mt-8 mb-4">All Policies</h2>
+      <div v-if="isInitialLoading" class="text-gray-500">Loading...</div>
       <div class="space-y-2">
         <div v-for="p in insurance.policies" :key="p.id" class="bg-white p-3 rounded shadow flex justify-between text-sm">
           <span>{{ p.farmer_name }} — Coverage PKR {{ p.coverage_amount }}</span>
           <StatusBadge :status="p.status" />
         </div>
-        <p v-if="insurance.policies.length === 0" class="text-gray-500">No policies yet.</p>
+        <p v-if="!isInitialLoading && insurance.policies.length === 0" class="text-gray-500">No policies yet.</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 
 const insurance = useInsuranceStore()
 const reviewForm = reactive({})
+const isInitialLoading = ref(true)
 
 watch(
   () => insurance.claims,
   (claims) => {
     claims.forEach((c) => {
       if (!reviewForm[c.id]) {
-        reviewForm[c.id] = { approved_amount: 0, reviewer_note: '' }
+        reviewForm[c.id] = { approved_amount: 0, reviewer_note: '', isSubmitting: false, error: '' }
       }
     })
   },
   { immediate: true }
 )
 
-onMounted(() => {
-  insurance.fetchClaims()
-  insurance.fetchPolicies()
+onMounted(async () => {
+  try {
+    await Promise.all([
+      insurance.fetchClaims(),
+      insurance.fetchPolicies()
+    ])
+  } catch (err) {
+    console.error('Failed to load insurance dashboard data:', err)
+  } finally {
+    isInitialLoading.value = false
+  }
 })
 
 async function handleReview(claimId, decision) {
   const form = reviewForm[claimId]
-  await insurance.reviewClaim(claimId, decision, form.approved_amount, form.reviewer_note)
+  if (decision === 'approved' && !form.approved_amount) return
+  form.isSubmitting = true
+  form.error = ''
+  try {
+    await insurance.reviewClaim(claimId, decision, form.approved_amount, form.reviewer_note)
+  } catch (err) {
+    form.error = err.response?.data?.error ?? 'Failed to review claim.'
+  } finally {
+    form.isSubmitting = false
+  }
 }
 </script>
