@@ -1,6 +1,8 @@
 <template>
   <div class="p-6">
     <h2 class="text-xl font-bold mb-4">My Escrow Account</h2>
+    <div v-if="isInitialLoading" class="text-gray-500">Loading your escrow account...</div>
+    <template v-else>
     <EscrowBalanceCard v-if="escrow.wallet" />
     <div v-if="escrow.wallet" class="mt-4">
       <button @click="showModal = true" class="bg-blue-600 text-white px-4 py-2 rounded">Pay Shopkeeper</button>
@@ -9,6 +11,8 @@
       <MilestoneProgressBar />
     </div>
     <p v-else-if="!loans.activeLoan" class="text-gray-500">No disbursed loan found yet.</p>
+    <p v-else class="text-red-600">Could not load your escrow account. Please refresh the page.</p>
+    </template>
     <PaymentModal v-if="showModal" @close="showModal = false" @success="handleSuccess" :escrowId="loans.activeLoan?.escrow_id" />
   </div>
 </template>
@@ -26,6 +30,7 @@ const escrow = useEscrowStore()
 const loans = useLoansStore()
 const auth = useAuthStore()
 const showModal = ref(false)
+const isInitialLoading = ref(true)
 
 onMounted(async () => {
   if (auth.isLoggedIn) {
@@ -39,6 +44,7 @@ onMounted(async () => {
       console.error('failed to fetch dashboard data', error)
     }
   }
+  isInitialLoading.value = false
 })
 
 const handleSuccess = () => {

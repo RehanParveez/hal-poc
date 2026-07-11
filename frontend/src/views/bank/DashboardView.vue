@@ -1,6 +1,11 @@
 <template>
   <div class="p-8">
-    <select v-model="loansStore.statusFilter" @change="loansStore.fetchLoans" class="border rounded px-2 py-1 text-sm mb-4">
+    <div class="flex justify-end">
+      <button @click="handleLogout" class="text-sm text-gray-500 hover:text-red-600 mb-4">
+        Logout
+      </button>
+    </div>
+    <select v-model="loansStore.statusFilter" @change="handleStatusChange" class="border rounded px-2 py-1 text-sm mb-4">
       <option value="">All statuses</option>
       <option value="submitted">Submitted</option>
       <option value="bank_approved">Bank Approved</option>
@@ -30,6 +35,10 @@ import SettlementsOverview from '@/components/bank/SettlementsOverview.vue'
 const auth = useAuthStore()
 const router = useRouter()
 const loansStore = useLoansStore()
+
+function handleStatusChange() {
+  loansStore.fetchLoans({ status: loansStore.statusFilter || undefined })
+}
 
 function handleLogout() {
   auth.logout()
