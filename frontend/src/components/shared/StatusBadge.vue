@@ -20,6 +20,7 @@ const STATUS_COLORS = {
   grade_confirmed: 'bg-green-100 text-green-700',
   payment_triggered: 'bg-green-100 text-green-700',
   factsettl: 'bg-green-100 text-green-700',
+  completed: 'bg-green-100 text-green-700',
   complete: 'bg-green-100 text-green-700',
   paid: 'bg-green-100 text-green-700',
   pending: 'bg-amber-100 text-amber-700',

@@ -99,8 +99,10 @@
 <script setup>
 import { onMounted, reactive } from 'vue'
 import { useCropsStore } from '@/stores/crops.js'
+import { useNotificationsStore } from '@/stores/notifications.js'
 
 const crops = useCropsStore()
+const notify = useNotificationsStore()
 
 const cropForm = reactive({ name: '', code: '', season: '' })
 const capForm = reactive({ crop: '', district: '', input_category: '', valid_season: '', max_cost_per_acre: 0 })
@@ -113,17 +115,55 @@ onMounted(async () => {
 })
 
 async function submitCrop() {
-  await crops.createCropType({ ...cropForm })
-  cropForm.name = ''
-  cropForm.code = ''
-  cropForm.season = ''
+  if (!cropForm.name.trim() || !cropForm.code.trim() || !cropForm.season) {
+    notify.showError('Crop name, code, and season are all required.')
+    return
+  }
+  try {
+    await crops.createCropType({ ...cropForm })
+    cropForm.name = ''
+    cropForm.code = ''
+    cropForm.season = ''
+  } catch (error) {
+    notify.showError(Object.values(error.response?.data || {})[0]?.[0] || 'Failed to add crop type.')
+  }
 }
 
 async function submitCap() {
-  await crops.setInputCap({ ...capForm })
+  if (!capForm.crop || !capForm.district.trim() || !capForm.input_category || !capForm.valid_season) {
+    notify.showError('All cap fields are required.')
+    return
+  }
+  if (!capForm.max_cost_per_acre || capForm.max_cost_per_acre <= 0) {
+    notify.showError('Max cost per acre must be greater than zero.')
+    return
+  }
+  try {
+    await crops.setInputCap({ ...capForm })
+    capForm.district = ''
+    capForm.max_cost_per_acre = 0
+  } catch (error) {
+    notify.showError(Object.values(error.response?.data || {})[0]?.[0] || 'Failed to save cap.')
+  }
 }
 
 async function submitMilestone() {
-  await crops.setMilestone({ ...milestoneForm })
+  if (!milestoneForm.crop || !milestoneForm.phase_name.trim()) {
+    notify.showError('Crop and phase name are required.')
+    return
+  }
+  if (!milestoneForm.unlock_pct || milestoneForm.unlock_pct <= 0 || milestoneForm.unlock_pct > 100) {
+    notify.showError('Unlock percentage must be between 0 and 100.')
+    return
+  }
+  try {
+    await crops.setMilestone({ ...milestoneForm })
+    milestoneForm.phase_name = ''
+    milestoneForm.day_offset = 0
+    milestoneForm.unlock_pct = 0
+    milestoneForm.allowed_input_categories = []
+  } catch (error) {
+    notify.showError(Object.values(error.response?.data || {})[0]?.[0] || 'Failed to save milestone.')
+  }
 }
 </script>

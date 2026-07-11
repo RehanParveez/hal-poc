@@ -19,6 +19,10 @@ export const useNotificationsStore = defineStore('notifications', {
       this.push({ type: 'success', message })
     },
     showError(data) {
+      if (typeof data === 'string') {
+        this.push({ type: 'error', message: data, error: null, raw: data })
+        return
+      }
       const nonField = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : null
       const message = data?.message || data?.detail || data?.error || nonField || 'Something went wrong. Please try again.'
       this.push({ type: 'error', message, error: data?.error || null, raw: data })

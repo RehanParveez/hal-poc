@@ -36,10 +36,6 @@
           <option value="tenant">Tenant Farmer</option>
           <option value="landowner">Landowner</option>
           <option value="shopkeeper">Shopkeeper</option>
-          <option value="bank">Bank Manager</option>
-          <option value="factory">Factory Buyer</option>
-          <option value="insurance">Insurance Agent</option>
-          <option value="afo">AFO Officer</option>
         </select>
       </div>
 

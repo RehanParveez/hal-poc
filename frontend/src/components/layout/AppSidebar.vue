@@ -95,8 +95,8 @@ const router = useRouter()
 
 const navItems = computed(() => NAV_CONFIGS[auth.user?.role] || [])
 
-function handleLogout() {
-  auth.logout()
+async function handleLogout() {
+  await auth.logout()
   router.push('/login')
 }
 </script>
