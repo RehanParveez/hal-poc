@@ -1,154 +1,126 @@
-# Hal — POC
+# HAL — MVP
 
-This is the proof of concept for Hal, a platform designed to remove the predatory Arhti/middleman from Pakistan's agricultural supply chain. Also this solution name is just not finalized, today named it what seemed better
+Status: not built yet. This document describes exactly what this MVP repo is meant to contain, based on the architecture design behind it. Nothing below is working code right now.
 
-The core idea is to replace him with a digital system solution that connects smallholder farmers, microfinance banks, input shopkeepers, factory buyers, and landowners into one secure loop where money moves transparently and instantly.
+This repo used to hold a smaller proof of concept. That proof of concept already showed the core money logic works: escrow, spending rules, atomic payment splits, no double payments. This repo is the next step: turning that proof of concept into a real MVP that a bank could actually trust and pilot.
 
-This POC exists to prove one specific thing: the core transactional logic works. A bank official or technical partner can watch a live demo where the backend blocks an illegal payment, executes a multi-party financial settlement atomically, and prevents double-spending.
+Some of the old POC's logic carries over here, since it's already correct and already relevant. The two genuinely new pieces are described below.
 
----
+# What HAL is?
 
-## What's in here
-The project is split into two main folders:
+HAL removes the middleman (the Arthi) from Pakistan's farm lending. Right now, most small farmers borrow from a local middleman. He lends cash, but he also controls what the farmer buys and what the farmer gets paid at harvest. This keeps the farmer stuck in debt.
 
-* **`backend/`** — Django + DRF. This is the financial engine. All the escrow logic, the AFO (Agriculture Field Officer) validation gate, the proportional settlement waterfall, and the Batai/Theka (rent) crop-sharing splits live here.
-* **`frontend/`** — Vue 3 + Tailwind. A working UI that lets you switch between the different user roles (bank manager, farmer, factory, shopkeeper, landowner, tenant farmer, insurance agent) to walk through the demo visually.
+HAL replaces this with one digital system. It connects the farmer, the bank, the input shop, the factory buyer, and the landowner. Money moves between them automatically, in the open. No one can quietly take more than their share.
 
-**Note:** There is no Celery, Redis broker, or complex microservice routing here. Those belong in the production architecture. This POC runs on a single Postgres instance and executes everything synchronously so you can clearly see the data flowing step by step.
+# What "MVP done" actually means?
 
----
-
-## What this demo proves
-Three things specifically:
-
-**1. The AFO gate is real.** 
-A farmer cannot spend money handled by the escrow logic on the wrong input category for their current crop lifecycle phase. They also cannot exceed the spending cap per acre defined by the AFO. Both of these violations are blocked at the database level, not just the API level.
-
-**2. The Payment split settlement is atomic.** 
-When a factory confirms a crop delivery grade, the bank recovers its proportional loan principal, deducts its commission, the platform takes its fee, and the farmer receives the net profit. This happens inside a single database transaction (`transaction.atomic`). If any single calculation fails, the entire thing rolls back. Partial payouts are impossible.
-
-**3. Double-spend is prevented.** 
-If someone tries to settle the exact same batch twice, the second request is rejected instantly. The invoice already exists, the database row lock fires, and the system returns a clean error. No funds are ever debited twice.
-
----
-
-## Running it locally
-You only need Docker and Docker Compose installed.
-
-```bash
-git clone [https://github.com/yourusername/hal.git](https://github.com/yourusername/hal.git)
-cd hal
-cp backend/.env.example backend/.env
-docker compose up --build
-
-Once the containers are running, setup the database:
-Bashdocker compose exec web python manage.py migrate
-docker compose exec web python manage.py seed_demo_data
-
-Backend runs at http://localhost:8000
-Frontend runs at http://localhost:3000
-
-## Demo accounts:
-The seed command creates these default accounts. The password for all of them is demo1234.
-Role                             Phone
-Bank Manager (NRSP)              03001111004
-Smallholder Farmer               03001111001
-Tenant Farmer                    03001111002
-Landowner                        03001111003
-Factory Buyer                    03001111005
-Shopkeeper                       03001111006
-AFO Officer                      03001111007
-Insurance Agent                  03001111008
-RolePhoneBank Manager (NRSP)     03001111004
-Smallholder Farmer               03001111001
-Tenant Farmer                    03001111002
-Landowner                        03001111003
-Factory Buyer                    03001111005
-Shopkeeper                       03001111006
-AFO Officer                      03001111007
-Insurance Agent                  03001111008
+The MVP is done when the platform can do this, for one real pilot: one district, a small group of farmers, one shopkeeper, one factory buyer, one partner bank.
 
 
-##The demo flow:
-This is the standard walkthrough to show the platform to a bank or partner. It takes roughly 8-10 minutes end to end.
+Sign up a farmer, and check them with a real Numberdar before they can borrow.
+Run a real credit bureau check, with a real, recorded consent step, before any money is paid out.
+Lock the bank's money in escrow, and release it in stages.
+Let the farmer buy inputs from an approved shopkeeper, checked against their crop stage and spending cap.
+Take out an insurance fee automatically, and allow a human to review a claim if one comes in.
+Let a factory post a contract, assign farmers to it, and confirm the delivery and its quality grade.
+Split the harvest payment automatically: the bank gets its loan back first, then its cut, then the platform's small fee, then the farmer gets the rest. The farmer never sees a fee line, it's built into the price quietly instead.
+Tell every person involved what just happened, at every step, in both Urdu and English.
 
-Step 1:-
-Bank approves and disburses a loan:
-Login as the bank manager. Go to the Loan Queue. You will see a submitted loan from dexter for PKR 50,000 against 10 acres of wheat in Bahawalpur. The acreage panel shows the landowner registered 12 acres and only 10 were requested, so the ceiling check passes. Approve it, set the interest, and disburse.Terminal shows: Insurance premium auto-deducted, escrow created with the remaining balance, Phase 1 (Seed Purchase) activated.
 
-Step 2:-
-Farmer tries to break the system (and fails):
-Login as the farmer. Go to Buy Inputs. Select Fertilizer as the category.The system blocks it: "Phase 1 only allows seed. Fertilizer not available yet."Select Seed and enter PKR 25,000. Blocked again: "AFO cap for seed on 10 acres is PKR 12,000."Enter PKR 10,000. The transaction goes through, and the shopkeeper's wallet is credited instantly.
+That loop, steps 1 through 8, is the whole business case. Everything else is about scaling this loop to more farmers and more districts later, not proving it works in the first place.
 
-Step 3:-
-Advance to the next phase:
-For demo purposes, the bank manager has a button to manually unlock the next escrow phase (in production, this is a scheduled background task). Advance to Phase 2. The farmer can now buy fertilizer, but still cannot buy pesticide.
+# What's included in this MVP, and what's saved for later
 
-Step 4:-
-Factory posts a contract & farmer delivers:
-Login as the factory and post a wheat contract (e.g., 1000 kg required, PKR 150/kg). Switch to the farmer and log a batch delivery of 200 kg. Switch back to the factory to confirm the grade. (Example: Grade B, 8.33% deduction applied).
+Fourteen backend apps are in scope for this MVP. Twelve of them either already exist from the old POC or are simple extensions of it. Two are genuinely new.
 
-Step 5:-
-The Payment Split Execution:
-The settlement runs the exact moment the grade is confirmed. The terminal prints:
+Carried over from the POC, mostly unchanged:
+land, afo, escrow, insurance, inputs, contracts, delivery, factoring, wallets. These already work. They just need a few small hooks removed, since those hooks point at apps that don't exist yet (see below).
 
-============================================================
-HAL WATERFALL SETTLEMENT
-Farmer:              Dexter
-Batch:               200 kg Wheat
-Grade:               Grade B (8.33% deduction)
-────────────────────────────────────────
-Gross Payout:        PKR       27,500
-Loan Principal:      PKR       10,000
-Interest:            PKR          164
-Bank Commission:     PKR          165
-Platform Fee:        PKR          137
-────────────────────────────────────────
-FARMER NET PROFIT:   PKR       17,034
-============================================================
+Extended from the POC:
+accounts — corporate sign-up (shopkeepers, factories) waits for a person to manually check their documents, instead of an automatic outside check. loans — the pre-checks before a payout now also require a passed credit check and a passed Numberdar check. notifications — trimmed down to only the messages that actually matter for a small pilot.
 
-Step 6:-
-Double-spend proof:
-Try to confirm the grade on that exact same batch again.Response: "This batch has already been settled. Double-spend prevented."You can show the database directly: SELECT * FROM factoring_factoringinvoice; — there is only one row.
+Brand new, not built yet:
 
-Step 7:-
-Batai demo (optional):
-To show the crop-sharing split, run the same flow but login as the Tenant Farmer. At settlement, the landowner's wallet receives their exact percentage at the exact same second the farmer receives theirs.
 
-## What's NOT in this POC?
-No SMS notifications (prints to console instead)
-No external API calls (Arazi Center, NADRA, and Insurance APIs are mocked)
-No scheduled tasks (phase unlocks are manual)
-No Redis caching or Celery workers
-No Nginx proxy
+community — the Numberdar app. A Numberdar is a trusted local figure who already vouches for people in their village. A farmer needs a real Numberdar's approval before they can apply for a loan.
+credit — the credit bureau app. Before any money goes out, the system runs a real credit check (through eCIB or Tasdeeq), with a clear consent step first (a one-time code sent by SMS, so there's proof the farmer agreed to the check).
 
-All of that will be part of the production architecture. This POC is just the core engine on a stand.
 
-## Tech stack:
+Deliberately left out of this MVP, saved for later:
+
+
+analytics — dashboards and reporting. Not needed to prove the loop works. Basic admin tools cover the pilot for now.
+ewr (Electronic Warehouse Receipts) — turning stored crops into a bank-usable asset. This needs real warehouse partnerships a small pilot won't have yet.
+groups (joint-liability lending) — a small, individually-checked pilot group doesn't need shared group risk yet. This matters more once there are many more farmers.
+billing — automatic invoicing between the platform, shops, and factories. With one or two pilot partners, this can just be settled by hand for now.
+warehouse_operator role — this only makes sense once the ewr app exists.
+
+
+None of these five are missing by accident. Each one is left out on purpose, because the core loan-to-harvest loop works without them, and each one can be added back later without changing anything already built.
+
+Backend structure (target)
+
+backend/
+├── apps/
+│   ├── accounts/     user roles, login, manual shop/factory verification
+│   ├── land/         land parcels, tenant agreements (Theka/Batai)
+│   ├── community/    NEW — Numberdar sign-up and approval
+│   ├── credit/       NEW — credit bureau check + consent
+│   ├── afo/          crop types, spending caps, growth-stage rules
+│   ├── loans/        loan applications, payout, gated on credit + Numberdar
+│   ├── escrow/       escrow wallets, phase unlocking
+│   ├── insurance/     policies, premium deduction, manual claim review
+│   ├── inputs/       AFO-checked shopkeeper payments
+│   ├── contracts/    factory crop contracts
+│   ├── delivery/     batch deliveries, grade confirmation
+│   ├── factoring/    the payment-split engine, fee hidden from farmer
+│   ├── wallets/      account balances, transaction history
+│   └── notifications/  SMS/push, trimmed to the events that matter for a pilot
+└── shared/            permissions, error classes, shared helpers
+
+Frontend structure (target)
+
+frontend/
+├── src/
+│   ├── api/           one file per backend app, including new credit.js and community.js
+│   ├── stores/        one Pinia store per app, same new additions
+│   ├── views/
+│   │   ├── farmer/    dashboard, escrow balance, input payments, a new credit consent screen
+│   │   ├── bank/      loan queue with a credit-tier column, a new credit check panel
+│   │   ├── numberdar/ NEW — a dashboard and approval queue for Numberdar users
+│   │   └── ...         landowner, factory, shopkeeper, insurance, afo, mostly carried over
+│   └── components/    shared pieces, plus new ones for OTP entry, document upload, and credit status
+
+
+## Tech stack
+
 Backend: Python, Django, Django REST Framework, PostgreSQL, SimpleJWT
 Frontend: Vue 3, Pinia, Vue Router, Axios, Tailwind CSS, Vite
 Infrastructure: Docker, Docker Compose
 
-Project structure
-hal/
-├── backend/
-│   ├── apps/
-│   │   ├── accounts/     user roles, JWT auth
-│   │   ├── land/         parcels, tenant agreements (Theka/Batai)
-│   │   ├── afo/          crop types, input caps, lifecycle milestones
-│   │   ├── loans/        loan applications, disbursement
-│   │   ├── escrow/       escrow wallets, phase unlocking
-│   │   ├── insurance/    policies, premium deduction
-│   │   ├── inputs/       AFO-gated shopkeeper payments
-│   │   ├── contracts/    factory crop contracts
-│   │   ├── delivery/     batch delivery, grade confirmation
-│   │   ├── factoring/    waterfall settlement engine
-│   │   └── wallets/      ledger, transaction history
-│   └── shared.py         RBAC permissions, exception classes
-└── frontend/
-    ├── src/
-    │   ├── api/          one file per backend domain
-    │   ├── stores/       Pinia state per domain
-    │   ├── views/        one folder per user role
-    │   └── components/   shared + role-specific components
-    └── ...
+
+- One promise that's non-negotiable
+
+The farmer never sees a platform fee, anywhere in the product. The platform's share is quietly built into the price the factory pays, not shown as a deduction to the farmer. This isn't a nice-to-have, it's a rule the frontend has to follow from the very first settlement screen.
+
+# Dependency order
+
+This MVP is structured so each piece depends on the one before it:
+
+
+The Numberdar app (community) comes first, since a loan can't be gated on Numberdar approval until the app that tracks it exists.
+The credit bureau app (credit) comes next, since disbursement depends on a passed credit check.
+Manual shop/factory verification and the land app sit right after, since loans reference both.
+The AFO app and the new loan pre-checks (credit + Numberdar) come next.
+Escrow and insurance follow, carried over from the POC.
+Inputs, contracts, and delivery follow, carried over, minus the billing hooks they don't need yet.
+The payment-split engine and wallets come after that, carried over, minus the group and billing hooks.
+Notifications come last on the backend side, trimmed to what a pilot actually needs.
+A hardening pass closes it out: race conditions, edge cases, and the test suite.
+
+
+The frontend follows this same order, one screen at a time, so no screen depends on a backend piece that isn't there yet.
+
+# What moves to a later version, without a rebuild?
+
+When the pilot works and it's time to grow past it, the ewr, groups, billing, and analytics apps slot back in exactly where they were removed from. Nothing built for this MVP needs to be torn up to make room for them. That's the point of leaving them out now instead of building a half-finished version of each.
