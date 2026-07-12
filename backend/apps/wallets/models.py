@@ -30,6 +30,10 @@ class WalletTransaction(BaseModel):
     ('batai', 'Batai'),
     ('insurance', 'Insurance'),
     ('settlement', 'Settlement'),
+    ('farmer_profit', 'Farmer Profit'),
+    ('batai_split', 'Batai Split'),
+    ('theka_payment', 'Theka Payment'),
+    ('platform_fee', 'Platform Fee'),
   )
   wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT, related_name = 'transactions')
   amount = models.DecimalField(max_digits=14, decimal_places=2)

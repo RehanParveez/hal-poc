@@ -26,10 +26,7 @@ class LoanApplicationService:
       loan.interest_rate_pct = interest_rate_pct
       loan.status = 'bank_approved'
       loan.approved_at = timezone.now()
-      print(f"DEBUG: Before save, loan.approved_amount is: {loan.approved_amount}")
       loan.save()
-      loan.refresh_from_db()
-      print(f'DEBUG: Post-save database value is: {loan.approved_amount}')
       return loan
 
   @staticmethod

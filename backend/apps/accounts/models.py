@@ -27,6 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     ('insurance', 'Insurance Agent'),
     ('afo', 'AFO Officer'),
     ('admin', 'Platform Admin'),
+    ('numberdar', 'Numberdar'),
   )
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
   phone = models.CharField(max_length=15, unique=True)
@@ -39,6 +40,16 @@ class User(AbstractBaseUser, PermissionsMixin):
   is_active = models.BooleanField(default=True)
   is_staff = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
+  numberdar_verified = models.BooleanField(default=False)
+  credit_tier = models.CharField(max_length=25,
+    choices=[
+      ('unverified', 'Unverified'),
+      ('low_risk', 'Low Risk'),
+      ('medium_risk', 'Medium Risk'),
+      ('high_risk', 'High Risk'),
+    ],
+    default='unverified',
+  )
 
   objects = UserManager()
   USERNAME_FIELD = 'phone'
@@ -46,7 +57,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
   class Meta:
     db_table = 'users'
-    indexes = [models.Index(fields=['role', 'district'])]
+    indexes = [
+      models.Index(fields=['role', 'district']),
+      models.Index(fields=['role', 'numberdar_verified', 'district']),
+    ]
 
 class FarmerProfile(BaseModel):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'farmer_profile')
@@ -74,3 +88,4 @@ class ShopkeeperProfile(BaseModel):
 class InsuranceProfile(BaseModel):
   user = models.OneToOneField(User, on_delete = models.CASCADE, related_name = 'insurance_profile')
   company_name = models.CharField(max_length = 170, default = 'State Life Insurance')
+  is_primary = models.BooleanField(default=False)

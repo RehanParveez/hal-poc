@@ -73,7 +73,7 @@ backend/
 │   ├── inputs/       AFO-checked shopkeeper payments
 │   ├── contracts/    factory crop contracts
 │   ├── delivery/     batch deliveries, grade confirmation
-│   ├── factoring/    the payment-split engine, fee hidden from farmer
+│   ├── settlements/    the payment-split engine, fee hidden from farmer
 │   ├── wallets/      account balances, transaction history
 │   └── notifications/  SMS/push, trimmed to the events that matter for a pilot
 └── shared/            permissions, error classes, shared helpers

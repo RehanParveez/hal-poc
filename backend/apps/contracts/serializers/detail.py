@@ -34,7 +34,5 @@ class FarmerContractAllocationDetailSerializer(serializers.ModelSerializer):
     read_only_fields = fields
 
   def get_delivered_kg(self, obj):
-    if not hasattr(obj, 'batches'):
-      return 0
     total = obj.batches.aggregate(total=Sum('batch_kg'))['total']
     return total or 0

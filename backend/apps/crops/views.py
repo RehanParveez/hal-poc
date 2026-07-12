@@ -22,9 +22,6 @@ class CropTypeViewSet(viewsets.ModelViewSet):
       queryset = queryset.filter(season=season)
     return queryset.order_by('name')
 
-  def perform_create(self, serializer):
-    CropTypeService.create_crop(serializer.validated_data)
-
   def create(self, request, *args, **kwargs):
     serializer = CropTypeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

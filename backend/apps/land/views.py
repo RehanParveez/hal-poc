@@ -7,6 +7,7 @@ from apps.land.services import LandService, TenantAgreementService
 from apps.land.serializers.detail import TenantAgreementDetailSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import permissions
 
 class LandViewSet(viewsets.ModelViewSet):
   def get_permissions(self):
@@ -40,7 +41,9 @@ class TenantAgreementViewSet(viewsets.ModelViewSet):
       return [(TenantFarmerPerm | LandownerPerm)()]
     if self.action in ('approve', 'reject'):
       return [LandownerPerm()]
-    return []
+    if self.action in ('list', 'retrieve'):
+      return [(TenantFarmerPerm | LandownerPerm | BankManagerPerm)()]
+    return [permissions.IsAuthenticated()]
 
   def get_serializer_class(self):
     if self.action in ('list', 'retrieve'): return TenantAgreementDetailSerializer

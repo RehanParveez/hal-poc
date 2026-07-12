@@ -20,12 +20,10 @@ class InsurancePremiumService:
       escrow_locked.insurance_premium_deducted = premium
       escrow_locked.remaining_balance -= premium
       escrow_locked.save(update_fields=['insurance_premium_deducted', 'remaining_balance'])
-      insurer = InsuranceProfile.objects.first()
+      insurer = InsuranceProfile.objects.filter(is_primary=True).first()
       EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=insurer.user if insurer else loan.bank.user)
       policy = InsurancePolicy.objects.create(loan=loan, insurer=insurer, coverage_amount=loan.approved_amount, premium_amount=premium, status='active',
         policy_start=timezone.now().date(), policy_end=timezone.now().date() + timedelta(days=180))
-
-      print(f"[MOCK INSURANCE API] Policy {policy.id} created. Coverage: PKR {loan.approved_amount}. Premium: PKR {premium}.")
       return policy
 
 class InsuranceClaimService:
@@ -40,7 +38,6 @@ class InsuranceClaimService:
     if policy.status == 'active':
       policy.status = 'claimed'
       policy.save(update_fields=['status'])
-    print(f"[CLAIM FILED] Policy={policy.id} | Farmer={claimed_by_user.full_name} | Amount=PKR {claim_amount}")
     return claim
 
   @staticmethod
@@ -68,5 +65,4 @@ class InsuranceClaimService:
           claim.policy.save(update_fields=['status'])
       claim.save()
 
-    print(f"[CLAIM REVIEWED] Claim={claim_id} | Decision={decision} | Approved=PKR {approved_amount if decision == 'approved' else 'N/A'}")
     return claim

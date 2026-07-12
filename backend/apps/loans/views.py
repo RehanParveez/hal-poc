@@ -105,8 +105,7 @@ class LoanApplicationViewSet(viewsets.ModelViewSet):
     raise PermissionDenied(str(e))
    except ValueError as e:
     return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-   except Exception as e:
-    return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+  
    return Response({'message': f"Loan disbursed. Escrow funded with PKR {escrow.remaining_balance}.",
     'loan_id': str(loan.id), 'loan_status': loan.status, 'disbursed_at': loan.disbursed_at, 'escrow_id': str(escrow.id),
     'escrow_balance': str(escrow.remaining_balance), 'insurance_premium_deducted': str(escrow.insurance_premium_deducted)}) 

@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, status, permissions
-from shared.permissions import BankManagerPerm
 from apps.accounts.serializers import UserRegistrationSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -14,8 +13,6 @@ class UserViewSet(viewsets.ModelViewSet):
   def get_permissions(self):
     if self.action == 'create':
       return [permissions.AllowAny()]
-    if self.action == 'approve_farmer':
-      return [BankManagerPerm()]
     return [permissions.IsAuthenticated()]
 
   def get_serializer_class(self):
