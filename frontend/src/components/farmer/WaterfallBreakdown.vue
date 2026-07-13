@@ -29,14 +29,14 @@
       </div>
     </div>
 
-    <div :class="['px-5 py-4 flex items-center justify-between', parseFloat(invoice.farmer_net) > 0 ? 'bg-green-50' : 'bg-red-50']">
+    <div :class="['px-5 py-4 flex items-center justify-between', parseFloat(invoice.farmer_net_profit) > 0 ? 'bg-green-50' : 'bg-red-50']">
       <p class="font-bold text-gray-800 text-base">Your Net Profit</p>
-      <p :class="['text-2xl font-black', parseFloat(invoice.farmer_net) > 0 ? 'text-green-700' : 'text-red-600']">
-        ₨ {{ formatPKR(invoice.farmer_net) }}
+      <p :class="['text-2xl font-black', parseFloat(invoice.farmer_net_profit) > 0 ? 'text-green-700' : 'text-red-600']">
+        ₨ {{ formatPKR(invoice.farmer_net_profit) }}
       </p>
     </div>
 
-    <div v-if="parseFloat(invoice.farmer_net) === 0 && invoice.insurance_triggered" class="bg-red-50 px-5 py-3 text-sm text-red-700">
+    <div v-if="parseFloat(invoice.farmer_net_profit) === 0 && invoice.insurance_triggered" class="bg-red-50 px-5 py-3 text-sm text-red-700">
       <p class="font-semibold">⚠ Severe Grade Deduction — Insurance Coverage Activated</p>
       <p class="mt-0.5 opacity-90">The grade deduction was severe enough to eliminate your profit. Your insurance policy has been flagged for review.</p>
     </div>
@@ -60,10 +60,10 @@ const gradeBadgeClass = computed(() => hasDeduction.value ? 'bg-yellow-500 text-
 const rows = computed(() => {
   const list = [
     { label: 'Factory Payment (Gross)', value: props.invoice.gross_payout, type: 'gross' },
-    { label: 'Bank — Loan Principal Recovery', value: props.invoice.principal, type: 'deduction' },
-    { label: 'Bank — Interest', value: props.invoice.interest, type: 'deduction' },
-    { label: 'Bank — Early Advance Commission', value: props.invoice.bank_commission, type: 'deduction' },
-    { label: 'HAL Platform Fee', value: props.invoice.platform_fee, type: 'deduction' },
+    { label: 'Bank — Loan Principal Recovery', value: props.invoice.proportional_principal_deduction, type: 'deduction' },
+    { label: 'Bank — Interest', value: props.invoice.bank_interest_deduction, type: 'deduction' },
+    { label: 'Bank — Early Advance Commission', value: props.invoice.bank_factoring_commission, type: 'deduction' },
+    { label: 'HAL Platform Fee', value: props.invoice.platform_transaction_fee, type: 'deduction' },
   ]
   if (parseFloat(props.invoice.theka_payment) > 0) list.push({ label: 'Theka Rent (Landowner)', value: props.invoice.theka_payment, type: 'deduction' })
   if (parseFloat(props.invoice.batai_landowner_share) > 0) list.push({ label: 'Batai Share (Landowner)', value: props.invoice.batai_landowner_share, type: 'deduction' })

@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'apps.insurance',
     'apps.loans',
     'apps.settlements',
-    'apps.wallets'
+    'apps.wallets',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 
 USE_I18N = True
 
@@ -165,6 +166,22 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'          
+EMAIL_HOST = 'smtp.gmail.com'                                  
+EMAIL_PORT = 587                                 
+EMAIL_USE_TLS = True                                              
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')                      
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')                
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CORS_ALLOW_ALL_ORIGINS = True
 

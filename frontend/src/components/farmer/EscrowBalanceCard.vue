@@ -10,7 +10,7 @@
         <p class="text-3xl font-bold text-gray-800 mt-1">₨ {{ formatPKR(escrow.remainingBalance) }}</p>
         <p class="text-xs text-gray-500 mt-1">of ₨ {{ formatPKR(escrow.totalFunded) }} total</p>
       </div>
-      <InsuranceBadge />
+      <InsuranceBadge :status="myPolicyStatus" />
     </div>
 
     <div class="mb-4">
@@ -40,8 +40,22 @@
 
 <script setup>
 import { useEscrowStore } from '@/stores/escrow.js'
+import { useInsuranceStore } from '@/stores/insurance.js'
+import { onMounted, computed } from 'vue' 
 import InsuranceBadge from './InsuranceBadge.vue'
 
 const escrow = useEscrowStore()
+const insurance = useInsuranceStore()
 const formatPKR = (val) => new Intl.NumberFormat('en-PK').format(Math.round(parseFloat(val) || 0))
+
+const myPolicyStatus = computed(() => {
+  const policy = insurance.policies.find((p) => p.loan_id === escrow.wallet?.loan_id)
+  return policy?.status ?? null
+})
+
+onMounted(() => {
+  if (insurance.policies.length === 0) {
+    insurance.fetchPolicies()
+  }
+})
 </script>

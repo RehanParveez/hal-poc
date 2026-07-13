@@ -65,6 +65,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
+import { ROLE_HOME } from '@/constants/roles.js'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -72,12 +73,6 @@ const isSubmitting = ref(false)
 const errorMessage = ref('')
 
 const form = reactive({ full_name: '', phone: '', cnic: '', password: '', role: '', district: '', province: 'Punjab' })
-
-const ROLE_HOME = {
-  smallholder: '/farmer/dashboard', tenant: '/farmer/dashboard', landowner: '/landowner/dashboard',
-  bank: '/bank/dashboard', factory: '/factory/dashboard', shopkeeper: '/shopkeeper/dashboard',
-  insurance: '/insurance/dashboard', afo: '/afo/dashboard',
-}
 
 async function handleSubmit() {
   isSubmitting.value = true

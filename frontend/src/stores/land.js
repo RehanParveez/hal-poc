@@ -22,11 +22,10 @@ export const useLandStore = defineStore('land', {
       try {
         const res = await landApi.listLands()
         const raw = res.data.results ?? res.data
-        this.parcels = res.map((p) => ({ ...p, total_acres: toNumber(p.total_acres), available_acres: toNumber(p.available_acres) }))
+        this.parcels = raw.map((p) => ({ ...p, total_acres: toNumber(p.total_acres), available_acres: toNumber(p.available_acres) }))
       } catch (err) {
         this.error = err.response?.data?.error ?? 'Failed to load land parcels.'
         throw err
-
       } finally {
         this.isLoading = false
       }
@@ -63,7 +62,7 @@ export const useLandStore = defineStore('land', {
       }
     },
   
-    async fetchAgreements() {
+    async fetchAgreements(params = {}) {
       this.isLoading = true
       this.error = null
       try {

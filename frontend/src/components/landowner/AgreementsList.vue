@@ -29,8 +29,8 @@
       
       <select v-model="form.season" class="w-full border rounded px-2 py-1 text-sm">
         <option value="" disabled selected>Select Season</option>
-        <option value="Kharif 2026">Kharif 2026</option>
-        <option value="Rabi 2026-27">Rabi 2026-27</option>
+        <option value="Kharif">Kharif</option>
+        <option value="Rabi">Rabi</option>
       </select>
       <input v-model.number="form.leased_acres" type="number" placeholder="Leased Acres" class="w-full border rounded px-2 py-1 text-sm" />
       

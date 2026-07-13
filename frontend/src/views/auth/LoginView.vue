@@ -41,30 +41,19 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
+import { ROLE_HOME } from '@/constants/roles.js'
 
 const phone = ref('')
 const password = ref('')
 const auth = useAuthStore()
 const router = useRouter()
 
-const ROLE_HOME = {
-  smallholder: '/farmer/dashboard',
-  tenant: '/farmer/dashboard',
-  landowner: '/landowner/dashboard',
-  bank: '/bank/dashboard',
-  factory: '/factory/dashboard',
-  shopkeeper: '/shopkeeper/dashboard',
-  insurance: '/insurance/dashboard',
-  afo: '/afo/dashboard',
-  admin: '/bank/dashboard',
-}
-
 async function handleSubmit() {
   try {
     const user = await auth.login(phone.value, password.value)
     router.push(ROLE_HOME[user.role] || '/login')
   } catch (err) {
-    // error already shown via auth.loginError
+    
   }
 }
 </script>

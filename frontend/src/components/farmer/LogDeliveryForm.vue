@@ -41,6 +41,7 @@ async function submit() {
     form.allocationId = ''
     form.batchKg = 0
   } catch (err) {
+    console.error('Failed to log delivery batch:', err)
   } finally {
     isSubmitting.value = false
   }
