@@ -20,6 +20,14 @@ export const useAuthStore = defineStore('auth', {
     isInsuranceAgent: (state) => state.user?.role === 'insurance',
     isAFOOfficer: (state) => state.user?.role === 'afo',
     isAdmin: (state) => state.user?.role === 'admin',
+    isNumberdar: (state) => state.user?.role === 'numberdar',                  
+    isNumberdarVerified: (state) => state.user?.numberdar_verified === true,      
+    creditTier: (state) => state.user?.credit_tier ?? 'unverified',            
+    isLowRisk: (state) => state.user?.credit_tier === 'low_risk',               
+    isMediumRisk: (state) => state.user?.credit_tier === 'medium_risk',           
+    isHighRisk: (state) => state.user?.credit_tier === 'high_risk',
+    hasCreditApproval: (state) => ['low_risk', 'medium_risk'].includes(state.user?.credit_tier),
+    isCorporateVerified: (state) => state.user?.secp_verified === true && state.user?.ntn_verified === true,
   },
   actions: {
     async login(phone, password) {

@@ -10,6 +10,7 @@ class BatchDeliveryService:
   @staticmethod
   def log_delivery(farmer_profile, allocation, batch_kg):
     with transaction.atomic():
+      allocation = allocation.__class__.objects.select_for_update().get(id=allocation.id)
       if allocation.farmer != farmer_profile:
         raise PermissionError("this alloca does not belong to you.")
 

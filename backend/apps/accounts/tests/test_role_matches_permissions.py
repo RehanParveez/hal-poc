@@ -1,5 +1,5 @@
 import pytest
-from shared.permissions import FarmerPermission, TenantFarmerPerm, LandownerPerm, BankManagerPerm, FactoryPerm, ShopkeeperPerm, InsuranceAgentPerm, AFOOfficerPerm, AdminPerm
+from shared.permissions import FarmerPermission, TenantFarmerPerm, LandownerPerm, BankManagerPerm, FactoryPerm, ShopkeeperPerm, InsuranceAgentPerm, AFOOfficerPerm, AdminPerm, NumberdarPerm
 from apps.accounts.models import User
 from apps.accounts.tests.factories import UserFactory
 from rest_framework.test import APIClient
@@ -14,6 +14,7 @@ PERMISSION_ROLE_MAP = {
   InsuranceAgentPerm: {'insurance'},
   AFOOfficerPerm: {'afo'},
   AdminPerm: {'admin'},
+  NumberdarPerm: {'numberdar'},
 }
 
 def test_user_roles_choices_match_permission_map_exactly():

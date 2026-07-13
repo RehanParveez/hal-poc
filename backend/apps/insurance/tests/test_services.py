@@ -10,6 +10,7 @@ import threading
 from datetime import timedelta
 from django.utils import timezone
 from django.db import IntegrityError, connections
+from apps.accounts.tests.factories import UserFactory
 
 @pytest.mark.django_db
 class TestEnrollAndDeductBasics:
@@ -44,10 +45,12 @@ class TestEnrollAndDeductBasics:
 
 @pytest.mark.django_db
 class TestEnrollAndDeductInsurerAssignment:
-  def test_assigns_whichever_insurer_row_is_first_with_no_matching_logic(self):
-    insurer_a = InsuranceProfileFactory(company_name = 'EFU Life')
+  def test_assigns_whichever_insurer_row_is_first_with_no_matching_logic(self): 
     loan = LoanApplicationFactory(approved_amount=Decimal('50000.00'))
     escrow = EscrowWalletFactory(loan=loan, total_funded=Decimal('50000.00'), remaining_balance=Decimal('50000.00'))
+    insurer_a = InsuranceProfileFactory(company_name = 'EFU Life')
+    insurer_a.is_primary = True
+    insurer_a.save()
     policy = InsurancePremiumService.enroll_and_deduct(loan, escrow)
     assert policy.insurer_id == insurer_a.id
 

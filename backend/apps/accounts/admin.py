@@ -29,9 +29,10 @@ class InsuranceProfileInline(admin.StackedInline):
 class UserAdmin(admin.ModelAdmin):
   inlines = [FarmerProfileInline, LandownerProfileInline, BankProfileInline, FactoryProfileInline, ShopkeeperProfileInline,
     InsuranceProfileInline]
-  list_display = ['id', 'phone', 'cnic', 'full_name', 'role', 'district', 'province', 'is_verified', 'is_active', 'is_staff', 'created_at']
+  list_display = ['id', 'phone', 'cnic', 'full_name', 'role', 'district', 'province', 'is_verified', 'is_active', 'is_staff', 'numberdar_verified', 'credit_tier', 'secp_verified', 'ntn_verified', 'created_at']
+  list_editable = ['secp_verified', 'ntn_verified']
   search_fields = ['phone', 'cnic', 'full_name']
-  list_filter = ['role', 'province', 'district', 'is_verified', 'is_active']
+  list_filter = ['role', 'province', 'district', 'is_verified', 'is_active', 'secp_verified']
 
 @admin.register(FarmerProfile)
 class FarmerProfileAdmin(admin.ModelAdmin):
@@ -55,7 +56,7 @@ class FactoryProfileAdmin(admin.ModelAdmin):
 
 @admin.register(ShopkeeperProfile)
 class ShopkeeperProfileAdmin(admin.ModelAdmin):
-  list_display = ['id', 'user', 'shop_name']
+  list_display = ['id', 'user', 'shop_name', 'ntn_number']
   search_fields = ('shop_name', 'user__full_name')
 
 @admin.register(InsuranceProfile)

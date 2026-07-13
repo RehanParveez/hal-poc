@@ -10,7 +10,10 @@
         <p class="text-3xl font-bold text-gray-800 mt-1">₨ {{ formatPKR(escrow.remainingBalance) }}</p>
         <p class="text-xs text-gray-500 mt-1">of ₨ {{ formatPKR(escrow.totalFunded) }} total</p>
       </div>
+      <div class="flex flex-col items-end gap-2">
       <InsuranceBadge :status="myPolicyStatus" />
+      <CreditTierBadge :tier="auth.user?.credit_tier" size="sm" />
+      </div>
     </div>
 
     <div class="mb-4">
@@ -43,8 +46,11 @@ import { useEscrowStore } from '@/stores/escrow.js'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import { onMounted, computed } from 'vue' 
 import InsuranceBadge from './InsuranceBadge.vue'
+import CreditTierBadge from './CreditTierBadge.vue'
+import { useAuthStore } from '@/stores/auth.js' 
 
 const escrow = useEscrowStore()
+const auth = useAuthStore()
 const insurance = useInsuranceStore()
 const formatPKR = (val) => new Intl.NumberFormat('en-PK').format(Math.round(parseFloat(val) || 0))
 

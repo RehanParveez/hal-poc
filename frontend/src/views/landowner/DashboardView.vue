@@ -19,8 +19,8 @@
       <div v-if="isInitialLoading" class="text-gray-500">Loading transactions...</div>
       <p v-else-if="wallets.transactions.length === 0" class="text-gray-500">No transactions yet.</p>
     </div>
-    <div id="parcels-section"><ParcelList /></div>
-    <div id="agreements-section"><AgreementList /></div>
+    <div id="parcels-section"><ParcelsList /></div>
+    <div id="agreements-section"><AgreementsList /></div>
   </div>
 </template>
 
@@ -28,8 +28,8 @@
 import { onMounted, ref } from 'vue'
 import { useWalletsStore } from '@/stores/wallets.js'
 
-import ParcelsList from '@/components/landowner/ParcelList.vue'
-import AgreementsList from '@/components/landowner/AgreementList.vue'
+import ParcelsList from '@/components/landowner/ParcelsList.vue'
+import AgreementsList from '@/components/landowner/AgreementsList.vue'
 
 const wallets = useWalletsStore()
 const isInitialLoading = ref(true)

@@ -39,6 +39,10 @@ class NoActivePhaseError(Exception):
   def __init__(self):
     super().__init__("there is no active phase for this operation.")
 
+class ShopkeeperNotVerifiedError(Exception):
+  def __init__(self):
+    super().__init__("this shopkeeper account has not completed SECP/NTN verification yet.")
+
 class ContractFullyAllocatedError(Exception):
   def __init__(self, requested, available):
     self.requested = requested
@@ -78,7 +82,17 @@ def custom_exception_handler(exc, context):
   if isinstance(exc, ContractFullyAllocatedError):
     return Response({'error': 'CONTRACT_FULLY_ALLOCATED', 'requested_kg': str(exc.requested), 'available_kg': str(exc.available),
       'message': f"Contract has only {exc.available} kg remaining." }, status=status.HTTP_409_CONFLICT)
+    
   if isinstance(exc, NoActivePhaseError):
     return Response({'error': 'NO_ACTIVE_PHASE', 'message': "there is no active phase for this operation."
     }, status=status.HTTP_400_BAD_REQUEST)
+    
+  if isinstance(exc, ShopkeeperNotVerifiedError): 
+    return Response({'error': 'SHOPKEEPER_NOT_VERIFIED',
+      'message': "This shopkeeper's business registration is still pending verification. "
+        "Payments cannot be received until an admin confirms SECP/NTN details."
+    }, status=status.HTTP_403_FORBIDDEN)
+
   return response
+
+  

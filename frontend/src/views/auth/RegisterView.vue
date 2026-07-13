@@ -37,6 +37,20 @@
           <option value="landowner">Landowner</option>
           <option value="shopkeeper">Shopkeeper</option>
         </select>
+        <div v-if="form.role === 'shopkeeper'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">   <!-- NEW block -->
+         <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
+          <input v-model="form.shop_name" type="text" placeholder="e.g., Ali Traders" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">SECP Registration Number</label>
+          <input v-model="form.secp_registration_number" type="text" placeholder="SECP-NTN-XXXXXXXX" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">NTN Number</label>
+          <input v-model="form.ntn_number" type="text" placeholder="7 digits" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+       </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -72,7 +86,7 @@ const auth = useAuthStore()
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 
-const form = reactive({ full_name: '', phone: '', cnic: '', password: '', role: '', district: '', province: 'Punjab' })
+const form = reactive({ full_name: '', phone: '', cnic: '', password: '', role: '', district: '', province: 'Punjab', shop_name: '', secp_registration_number: '', ntn_number: '' })
 
 async function handleSubmit() {
   isSubmitting.value = true

@@ -6,8 +6,10 @@
         <p class="text-sm text-gray-500">{{ loan.farmer_phone }} • {{ loan.farmer_district }}</p>
         <p class="text-sm text-gray-500">{{ loan.crop_name }} ({{ loan.crop_season }})</p>
       </div>
+      <div class="flex flex-col items-end gap-1"></div>
       <StatusBadge :status="loan.status" />
-    </div>
+      <CreditTierBadge :tier="loan.farmer_credit_tier" size="sm" />
+     </div>
 
     <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
       <div><span class="text-gray-500">Acres applied:</span> {{ loan.acres_applied_for }}</div>
@@ -44,6 +46,7 @@ import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
+import CreditTierBadge from '@/components/farmer/CreditTierBadge.vue'
 
 const props = defineProps({
   loan: { type: Object, required: true },

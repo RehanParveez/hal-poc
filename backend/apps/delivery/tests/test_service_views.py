@@ -89,11 +89,12 @@ class TestLogDeliveryConcurrency:
     for t in threads: t.join()
 
     outcomes = list(results.queue)
-    assert outcomes.count('success') == 2, (
-      f"expected both to succeed (proving the missing lock), got: {outcomes} -- "
-      "if this ever fails, a lock may already be in place")
+    
+    assert outcomes.count('success') == 1, f"Expected exactly one success, got: {outcomes}"
+    assert outcomes.count('failure') == 1, f"Expected exactly one failure, got: {outcomes}"
     total = BatchDelivery.objects.filter(allocation=allocation).aggregate(total=Sum('batch_kg'))['total']
-    assert total == Decimal('120.00') > allocation.committed_kg
+    assert total == Decimal('60.00') 
+    assert total <= allocation.committed_kg
 
 @pytest.mark.django_db
 class TestMarkReceived:

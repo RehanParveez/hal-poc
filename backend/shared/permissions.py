@@ -71,3 +71,11 @@ class AdminPerm(BasePermission):
     if getattr(request.user, 'role', None) == 'admin':
       return True
     return False
+  
+class NumberdarPerm(BasePermission):
+  def has_permission(self, request, view):
+    if not request.user.is_authenticated:
+      return False
+    if getattr(request.user, 'role', None) == 'numberdar':
+      return True
+    return False

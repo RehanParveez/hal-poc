@@ -50,6 +50,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     ],
     default='unverified',
   )
+  secp_registration_number = models.CharField(max_length=35, blank=True) 
+  secp_verified = models.BooleanField(default=False)                   
+  ntn_verified = models.BooleanField(default=False)
 
   objects = UserManager()
   USERNAME_FIELD = 'phone'
@@ -84,6 +87,7 @@ class FactoryProfile(BaseModel):
 class ShopkeeperProfile(BaseModel):
   user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='shopkeeper_profile')
   shop_name = models.CharField(max_length = 170)
+  ntn_number = models.CharField(max_length=20, blank=True)
 
 class InsuranceProfile(BaseModel):
   user = models.OneToOneField(User, on_delete = models.CASCADE, related_name = 'insurance_profile')

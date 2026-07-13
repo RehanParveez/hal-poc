@@ -7,8 +7,10 @@ REGISTER_URL = '/accounts/users/'
 class TestRegistrationRoleRestriction:
   @pytest.mark.parametrize("role", ['smallholder', 'tenant', 'landowner', 'shopkeeper'])
   def test_public_roles_can_self_register(self, role):
-    response = APIClient().post(REGISTER_URL, {
-      'phone': f'0300{role[:6]}1', 'cnic': f'35202-{role[:7]}-1', 'full_name': 'Test User', 'password': 'testpass123', 'role': role, 'district': 'Faisalabad'})
+    payload = {'phone': f'0300{role[:6]}1', 'cnic': f'35202-{role[:7]}-1', 'full_name': 'Test User', 'password': 'testpass123', 'role': role, 'district': 'Faisalabad'}
+    if role == 'shopkeeper':
+      payload['shop_name'] = 'My Test Shop'
+    response = APIClient().post(REGISTER_URL, payload)
     assert response.status_code == 201
 
   @pytest.mark.parametrize("role", ['admin', 'bank', 'factory', 'insurance', 'afo'])
