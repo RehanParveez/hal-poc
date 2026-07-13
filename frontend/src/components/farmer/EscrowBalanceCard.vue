@@ -46,7 +46,7 @@ import { useEscrowStore } from '@/stores/escrow.js'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import { onMounted, computed } from 'vue' 
 import InsuranceBadge from './InsuranceBadge.vue'
-import CreditTierBadge from './CreditTierBadge.vue'
+import CreditTierBadge from '@/components/shared/CreditTierBadge.vue'
 import { useAuthStore } from '@/stores/auth.js' 
 
 const escrow = useEscrowStore()

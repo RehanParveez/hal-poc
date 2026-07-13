@@ -53,6 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   secp_registration_number = models.CharField(max_length=35, blank=True) 
   secp_verified = models.BooleanField(default=False)                   
   ntn_verified = models.BooleanField(default=False)
+  email = models.EmailField(blank=True, null=True)
 
   objects = UserManager()
   USERNAME_FIELD = 'phone'

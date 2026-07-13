@@ -46,7 +46,7 @@ import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
-import CreditTierBadge from '@/components/farmer/CreditTierBadge.vue'
+import CreditTierBadge from '@/components/shared/CreditTierBadge.vue'
 
 const props = defineProps({
   loan: { type: Object, required: true },
