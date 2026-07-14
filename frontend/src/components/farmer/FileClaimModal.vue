@@ -3,12 +3,16 @@
     <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
       <h3 class="text-lg font-bold text-slate-200 mb-4">File Crop Insurance Claim</h3>
       
-      <label class="block text-xs font-semibold text-slate-400 mb-1">Select Linked Loan Account</label>
-      <input v-model="form.loan_id" type="text" placeholder="Enter Loan/Agreement ID" 
-             class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3" />
-      <label class="block text-xs font-semibold text-slate-400 mb-1">Insurance Policy ID</label>
-      <input v-model="form.policy_id" type="text" placeholder="Enter Policy ID (e.g. 1)" 
-            class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3" />
+      <label class="block text-xs font-semibold text-slate-400 mb-1">Select Your Policy</label>
+        <select v-model="form.policy_id" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3">
+          <option value="">Select a policy</option>
+          <option v-for="p in insurance.policies" :key="p.id" :value="p.id">
+            Coverage PKR {{ p.coverage_amount }} — {{ p.status }}
+          </option>
+        </select>
+        <p v-if="!insurance.isLoading && insurance.policies.length === 0" class="text-xs text-amber-500 mb-3">
+          You don't have any active insurance policies yet.
+        </p>
 
       <label class="block text-xs font-semibold text-slate-400 mb-1">Reason for Loss</label>
       <select v-model="form.reason" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-sm text-slate-200 mb-3">
@@ -36,7 +40,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
 
@@ -45,10 +49,15 @@ const insurance = useInsuranceStore()
 const notify = useNotificationsStore()
 
 const form = reactive({
-  loan_id: '',
   policy_id: '',
   reason: '',
   claim_amount: null
+})
+
+onMounted(() => {
+  if (insurance.policies.length === 0) {
+    insurance.fetchPolicies()
+  }
 })
 
 const handleSubmit = async () => {
@@ -57,7 +66,7 @@ const handleSubmit = async () => {
     return
   }
   if (!form.claim_amount || form.claim_amount <= 0) {
-    notify.showError('Enter a claim amount greater than zero.')
+    notify.showError('Select a policy and a reason before submitting.')
     return
   }
   try {

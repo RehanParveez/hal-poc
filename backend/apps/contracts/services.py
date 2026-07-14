@@ -1,14 +1,29 @@
 from django.db import transaction
 from apps.contracts.models import CropContract, FarmerContractAllocation
-from shared.exceptions import ContractFullyAllocatedError
+from shared.exceptions import ContractFullyAllocatedError, CorporateNotVerifiedError
 
 class CropContractService:
 
   @staticmethod
   def create_contract(factory_profile, validated_data):
+    if not factory_profile.user.secp_verified or not factory_profile.user.ntn_verified:
+      raise CorporateNotVerifiedError(role_label = 'this factory account')
     with transaction.atomic():
       contract = CropContract.objects.create(factory=factory_profile, **validated_data)
       return contract
+    
+  @staticmethod
+  def check_and_complete_contract(contract):
+    if contract.status != 'allocated':
+      return
+    from apps.delivery.models import BatchDelivery
+    from django.db.models import Sum
+    for allocation in contract.allocations.all():
+      settled_kg = BatchDelivery.objects.filter(allocation=allocation, status='payment_triggered').aggregate(total=Sum('batch_kg'))['total'] or 0
+      if settled_kg < allocation.committed_kg:
+        return
+    contract.status = 'completed'
+    contract.save(update_fields=['status'])  
 
   @staticmethod
   def close_contract_if_full(contract):

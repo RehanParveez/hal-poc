@@ -40,8 +40,13 @@ class UserViewSet(viewsets.ModelViewSet):
     return Response({'access': str(refresh.access_token), 'refresh': str(refresh), 
       'user': UserSerializer(user).data}, status=status.HTTP_201_CREATED)
 
-  @action(detail=False, methods=['get'])
+  @action(detail=False, methods=['get', 'patch'])
   def profile(self, request):
+    if request.method == 'PATCH':
+      serializer = self.get_serializer(request.user, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_200_OK)
     serializer = self.get_serializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
   

@@ -40,7 +40,11 @@ class WalletTransactionViewSet(viewsets.ReadOnlyModelViewSet):
     return WalletTransactionSerializer1
 
   def get_queryset(self):
-    queryset = WalletTransaction.objects.filter(wallet__user=self.request.user).select_related('wallet__user')
+    if self.request.user.role == 'admin':
+      queryset = WalletTransaction.objects.select_related('wallet__user').all()  
+    else:
+      queryset = WalletTransaction.objects.filter(wallet__user=self.request.user).select_related('wallet__user')
+    
     txn_type = self.request.query_params.get('txn_type')
     direction = self.request.query_params.get('direction')
     if txn_type:

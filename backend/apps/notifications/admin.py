@@ -2,7 +2,7 @@ from django.contrib import admin
 from apps.notifications.models import Notification
 
 @admin.register(Notification)
-class NotificationLogAdmin(admin.ModelAdmin):
+class NotificationAdmin(admin.ModelAdmin):
   list_display = ('recipient', 'event_type', 'channel', 'status', 'is_read', 'created_at')
   list_filter = ('status', 'channel', 'event_type', 'is_read', 'created_at')
   search_fields = ('recipient__phone', 'recipient__full_name', 'subject', 'message', 'reference_id')

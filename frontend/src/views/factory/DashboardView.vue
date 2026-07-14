@@ -1,5 +1,8 @@
 <template>
   <div class="p-8">
+    <div v-if="!auth.isCorporateVerified" class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded mb-4 text-sm">
+      ⚠ Your business registration (SECP/NTN) is pending admin verification. You cannot post new contracts until this is confirmed.
+    </div>
     <h1 class="text-2xl font-bold mb-4">Deliveries — Confirm Grade</h1>
     <div id="deliveries-section">
     <div v-if="delivery.isLoading" class="text-gray-500">Loading...</div>
@@ -55,11 +58,13 @@ import { useSettlementsStore } from '@/stores/settlements.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
 import PostContractForm from '@/components/factory/PostContractForm.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
+import { useAuthStore } from '@/stores/auth.js'
 
 const delivery = useDeliveryStore()
 const settlements = useSettlementsStore()
 const notify = useNotificationsStore()
 const gradeForm = reactive({})
+const auth = useAuthStore() 
 
 function syncGradeForm() {
   delivery.batches.forEach((b) => {

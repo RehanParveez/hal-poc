@@ -6,6 +6,9 @@
     </div>
     <div class="flex items-center gap-4">              
     <NotificationBell />
+    <button v-if="!auth.user?.email" @click="promptForEmail" class="text-xs text-green-700 hover:underline">
+    + Add email
+  </button>
     <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium capitalize">
       {{ auth.user?.role }}
     </span>
@@ -32,4 +35,15 @@ const PATH_TITLES = {
 const auth = useAuthStore()
 const route = useRoute()
 const pageTitle = computed(() => PATH_TITLES[route.path] || 'FasalPay')
+
+async function promptForEmail() {
+  const email = window.prompt('Enter your email to receive notifications:')
+  if (email && email.trim()) {
+    try {
+      await auth.updateEmail(email.trim())
+    } catch (err) {
+      console.error('Failed to update email:', err)
+    }
+  }
+}
 </script>

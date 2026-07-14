@@ -1,7 +1,7 @@
 import logging
 from django.db import transaction
 from apps.escrow.models import EscrowWallet, EscrowTransaction
-from shared.exceptions import NoActivePhaseError, WrongPhaseForCategoryError, AFOLimitExceededError, NotEnoughEscrowError, ShopkeeperNotVerifiedError
+from shared.exceptions import NoActivePhaseError, WrongPhaseForCategoryError, AFOLimitExceededError, NotEnoughEscrowError, CorporateNotVerifiedError
 from apps.crops.models import CropInputCap
 from decimal import Decimal
 from django.db.models import Sum
@@ -15,7 +15,7 @@ def process_input_request(escrow_id, shopkeeper_profile, input_category, amount,
   if amount <= 0:
     raise ValueError(f"the input payment amount must be > than zero. got: {amount}")
   if not shopkeeper_profile.user.secp_verified or not shopkeeper_profile.user.ntn_verified:
-    raise ShopkeeperNotVerifiedError()
+    raise CorporateNotVerifiedError(role_label = 'this shopkeeper')
   with transaction.atomic():
     escrow = EscrowWallet.objects.select_for_update().get(id=escrow_id)
     loan = escrow.loan

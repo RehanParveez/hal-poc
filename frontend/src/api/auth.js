@@ -15,3 +15,7 @@ export function register(payload) {
 export function fetchProfile() {
   return apiClient.get('/accounts/users/profile/')
 }
+
+export function updateProfile(payload) {
+  return apiClient.patch('/accounts/users/profile/', payload)
+}

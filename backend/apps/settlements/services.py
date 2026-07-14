@@ -6,6 +6,7 @@ from apps.loans.models import LoanApplication
 from apps.wallets.models import Wallet, WalletTransaction
 from django.utils import timezone
 from apps.notifications.services import NotificationService
+from apps.contracts.services import CropContractService
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +87,7 @@ class SettlementService:
       loan_locked.save(update_fields=['loan_recovered_to_date', 'status'])
       batch.status = 'payment_triggered'
       batch.save(update_fields=['status'])
+      CropContractService.check_and_complete_contract(batch.allocation.contract)
       transaction.on_commit(lambda: NotificationService.notify(loan.farmer.user, 'settlement_complete',
        {'batch_kg': batch.batch_kg, 'farmer_net_profit': farmer_net}, reference_id=invoice.id))
 
