@@ -12,6 +12,7 @@ from apps.delivery.tests.factories import BatchDeliveryFactory
 from apps.land.tests.factories import TenantAgreementFactory, LandParcelFactory
 from apps.settlements.services import SettlementService
 from apps.wallets.models import Wallet, WalletTransaction
+from unittest.mock import patch
 
 def setup_settlement_environment(agreement_type=None, approved_amount=Decimal('500000.00'),
   interest_rate=Decimal('12.50'), committed_kg=Decimal('10000.00'), batch_kg=Decimal('2500.00'), actual_payout=Decimal('180000.00'),
@@ -160,8 +161,9 @@ class TestFactorySettlementConfirmationPipeline:
 
 @pytest.mark.django_db(transaction=True)
 class TestSettlementConcurrencySafety:
-
-  def test_concurrent_settlement_calls_cannot_double_credit_wallets(self):
+  
+  @patch('apps.settlements.services.NotificationService.notify')
+  def test_concurrent_settlement_calls_cannot_double_credit_wallets(self, mock_notify):
     batch, _, _ = setup_settlement_environment()
     barrier = threading.Barrier(2)
     execution_results = Queue()

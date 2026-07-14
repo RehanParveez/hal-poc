@@ -104,7 +104,7 @@ class TestFactorySettleActionEndpointAPI:
     assert self.invoice.status == 'factsettl'
 
   def test_rogue_factory_post_returns_403_permission_denied(self):
-    settle_url = reverse('settlement-invoices-factory-settle', kwargs={'pk': self.invoice_a.id})
+    settle_url = reverse('settlement-invoices-factory-settle', kwargs={'pk': self.invoice.id})
     rogue_factory_user = UserFactory(role='factory')
     FactoryProfileFactory(user=rogue_factory_user)
     self.client.force_authenticate(user=rogue_factory_user)
@@ -112,18 +112,18 @@ class TestFactorySettleActionEndpointAPI:
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
   def test_missing_invoice_id_returns_404(self):
-    factory_user = self.batch_a.allocation.contract.factory.user
+    factory_user = self.batch.allocation.contract.factory.user
     self.client.force_authenticate(user=factory_user)
     bad_url = reverse('settlement-invoices-factory-settle', kwargs={'pk': '99999999-9999-9999-9999-999999999999'})
     response = self.client.post(bad_url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
   def test_bad_state_double_settle_returns_400_bad_request(self):
-    factory_user = self.batch_a.allocation.contract.factory.user
+    factory_user = self.invoice.batch.allocation.contract.factory.user
     self.client.force_authenticate(user=factory_user)
-    self.invoice_a.status = 'complete'
-    self.invoice_a.save()
-    settle_url = reverse('settlement-invoices-factory-settle', kwargs={'pk': self.invoice_a.id})
+    self.invoice.status = 'complete'
+    self.invoice.save()
+    settle_url = reverse('settlement-invoices-factory-settle', kwargs={'pk': self.invoice.id})
     response = self.client.post(settle_url)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert 'error' in response.data

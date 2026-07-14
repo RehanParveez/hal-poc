@@ -12,6 +12,7 @@ from shared.exceptions import LoanAlreadyDisbursedError
 from rest_framework.test import APIRequestFactory, force_authenticate
 from apps.loans.views import LoanApplicationViewSet
 from apps.land.tests.factories import TenantAgreementFactory
+from unittest.mock import patch
 
 @pytest.mark.django_db
 class TestApplyForLoan:
@@ -139,7 +140,8 @@ class TestDisburseLoan:
  
 @pytest.mark.django_db(transaction=True)
 class TestDisburseLoanConcurrency:
-  def test_concurrent_disbursement_attempts_only_one_succeeds(self):
+  @patch('apps.notifications.services.NotificationService.notify')
+  def test_concurrent_disbursement_attempts_only_one_succeeds(self, mock_notify):
     loan = LoanApplicationFactory(status = 'submitted', requested_amount=Decimal('100000.00'))
     CropLifecycleMilestoneFactory(crop=loan.crop, phase_number=1, unlock_pct=Decimal('30.00'), allowed_input_categories=['seed'])
     approved = LoanApplicationService.approve_loan(loan_id=loan.id, bank_profile=loan.bank,

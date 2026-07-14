@@ -49,6 +49,20 @@ class ContractFullyAllocatedError(Exception):
     self.requested = requested
     self.available = available
     super().__init__(f"contract fully allocated: requested {requested}, available {available}")
+    
+class OutOfJurisdictionError(Exception):
+  def __init__(self, farmer_district, numberdar_district):
+    self.farmer_district = farmer_district
+    self.numberdar_district = numberdar_district
+    super().__init__(f"Numberdar covers '{numberdar_district}' but farmer is in '{farmer_district}'.")
+
+class DuplicateVerificationRequestError(Exception):
+  def __init__(self):
+    super().__init__("you already have a pending or approved verification request.")
+
+class NumberdarVerificationRequiredError(Exception):
+  def __init__(self):
+    super().__init__("this farmer has not been verified by a Numberdar yet. Loans can't be disbursed.")
 
 def custom_exception_handler(exc, context):
   response = exception_handler(exc, context)
@@ -93,5 +107,15 @@ def custom_exception_handler(exc, context):
       'message': "This shopkeeper's business registration is still pending verification. "
         "transaction cannot proceed until an admin confirms SECP/NTN details."
     }, status=status.HTTP_403_FORBIDDEN)
+  
+  if isinstance(exc, OutOfJurisdictionError):
+    return Response({'error': 'OUT_OF_JURISDICTION', 'farmer_district': exc.farmer_district,
+      'numberdar_district': exc.numberdar_district, 'message': str(exc)}, status=status.HTTP_403_FORBIDDEN)
 
+  if isinstance(exc, DuplicateVerificationRequestError):
+    return Response({'error': 'DUPLICATE_VERIFICATION_REQUEST', 'message': str(exc)}, status=status.HTTP_409_CONFLICT)
+
+  if isinstance(exc, NumberdarVerificationRequiredError):
+    return Response({'error': 'NUMBERDAR_VERIFICATION_REQUIRED', 'message': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+  
   return response

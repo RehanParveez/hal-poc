@@ -54,8 +54,11 @@ INSTALLED_APPS = [
     'apps.settlements',
     'apps.wallets',
     'apps.notifications',
+    'apps.community',
     'django_celery_beat',
 ]
+
+NUMBERDAR_APPROVAL_TIMEOUT_DAYS = int(os.environ.get('NUMBERDAR_APPROVAL_TIMEOUT_DAYS', 7))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
