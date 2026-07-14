@@ -2,6 +2,7 @@ from django.db import transaction
 from apps.land.models import Land, TenantAgreement
 from shared.exceptions import AcreageCeilingExceededError
 from django.utils import timezone
+from apps.notifications.services import NotificationService
 
 class LandService:
   @staticmethod
@@ -34,6 +35,8 @@ class TenantAgreementService:
       agreement.status = 'active'
       agreement.approved_at = timezone.now()
       agreement.save(update_fields=['landowner_approved', 'status', 'approved_at'])
+      transaction.on_commit(lambda: NotificationService.notify(agreement.tenant.user, 'agreement_approved',
+       {'agreement_type': agreement.agreement_type, 'leased_acres': agreement.leased_acres}, reference_id=agreement.id))
       return agreement
 
   @staticmethod
@@ -48,4 +51,6 @@ class TenantAgreementService:
       agreement.landowner_approved = False
       agreement.rejected_reason = reason
       agreement.save(update_fields=['status', 'landowner_approved', 'rejected_reason'])
+      transaction.on_commit(lambda: NotificationService.notify(agreement.tenant.user, 'agreement_rejected',
+        {'rejected_reason': reason or 'No reason provided.'}, reference_id=agreement.id))
       return agreement

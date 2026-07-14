@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db import transaction
 from apps.insurance.models import InsurancePolicy, InsuranceClaim
+from apps.notifications.services import NotificationService
 
 PREMIUM_RATE = Decimal('0.025')
 
@@ -32,6 +33,9 @@ class InsuranceClaimService:
     policy = InsurancePolicy.objects.select_related('loan__farmer__user').get(id=policy_id)
     if policy.status == 'expired':
       raise ValueError('cant file a claim on an expired policy.')
+    if policy.insurer:
+     NotificationService.notify(policy.insurer.user, 'claim_filed', {'claim_amount': claim_amount, 'farmer_name': claimed_by_user.full_name,
+       'reason': reason}, reference_id=claim.id)
     if policy.loan.farmer.user != claimed_by_user:
       raise PermissionError('you can only file a claim on your own policy.')
     claim = InsuranceClaim.objects.create(policy=policy, claimed_by=claimed_by_user, reason=reason, claim_amount=Decimal(str(claim_amount)), status='pending')
@@ -64,5 +68,8 @@ class InsuranceClaimService:
           claim.policy.status = 'active'
           claim.policy.save(update_fields=['status'])
       claim.save()
+      transaction.on_commit(lambda: NotificationService.notify(claim.claimed_by, 'claim_reviewed',
+       {'decision': decision, 'extra_note': f"Approved amount: PKR {approved_amount}" if decision == 'approved' else (reviewer_note or '')},
+        reference_id=claim.id))
 
     return claim

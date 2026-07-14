@@ -4,6 +4,7 @@ from apps.loans.models import LoanApplication
 from shared.exceptions import LoanAlreadyDisbursedError
 from apps.escrow.services import EscrowCreationService
 from apps.escrow.models import EscrowWallet
+from apps.notifications.services import NotificationService
 
 class LoanApplicationService:
   @staticmethod
@@ -27,6 +28,10 @@ class LoanApplicationService:
       loan.status = 'bank_approved'
       loan.approved_at = timezone.now()
       loan.save()
+      
+      transaction.on_commit(lambda: NotificationService.notify(loan.farmer.user, 'loan_approved',
+       {'approved_amount': approved_amount, 'interest_rate_pct': interest_rate_pct, 'bank_name': bank_profile.institution_name},
+       reference_id=loan.id))
       return loan
 
   @staticmethod
@@ -41,6 +46,8 @@ class LoanApplicationService:
       loan.status = 'rejected'
       loan.rejection_reason = rejection_reason
       loan.save(update_fields=['status', 'rejection_reason'])
+      transaction.on_commit(lambda: NotificationService.notify(
+       loan.farmer.user, 'loan_rejected', {'rejection_reason': rejection_reason}, reference_id=loan.id))
       return loan
   
   @staticmethod
@@ -60,4 +67,7 @@ class LoanApplicationService:
       escrow = EscrowWallet.objects.filter(loan=loan).first()
       if not escrow:
        escrow = EscrowCreationService.create(loan)
+      transaction.on_commit(lambda: NotificationService.notify(loan.farmer.user, 'loan_disbursed', {'escrow_balance': escrow.remaining_balance,
+       'insurance_premium': escrow.insurance_premium_deducted},
+        reference_id=loan.id))
       return loan, escrow

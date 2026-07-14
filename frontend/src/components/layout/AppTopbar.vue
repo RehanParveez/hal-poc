@@ -4,9 +4,12 @@
       <h2 class="text-sm font-semibold text-gray-700">{{ pageTitle }}</h2>
       <p class="text-xs text-gray-400">{{ auth.user?.district }} · {{ auth.user?.province }}</p>
     </div>
+    <div class="flex items-center gap-4">              
+    <NotificationBell />
     <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium capitalize">
       {{ auth.user?.role }}
     </span>
+   </div>
   </header>
 </template>
 
@@ -14,6 +17,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
+import NotificationBell from '@/components/shared/NotificationBell.vue'
 
 const PATH_TITLES = {
   '/farmer/dashboard': 'Farmer Dashboard',

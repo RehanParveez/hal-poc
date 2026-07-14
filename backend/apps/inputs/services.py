@@ -7,6 +7,7 @@ from decimal import Decimal
 from django.db.models import Sum
 from apps.inputs.models import InputSupplyRequest
 from apps.wallets.services import WalletService
+from apps.notifications.services import NotificationService
 
 logger = logging.getLogger(__name__)
 
@@ -51,4 +52,9 @@ def process_input_request(escrow_id, shopkeeper_profile, input_category, amount,
     WalletService.credit_wallet(wallet=shopkeeper_wallet, amount=amount, txn_type='input', reference_id=supply_request.id, 
       note=f"input payment: {input_category} from farmer {loan.farmer.user.full_name}")
     logger.info(f"[AFO GATE PASSED] Escrow {escrow_id} | Category: {input_category} | Amount: PKR {amount} | Cap: {max_allowed} | Already spent: {already_spent}")
+    
+    NotificationService.notify(loan.farmer.user, 'input_payment_success',
+     {'amount': amount, 'input_category': input_category, 'shopkeeper_name': shopkeeper_profile.shop_name}, reference_id=supply_request.id)
+    NotificationService.notify(shopkeeper_profile.user, 'payment_received',
+     {'amount': amount, 'input_category': input_category}, reference_id=supply_request.id)
   return supply_request

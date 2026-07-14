@@ -5,6 +5,7 @@ from apps.settlements.models import SettlementInvoice
 from apps.loans.models import LoanApplication
 from apps.wallets.models import Wallet, WalletTransaction
 from django.utils import timezone
+from apps.notifications.services import NotificationService
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,8 @@ class SettlementService:
       loan_locked.save(update_fields=['loan_recovered_to_date', 'status'])
       batch.status = 'payment_triggered'
       batch.save(update_fields=['status'])
+      transaction.on_commit(lambda: NotificationService.notify(loan.farmer.user, 'settlement_complete',
+       {'batch_kg': batch.batch_kg, 'farmer_net_profit': farmer_net}, reference_id=invoice.id))
 
     print(f"\n{'='*60}")
     print(f"  HAL SETTLEMENT")
@@ -127,5 +130,7 @@ class SettlementService:
       invoice.status = 'factsettl'
       invoice.factory_paid_at = timezone.now()
       invoice.save(update_fields=['status', 'factory_paid_at'])
+      transaction.on_commit(lambda: NotificationService.notify(invoice.loan.bank.user, 'factory_settlement_confirmed',
+       {'gross_payout': invoice.gross_payout}, reference_id=invoice.id))
 
       return invoice

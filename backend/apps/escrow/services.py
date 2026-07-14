@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db.models import Sum
 from shared.exceptions import AFOLimitExceededError, WrongPhaseForCategoryError, NoActivePhaseError, NotEnoughEscrowError
 from apps.wallets.services import WalletService
+from apps.notifications.services import NotificationService
 
 INSURANCE_PREMIUM_RATE = Decimal('0.025')
 
@@ -51,6 +52,9 @@ class EscrowCreationService:
       current.save(update_fields=['is_active'])
       EscrowMilestoneUnlock.objects.create(escrow=escrow, milestone=next_milestone, unlocked_amount=unlock_amount, unlocked_at=timezone.now(),
         is_active=True)
+      transaction.on_commit(lambda: NotificationService.notify(escrow.loan.farmer.user, 'escrow_phase_unlocked',
+       {'phase_number': next_milestone.phase_number, 'phase_name': next_milestone.phase_name,
+        'allowed_categories': ', '.join(next_milestone.allowed_input_categories)}, reference_id=escrow.id))
     return next_milestone
 
 class InputPaymentService:
