@@ -13,6 +13,11 @@ export const useLoansStore = defineStore('loans', {
     error: null,
   }),
 
+  getters: {
+    pendingCreditCheckLoan: (state) =>
+      state.myLoans.find((l) => l.status === 'bank_approved' && l.credit_check_status !== 'approved') || null,
+  },
+
   actions: {
     async fetchAllMyLoans() {
       this.isLoading = true

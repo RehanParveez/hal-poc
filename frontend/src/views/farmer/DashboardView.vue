@@ -7,6 +7,7 @@
       </button>
     </div>
     <div id="community-section"><CommunityVerificationCard /></div>
+    <div id="credit-section"><CreditCheckSection /></div>
     <div id="escrow-section"><EscrowDashboardView v-if="auth.isLoggedIn" /></div>
     <div id="settlements-section"><SettlementsList v-if="auth.isLoggedIn" /></div>
     <div id="delivery-section"><LogDeliveryForm v-if="auth.isLoggedIn" /> </div>
@@ -38,6 +39,7 @@ import BrowseContracts from '@/components/farmer/BrowseContracts.vue'
 import RequestAgreementForm from '@/components/farmer/RequestAgreementForm.vue'
 import FileClaimModal from '@/components/farmer/FileClaimModal.vue'
 import CommunityVerificationCard from '@/components/farmer/CommunityVerificationCard.vue'
+import CreditCheckSection from '@/components/farmer/CreditCheckSection.vue'
 
 const showClaimModal = ref(false)
 const auth = useAuthStore()

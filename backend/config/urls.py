@@ -33,4 +33,5 @@ urlpatterns = [
     path('wallets/', include('apps.wallets.urls')),
     path('notifications/', include('apps.notifications.urls')),
     path('community/', include('apps.community.urls')),
+    path('credit/', include('apps.credit.urls')),
 ]

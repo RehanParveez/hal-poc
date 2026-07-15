@@ -19,6 +19,9 @@ class Notification(BaseModel):
     ('numberdar_approved', 'Numberdar Approved'),   
     ('numberdar_rejected', 'Numberdar Rejected'),  
     ('verification_escalated', 'Verification Escalated'),
+    ('credit_otp_sent', 'Credit OTP Sent'),  
+    ('credit_check_completed', 'Credit Check Completed'),
+    ('credit_check_manual_review', 'Credit Check Manual Review'),
   )
   
   CHANNEL_CHOICES = (

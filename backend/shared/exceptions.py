@@ -63,6 +63,24 @@ class DuplicateVerificationRequestError(Exception):
 class NumberdarVerificationRequiredError(Exception):
   def __init__(self):
     super().__init__("this farmer has not been verified by a Numberdar yet. Loans can't be disbursed.")
+    
+class ConsentNotVerifiedError(Exception):
+  def __init__(self):
+    super().__init__("otp consent must be verified before running a credit check.")
+
+class CreditCheckRequiredError(Exception):
+  def __init__(self):
+    super().__init__("credit check must be completed and approved before this loan can be disbursed.")
+
+class CreditBureauRejectedError(Exception):
+  def __init__(self, message = 'credit bureau rejected the request.'):
+    self.message = message
+    super().__init__(message)
+
+class ExternalServiceUnavailable(Exception):
+  def __init__(self, service_name='external service'):
+    self.service_name = service_name
+    super().__init__(f"{service_name} is currently unavailable. Please try again shortly.")
 
 def custom_exception_handler(exc, context):
   response = exception_handler(exc, context)
@@ -117,5 +135,17 @@ def custom_exception_handler(exc, context):
 
   if isinstance(exc, NumberdarVerificationRequiredError):
     return Response({'error': 'NUMBERDAR_VERIFICATION_REQUIRED', 'message': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+  
+  if isinstance(exc, ConsentNotVerifiedError):
+    return Response({'error': 'CONSENT_NOT_VERIFIED', 'message': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+  if isinstance(exc, CreditCheckRequiredError):
+    return Response({'error': 'CREDIT_CHECK_REQUIRED', 'message': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+  if isinstance(exc, CreditBureauRejectedError):
+    return Response({'error': 'CREDIT_BUREAU_REJECTED', 'message': exc.message}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+  if isinstance(exc, ExternalServiceUnavailable):
+    return Response({'error': 'EXTERNAL_SERVICE_UNAVAILABLE', 'message': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
   
   return response

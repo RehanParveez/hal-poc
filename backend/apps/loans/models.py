@@ -9,6 +9,14 @@ class LoanApplication(BaseModel):
     ('repaid', 'Fully Repaid'),
     ('rejected', 'Rejected'),
   )
+  
+  CREDIT_CHOICES = (
+    ('not_run', 'Not Run'),
+    ('pending', 'Pending'),
+    ('approved', 'Approved'),
+    ('rejected', 'Rejected'),
+    ('manual_review', 'Manual Review'),
+  )
   farmer = models.ForeignKey('accounts.FarmerProfile', on_delete=models.PROTECT, related_name = 'loan_applications')
   bank = models.ForeignKey('accounts.BankProfile', on_delete=models.PROTECT, related_name = 'loan_applications')
   tenant_agreement = models.ForeignKey('land.TenantAgreement', on_delete=models.PROTECT, related_name = 'loan_applications',
@@ -24,6 +32,8 @@ class LoanApplication(BaseModel):
   approved_at = models.DateTimeField(null=True, blank=True)
   disbursed_at = models.DateTimeField(null=True, blank=True)
   numberdar_verified_at_application = models.BooleanField(default=False)
+  credit_check = models.ForeignKey('credit.CreditCheck', on_delete=models.SET_NULL, null=True, blank=True)  
+  credit_check_status = models.CharField(max_length=30, choices=CREDIT_CHOICES, default = 'not_run')
 
   class Meta:
     db_table = 'loan_applications'

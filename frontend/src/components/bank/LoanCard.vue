@@ -39,6 +39,14 @@
       <button @click="handleDisburse" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">Disburse</button>
     </div>
   </div>
+
+  <div v-if="['bank_approved', 'disbursed'].includes(loan.status)" class="mt-3 border-t pt-3">
+    <button @click="toggleCreditPanel" class="text-xs text-green-700 hover:underline">
+      {{ showCreditPanel ? 'Hide' : 'View' }} Credit Check Details
+  </button>
+  <CreditCheckPanel v-if="showCreditPanel" :credit-check="loanCreditCheck" class="mt-2" />
+</div>
+
 </template>
 
 <script setup>
@@ -47,6 +55,12 @@ import { ref } from 'vue'
 import { useLoansStore } from '@/stores/loans.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
 import CreditTierBadge from '@/components/shared/CreditTierBadge.vue'
+import CreditCheckPanel from '@/views/bank/CreditCheckPanel.vue'
+import { useCreditStore } from '@/stores/credit.js'
+
+const credit = useCreditStore()   
+const showCreditPanel = ref(false)  
+const loanCreditCheck = ref(null) 
 
 const props = defineProps({
   loan: { type: Object, required: true },
@@ -90,6 +104,13 @@ async function handleDisburse() {
   await loansStore.disburseLoan(props.loan.id)
   } catch (error) {
     notify.showError(error.response?.data?.error ?? 'Failed to disburse loan.')
+  }
+}
+
+async function toggleCreditPanel() {
+  showCreditPanel.value = !showCreditPanel.value
+  if (showCreditPanel.value && !loanCreditCheck.value) {
+    loanCreditCheck.value = await credit.fetchByLoan(props.loan.id)
   }
 }
 

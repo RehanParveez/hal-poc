@@ -63,4 +63,16 @@ EVENT_TEMPLATES = {
   'subject': 'Verification Request Needs Review',
   'message': 'Hi {full_name}, a verification request for {farmer_name} (assigned to {numberdar_name}) has been pending too long and needs review.',
 },
+'credit_otp_sent': {
+  'subject': 'Your Credit Check Verification Code',
+  'message': 'Hi {full_name}, your OTP for the credit check is {otp_code}. This code expires in 10 minutes. Do not share it with anyone.',
+},
+'credit_check_completed': {
+  'subject': 'Your Credit Check Is Complete',
+  'message': 'Hi {full_name}, your credit check has been completed. Result: {eligibility_text} (Risk tier: {risk_tier}).',
+},
+'credit_check_manual_review': {
+  'subject': 'Credit Check Needs Manual Review',
+  'message': 'Hi {full_name}, a credit check for {farmer_name} could not be completed automatically and needs manual review.',
+},
 }
