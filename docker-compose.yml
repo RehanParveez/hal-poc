@@ -97,6 +97,29 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+  celery_worker_credit:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A config worker -Q credit_checks -c 2 -l info
+    volumes:
+      - ./backend:/app
+    environment:
+      - DB_HOST=db
+      - DB_NAME=fasal_db
+      - DB_USER=postgres
+      - DB_PASSWORD=rehpostgre1
+      - DB_PORT=5432
+      - SECRET_KEY=poc-dev-secret-key-change-in-prod
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:

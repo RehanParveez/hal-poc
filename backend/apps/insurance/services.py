@@ -22,7 +22,11 @@ class InsurancePremiumService:
       escrow_locked.remaining_balance -= premium
       escrow_locked.save(update_fields=['insurance_premium_deducted', 'remaining_balance'])
       insurer = InsuranceProfile.objects.filter(is_primary=True).first()
-      EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=insurer.user if insurer else loan.bank.user)
+      recipient = insurer.user if insurer else loan.bank.user
+      EscrowTransaction.objects.create(escrow=escrow, txn_type='insurance', amount=premium, recipient=recipient)
+      recipient_wallet = recipient.wallet
+      recipient_wallet.balance += premium
+      recipient_wallet.save(update_fields=['balance'])
       policy = InsurancePolicy.objects.create(loan=loan, insurer=insurer, coverage_amount=loan.approved_amount, premium_amount=premium, status='active',
         policy_start=timezone.now().date(), policy_end=timezone.now().date() + timedelta(days=180))
       return policy
@@ -33,15 +37,14 @@ class InsuranceClaimService:
     policy = InsurancePolicy.objects.select_related('loan__farmer__user').get(id=policy_id)
     if policy.status == 'expired':
       raise ValueError('cant file a claim on an expired policy.')
-    if policy.insurer:
-     NotificationService.notify(policy.insurer.user, 'claim_filed', {'claim_amount': claim_amount, 'farmer_name': claimed_by_user.full_name,
-       'reason': reason}, reference_id=claim.id)
     if policy.loan.farmer.user != claimed_by_user:
       raise PermissionError('you can only file a claim on your own policy.')
     claim = InsuranceClaim.objects.create(policy=policy, claimed_by=claimed_by_user, reason=reason, claim_amount=Decimal(str(claim_amount)), status='pending')
-    if policy.status == 'active':
-      policy.status = 'claimed'
-      policy.save(update_fields=['status'])
+    policy.status = 'claimed'
+    policy.save()
+    if policy.insurer:
+     NotificationService.notify(policy.insurer.user, 'claim_filed', {'claim_amount': claim_amount, 'farmer_name': claimed_by_user.full_name,
+       'reason': reason}, reference_id=claim.id)
     return claim
 
   @staticmethod

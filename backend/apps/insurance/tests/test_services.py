@@ -11,6 +11,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db import IntegrityError, connections
 from apps.accounts.tests.factories import UserFactory
+from apps.wallets.models import Wallet
 
 @pytest.mark.django_db
 class TestEnrollAndDeductBasics:
@@ -51,6 +52,7 @@ class TestEnrollAndDeductInsurerAssignment:
     insurer_a = InsuranceProfileFactory(company_name = 'EFU Life')
     insurer_a.is_primary = True
     insurer_a.save()
+    Wallet.objects.create(user=insurer_a.user, balance=Decimal('0.00'))
     policy = InsurancePremiumService.enroll_and_deduct(loan, escrow)
     assert policy.insurer_id == insurer_a.id
 

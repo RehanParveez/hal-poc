@@ -22,6 +22,8 @@ class Notification(BaseModel):
     ('credit_otp_sent', 'Credit OTP Sent'),  
     ('credit_check_completed', 'Credit Check Completed'),
     ('credit_check_manual_review', 'Credit Check Manual Review'),
+    ('batch_received', 'Batch Received'),      
+    ('delivery_confirmed', 'Delivery Confirmed'),
   )
   
   CHANNEL_CHOICES = (

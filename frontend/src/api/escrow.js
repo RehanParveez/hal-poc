@@ -11,7 +11,3 @@ export function getEscrowTransactions(escrowId, params) {
 export function getAFOCaps(escrowId) {
   return apiClient.get(`/escrow/wallets/${escrowId}/afo_caps/`)
 }
-
-export function payShopkeeper(escrowId, payload) {
-  return apiClient.post(`/escrow/wallets/${escrowId}/pay_shopkeeper/`, payload)
-}

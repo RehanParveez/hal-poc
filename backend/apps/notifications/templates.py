@@ -75,4 +75,12 @@ EVENT_TEMPLATES = {
   'subject': 'Credit Check Needs Manual Review',
   'message': 'Hi {full_name}, a credit check for {farmer_name} could not be completed automatically and needs manual review.',
 },
+'batch_received': {
+  'subject': 'Your Delivery Has Been Received',
+  'message': 'Hi {full_name}, your batch of {batch_kg}kg has been received by {factory_name}.',
+},
+'delivery_confirmed': {
+  'subject': 'Your Delivery Grade Has Been Confirmed',
+  'message': 'Hi {full_name}, your {batch_kg}kg batch was graded {grade_received} ({grade_deduction_pct}% deduction). Your settlement is being processed.',
+},
 }

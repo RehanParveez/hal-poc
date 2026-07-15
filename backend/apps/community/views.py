@@ -6,6 +6,7 @@ from shared.permissions import FarmerPermission, NumberdarPerm, AdminPerm
 from apps.community.models import NumberdarProfile, FarmerVerificationRequest
 from apps.community.serializers import NumberdarProfileSerializer, FarmerVerificationRequestSerializer, VerificationRejectSerializer
 from apps.community.services import NumberdarVerificationService
+from rest_framework.throttling import ScopedRateThrottle
 
 class NumberdarProfileViewSet(viewsets.ReadOnlyModelViewSet):
   serializer_class = NumberdarProfileSerializer
@@ -13,6 +14,12 @@ class NumberdarProfileViewSet(viewsets.ReadOnlyModelViewSet):
 
   def get_permissions(self):
     return [(FarmerPermission | AdminPerm)()]
+  
+  def get_throttles(self):
+    if self.action in ('approve', 'reject'):
+      self.throttle_scope = 'numberdar_action'
+      return [ScopedRateThrottle()]
+    return super().get_throttles()
 
   def get_queryset(self):
     queryset = NumberdarProfile.objects.select_related('user').filter(is_active=True)

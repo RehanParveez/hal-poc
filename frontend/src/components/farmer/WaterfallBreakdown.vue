@@ -63,7 +63,6 @@ const rows = computed(() => {
     { label: 'Bank — Loan Principal Recovery', value: props.invoice.proportional_principal_deduction, type: 'deduction' },
     { label: 'Bank — Interest', value: props.invoice.bank_interest_deduction, type: 'deduction' },
     { label: 'Bank — Early Advance Commission', value: props.invoice.bank_factoring_commission, type: 'deduction' },
-    { label: 'HAL Platform Fee', value: props.invoice.platform_transaction_fee, type: 'deduction' },
   ]
   if (parseFloat(props.invoice.theka_payment) > 0) list.push({ label: 'Theka Rent (Landowner)', value: props.invoice.theka_payment, type: 'deduction' })
   if (parseFloat(props.invoice.batai_landowner_share) > 0) list.push({ label: 'Batai Share (Landowner)', value: props.invoice.batai_landowner_share, type: 'deduction' })

@@ -22,7 +22,6 @@ class SettlementService:
       if SettlementInvoice.objects.filter(batch=batch).exists():
         raise ValueError("this batch has already been settled.")
       farmer_wallet = Wallet.objects.select_for_update().get(user=loan.farmer.user)
-      platform_wallet = Wallet.objects.select_for_update().get(wallet_type='platform')
       loan_locked = LoanApplication.objects.select_for_update().get(id=loan.id)
       if loan_locked.approved_amount is None or loan_locked.interest_rate_pct is None:
         raise ValueError(f"Loan {loan_locked.id} is missing approved_amount or interest_rate_pct — it must be approved through the proper approval flow before settlement.")
@@ -36,7 +35,7 @@ class SettlementService:
       days_out = (timezone.now().date() - start_date).days
       interest = (principal * (loan_locked.interest_rate_pct / Decimal('100')) * days_out / Decimal('365')).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
       bank_commission = (gross * FACTORING_COMMISSION_RATE).quantize(Decimal('0.01'))
-      platform_fee = (gross * PLATFORM_FEE_RATE).quantize(Decimal('0.01'))
+      platform_fee = Decimal('0.01')
 
       theka_payment = Decimal('0')
       batai_landowner_share = Decimal('0')
@@ -76,11 +75,6 @@ class SettlementService:
           WalletTransaction.objects.create(wallet=landowner_wallet, amount=lo_amount, direction='credit',
             txn_type='batai_split' if batai_landowner_share > 0 else 'theka_payment', reference_id=invoice.id)
 
-      platform_wallet.balance += platform_fee
-      platform_wallet.save(update_fields=['balance'])
-      WalletTransaction.objects.create(wallet=platform_wallet, amount=platform_fee, direction='credit',
-        txn_type='platform_fee', reference_id=invoice.id)
-
       loan_locked.loan_recovered_to_date += (principal + interest)
       if loan_locked.loan_recovered_to_date >= loan_locked.approved_amount:
         loan_locked.status = 'repaid'
@@ -102,7 +96,8 @@ class SettlementService:
     print(f"  - Loan Principal: PKR {principal:>12}")
     print(f"  - Interest: PKR {interest:>12}")
     print(f"  - Bank Commission: PKR {bank_commission:>12}")
-    print(f"  - Platform Fee: PKR {platform_fee:>12}")
+    if platform_fee:
+      print(f"  - Platform Fee: PKR {platform_fee:>12}")
     if theka_payment:
       print(f"  - Theka Rent: PKR {theka_payment:>12}")
     if batai_landowner_share:

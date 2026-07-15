@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.utils import timezone
 from apps.delivery.models import BatchDelivery
 from apps.settlements.services import SettlementService
+from apps.notifications.services import NotificationService
 
 class BatchDeliveryService:
 
@@ -33,6 +34,8 @@ class BatchDeliveryService:
         raise ValueError(f"only in_transit batches can be marked receiv. Current status: {batch.status}.")
       batch.status = 'received'
       batch.save(update_fields=['status'])
+      NotificationService.notify(batch.allocation.farmer.user, 'batch_received', 
+        {'batch_kg': batch.batch_kg, 'factory_name': batch.allocation.contract.factory.factory_name}, reference_id=batch.id)
       return batch
 
   @staticmethod
@@ -54,4 +57,8 @@ class BatchDeliveryService:
       batch.grade_confirmed_at = timezone.now()
       batch.save(update_fields=['grade_received', 'grade_deduction_pct', 'grade_notes', 'actual_payout', 'status', 'grade_confirmed_at'])
       SettlementService.execute_settlement(batch)
-      return batch
+      
+    NotificationService.notify(batch.allocation.farmer.user, 'delivery_confirmed',
+      {'batch_kg': batch.batch_kg, 'grade_received': batch.grade_received, 'grade_deduction_pct': batch.grade_deduction_pct},
+      reference_id=batch.id)
+    return batch

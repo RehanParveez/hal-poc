@@ -29,7 +29,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import CreditTierBadge from './CreditTierBadge.vue'
+import CreditTierBadge from '../shared/CreditTierBadge.vue'
 const props = defineProps({ creditCheck: { type: Object, required: true } })
 const rejectionReason = computed(() => {
   if (props.creditCheck.ecib_status === 'write_off') return 'A previous loan was written off. Please contact your bank.'

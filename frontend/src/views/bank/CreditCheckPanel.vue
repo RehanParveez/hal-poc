@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import CreditTierBadge from '@/components/farmer/CreditTierBadge.vue'
+import CreditTierBadge from '../../components/shared/CreditTierBadge.vue'
 defineProps({ creditCheck: { type: Object, default: null } })
 const showRaw = ref(false)
 </script>
