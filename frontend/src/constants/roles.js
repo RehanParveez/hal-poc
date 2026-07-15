@@ -8,4 +8,5 @@ export const ROLE_HOME = {
   insurance: '/insurance/dashboard',
   afo: '/afo/dashboard',
   admin: '/bank/dashboard',
+  numberdar: '/numberdar/dashboard',
 }

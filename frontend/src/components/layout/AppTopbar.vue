@@ -30,6 +30,8 @@ const PATH_TITLES = {
   '/shopkeeper/dashboard': 'Shopkeeper Dashboard',
   '/insurance/dashboard': 'Insurance Dashboard',
   '/afo/dashboard': 'AFO Dashboard',
+  '/numberdar/dashboard': 'Numberdar Dashboard',
+  '/numberdar/queue': 'Verification Queue',
 }
 
 const auth = useAuthStore()

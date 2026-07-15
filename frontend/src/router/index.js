@@ -63,6 +63,13 @@ const routes = [
     path: '/',
     redirect: '/login',
   },
+
+  { path: '/numberdar/dashboard', name: 'numberdar-dashboard',
+    component: () => import('@/views/numberdar/DashboardView.vue'), meta: { roles: ['numberdar'] } },
+
+  { path: '/numberdar/queue', name: 'numberdar-queue',
+    component: () => import('@/views/numberdar/VerificationQueueView.vue'), meta: { roles: ['numberdar'] } },
+    
 ]
 
 const router = createRouter({

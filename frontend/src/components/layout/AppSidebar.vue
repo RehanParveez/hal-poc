@@ -50,7 +50,9 @@ const NAV_CONFIGS = {
     { anchor: '#delivery-section', icon: '❖', label: 'Log Delivery' },
     { anchor: '#loan-section', icon: '⚿', label: 'My Loans' },
     { anchor: '#contracts-section', icon: '☰', label: 'Contracts' },
+    { anchor: '#community-section', icon: '👤', label: 'Verification' },
   ],
+
   tenant: [
     { path: '/farmer/dashboard', icon: '⌂', label: 'Dashboard' },
     { anchor: '#escrow-section', icon: '⌏', label: 'Escrow' },
@@ -58,16 +60,20 @@ const NAV_CONFIGS = {
     { anchor: '#delivery-section', icon: '❖', label: 'Log Delivery' },
     { anchor: '#loan-section', icon: '⚿', label: 'My Loans' },
     { anchor: '#contracts-section', icon: '☰', label: 'Contracts' },
+    { anchor: '#community-section', icon: '👤', label: 'Verification' },
   ],
+
   landowner: [
     { path: '/landowner/dashboard', icon: '⌂', label: 'Dashboard' },
     { anchor: '#parcels-section', icon: '⚃', label: 'Land Parcels' },
     { anchor: '#agreements-section', icon: '🤝', label: 'Agreements' },
   ],
+
   bank: [
     { path: '/bank/dashboard', icon: '⚿', label: 'Loan Queue' },
     { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
   ],
+
   admin: [{ path: '/bank/dashboard', icon: '⚿', label: 'Loan Queue' }],
   factory: [
     { path: '/factory/dashboard', icon: '⌂', label: 'Dashboard' },
@@ -75,17 +81,24 @@ const NAV_CONFIGS = {
     { anchor: '#settlements-section', icon: '◆', label: 'Settlements' },
     { anchor: '#post-contract-section', icon: '☰', label: 'Post Contract' },
   ],
+
   shopkeeper: [{ path: '/shopkeeper/dashboard', icon: '⌂', label: 'Dashboard' }],
   insurance: [
     { path: '/insurance/dashboard', icon: '⌂', label: 'Dashboard' },
     { anchor: '#claims-section', icon: '☰', label: 'Claims' },
     { anchor: '#policies-section', icon: '⌏', label: 'Policies' },
   ],
+
   afo: [
     { path: '/afo/dashboard', icon: '⌂', label: 'Dashboard' },
     { anchor: '#crop-types-section', icon: '❖', label: 'Crop Types' },
     { anchor: '#input-caps-section', icon: '◆', label: 'Spending Caps' },
     { anchor: '#milestones-section', icon: '☰', label: 'Milestones' },
+  ],
+
+  numberdar: [
+    { path: '/numberdar/dashboard', icon: '⌂', label: 'Dashboard' },
+    { path: '/numberdar/queue', icon: '👁', label: 'Verification Queue' },
   ],
 }
 

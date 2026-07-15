@@ -23,6 +23,7 @@ class LoanApplication(BaseModel):
   loan_recovered_to_date = models.DecimalField(max_digits=14, decimal_places=2, default=0)
   approved_at = models.DateTimeField(null=True, blank=True)
   disbursed_at = models.DateTimeField(null=True, blank=True)
+  numberdar_verified_at_application = models.BooleanField(default=False)
 
   class Meta:
     db_table = 'loan_applications'

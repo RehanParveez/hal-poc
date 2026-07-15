@@ -47,4 +47,20 @@ EVENT_TEMPLATES = {
     'subject': 'Your Insurance Claim Has Been Reviewed',
     'message': 'Hi {full_name}, your claim has been {decision}. {extra_note}',
   },
+  'verification_request_received': {
+  'subject': 'New Farmer Verification Request',
+  'message': 'Hi {full_name}, {farmer_name} from {farmer_district} has requested your verification to access loans.',
+},
+'numberdar_approved': {
+  'subject': 'You Have Been Verified',
+  'message': 'Hi {full_name}, your local Numberdar has verified your account. You can now apply for a loan.',
+},
+'numberdar_rejected': {
+  'subject': 'Verification Request Update',
+  'message': 'Hi {full_name}, your verification request was not approved. Reason: {numberdar_notes}',
+},
+'verification_escalated': {
+  'subject': 'Verification Request Needs Review',
+  'message': 'Hi {full_name}, a verification request for {farmer_name} (assigned to {numberdar_name}) has been pending too long and needs review.',
+},
 }

@@ -6,6 +6,7 @@
         File Crop Damage Claim
       </button>
     </div>
+    <div id="community-section"><CommunityVerificationCard /></div>
     <div id="escrow-section"><EscrowDashboardView v-if="auth.isLoggedIn" /></div>
     <div id="settlements-section"><SettlementsList v-if="auth.isLoggedIn" /></div>
     <div id="delivery-section"><LogDeliveryForm v-if="auth.isLoggedIn" /> </div>
@@ -36,6 +37,7 @@ import LoanHistory from '@/components/farmer/LoanHistory.vue'
 import BrowseContracts from '@/components/farmer/BrowseContracts.vue'
 import RequestAgreementForm from '@/components/farmer/RequestAgreementForm.vue'
 import FileClaimModal from '@/components/farmer/FileClaimModal.vue'
+import CommunityVerificationCard from '@/components/farmer/CommunityVerificationCard.vue'
 
 const showClaimModal = ref(false)
 const auth = useAuthStore()

@@ -15,6 +15,10 @@ class Notification(BaseModel):
     ('factory_settlement_confirmed', 'Factory Settlement Confirmed'),
     ('claim_filed', 'Insurance Claim Filed'),
     ('claim_reviewed', 'Insurance Claim Reviewed'),
+    ('verification_request_received', 'Verification Request Received'),
+    ('numberdar_approved', 'Numberdar Approved'),   
+    ('numberdar_rejected', 'Numberdar Rejected'),  
+    ('verification_escalated', 'Verification Escalated'),
   )
   
   CHANNEL_CHOICES = (

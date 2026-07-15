@@ -5,12 +5,14 @@ from shared.exceptions import LoanAlreadyDisbursedError
 from apps.escrow.services import EscrowCreationService
 from apps.escrow.models import EscrowWallet
 from apps.notifications.services import NotificationService
+from shared.exceptions import LoanAlreadyDisbursedError, NumberdarVerificationRequiredError
 
 class LoanApplicationService:
   @staticmethod
   def apply_for_loan(farmer_profile, bank_profile, validated_data):
     with transaction.atomic():
-      loan = LoanApplication.objects.create(farmer=farmer_profile, bank=bank_profile, status='submitted', **validated_data)
+      loan = LoanApplication.objects.create(farmer=farmer_profile, bank=bank_profile, status='submitted',
+        numberdar_verified_at_application=farmer_profile.user.numberdar_verified, **validated_data)
       return loan
 
   @staticmethod
@@ -58,6 +60,8 @@ class LoanApplicationService:
         raise PermissionError("You can only disburse loans assigned to your bank.")
       if loan.status == 'disbursed':
         raise LoanAlreadyDisbursedError()
+      if not loan.farmer.user.numberdar_verified:                    
+        raise NumberdarVerificationRequiredError()
       if loan.status != 'bank_approved':
         raise ValueError(f"Loan must be bank_approved. Current: {loan.status}.")
       loan.status = 'disbursed'
