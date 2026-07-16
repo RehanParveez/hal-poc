@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <form @submit.prevent="handleSubmit" class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4">
-      <h1 class="text-2xl font-bold text-center">Hal Login</h1>
+      <h1 class="text-2xl font-bold text-center">{{ $t('auth.loginTitle') }}</h1>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Phone</label>
+        <label class="block text-sm font-medium mb-1">{{ $t('common.phone') }}</label>
         <input
           v-model="phone"
           type="text"
@@ -29,9 +29,8 @@
       <button
         type="submit"
         :disabled="auth.isLoading"
-        class="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50"
-      >
-        {{ auth.isLoading ? 'Logging in...' : 'Login' }}
+        class="w-full bg-green-700 text-white py-2 rounded disabled:opacity-50">
+        {{ auth.isLoading ? $t('common.loading') : $t('common.login') }}
       </button>
     </form>
   </div>

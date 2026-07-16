@@ -85,11 +85,15 @@ export const useAuthStore = defineStore('auth', {
       return this.accessToken
     },
 
-    async updateEmail(email) {
-     const res = await authApi.updateProfile({ email })
+    async updateProfile(payload) {
+     const res = await authApi.updateProfile({ payload })
      this.user = res.data
      return this.user
     },
+
+    async updateEmail(email) {
+     return this.updateProfile({ email })
+   },
 
     async restoreSession() {
       const accessToken = sessionStorage.getItem('accessToken')

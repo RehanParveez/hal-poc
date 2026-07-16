@@ -47,5 +47,5 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'phone', 'cnic', 'full_name', 'role', 'district', 'province', 'is_verified', 'numberdar_verified', 'credit_tier', 'secp_verified', 'ntn_verified', 'email']
+    fields = ['id', 'phone', 'cnic', 'full_name', 'role', 'district', 'province', 'is_verified', 'numberdar_verified', 'credit_tier', 'secp_verified', 'ntn_verified', 'email', 'preferred_language']
     read_only_fields = ['id', 'role', 'is_verified', 'numberdar_verified', 'credit_tier', 'secp_verified', 'ntn_verified']

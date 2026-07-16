@@ -7,10 +7,17 @@ logger = logging.getLogger(__name__)
 class NotificationService:
   @staticmethod
   def notify(user, event_type, context, reference_id=None):
-    template = EVENT_TEMPLATES.get(event_type)
-    if not template:
+    templates_for_event = EVENT_TEMPLATES.get(event_type)
+    if not templates_for_event:
       logger.warning(f"No template found for event_type '{event_type}'")
       return
+    
+    lang = getattr(user, 'preferred_language', 'en')                             
+    template = templates_for_event.get(lang) or templates_for_event.get('en')  
+    if not template:
+      logger.warning(f"No usable template for event_type '{event_type}' in any language")
+      return
+    
     ctx = {'full_name': user.full_name, **context}
     try:
       subject = template['subject'].format(**ctx)

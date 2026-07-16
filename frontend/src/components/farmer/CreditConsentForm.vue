@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3 class="font-bold text-gray-800 mb-2">Credit History Check Required</h3>
-    <p class="text-sm text-gray-500 mb-3">
+    <h3 class="font-bold text-gray-800 mb-2">{{ $t('credit.title') }}</h3>
+    <p class="text-sm text-gray-500 mb-3">{{ $t('credit.consentIntro') }}
       Before your loan can be disbursed, your bank needs to check your credit history through eCIB and Tasdeeq.
-      This information is only shared with your partner bank and FasalPay.
+      This information is only shared with your partner bank and HAL.
     </p>
     <label class="flex items-start gap-2 text-sm mb-2">
       <input type="checkbox" v-model="consent1" class="mt-1" />
-      <span>I authorize FasalPay and my partner bank to access my eCIB credit history</span>
+      <span>{{ $t('credit.consent1') }}</span>
     </label>
     <label class="flex items-start gap-2 text-sm mb-2">
       <input type="checkbox" v-model="consent2" class="mt-1" />

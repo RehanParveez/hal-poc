@@ -1,0 +1,40 @@
+{
+  "common": {
+    "login": "Login", "logout": "Sign out", "submit": "Submit", "cancel": "Cancel",
+    "loading": "Loading...", "save": "Save", "back": "Back", "continue": "Continue",
+    "phone": "Phone", "password": "Password", "district": "District", "province": "Province",
+    "fullName": "Full Name", "cnic": "CNIC Number"
+  },
+  "auth": {
+    "loginTitle": "Hal Login", "createAccount": "Create Account", "joinPlatform": "Join the Hal Platform",
+    "alreadyHaveAccount": "Already have an account? Login",
+    "loginFailed": "Login failed. Please check your phone and password.",
+    "selectRole": "Select System Access Level",
+    "smallholder": "Smallholder Farmer", "tenant": "Tenant Farmer", "landowner": "Landowner", "shopkeeper": "Shopkeeper"
+  },
+  "escrow": {
+    "title": "Escrow Balance", "totalFunded": "of {amount} total", "spentOnInputs": "Spent on inputs",
+    "activePhase": "Phase {number}: {name}", "allowed": "Allowed"
+  },
+  "credit": {
+    "title": "Credit History Check Required",
+    "consentIntro": "Before your loan can be disbursed, your bank needs to check your credit history through eCIB and Tasdeeq. This information is only shared with your partner bank and Hal.",
+    "consent1": "I authorize Hal and my partner bank to access my eCIB credit history",
+    "consent2": "I authorize access to my Tasdeeq credit score",
+    "consent3": "I understand this check will be logged and stored per SBP regulations",
+    "sendOtp": "Send OTP", "otpSent": "Enter the 6-digit code sent to your phone:",
+    "otpError": "Incorrect or expired OTP. Please try again.",
+    "passed": "Credit Check Passed", "maxLimit": "Maximum Loan Limit", "notEligible": "Credit Check — Not Eligible",
+    "pending": "Your credit check is being processed...", "manualReview": "Under Manual Review",
+    "manualReviewText": "Our team is reviewing your file. We will contact you within 2 business days."
+  },
+  "community": {
+    "title": "Community Verification", "verified": "Verified by your Numberdar — you're eligible to apply for a loan.",
+    "pending": "Verification request pending with {name}.", "findNumberdar": "Find My Numberdar",
+    "request": "Request", "noneFound": "No Numberdars found in your district yet."
+  },
+  "status": {
+    "pending": "Pending", "approved": "Approved", "rejected": "Rejected",
+    "disbursed": "Disbursed", "repaid": "Repaid", "active": "Active"
+  }
+}

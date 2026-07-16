@@ -4,7 +4,8 @@
       <h2 class="text-sm font-semibold text-gray-700">{{ pageTitle }}</h2>
       <p class="text-xs text-gray-400">{{ auth.user?.district }} · {{ auth.user?.province }}</p>
     </div>
-    <div class="flex items-center gap-4">              
+    <div class="flex items-center gap-4">    
+    <LanguageSwitcher />           
     <NotificationBell />
     <button v-if="!auth.user?.email" @click="promptForEmail" class="text-xs text-green-700 hover:underline">
     + Add email
@@ -21,6 +22,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
 import NotificationBell from '@/components/shared/NotificationBell.vue'
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher.vue'
 
 const PATH_TITLES = {
   '/farmer/dashboard': 'Farmer Dashboard',

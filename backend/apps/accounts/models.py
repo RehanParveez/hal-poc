@@ -29,6 +29,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     ('admin', 'Platform Admin'),
     ('numberdar', 'Numberdar'),
   )
+  
+  LANGUAGE_CHOICES = (
+    ('en', 'English'),
+    ('ur', 'Urdu'),
+  )
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
   phone = models.CharField(max_length=15, unique=True)
   cnic = models.CharField(max_length=15, unique=True)
@@ -54,6 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   secp_verified = models.BooleanField(default=False)                   
   ntn_verified = models.BooleanField(default=False)
   email = models.EmailField(blank=True, null=True)
+  preferred_language = models.CharField(max_length=15, choices=LANGUAGE_CHOICES, default = 'ur')
 
   objects = UserManager()
   USERNAME_FIELD = 'phone'

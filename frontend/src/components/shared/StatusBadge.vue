@@ -6,7 +6,9 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n' 
 
+const { t, te } = useI18n()
 const props = defineProps({
   status: { type: String, required: true },
 })
@@ -38,5 +40,8 @@ const STATUS_COLORS = {
 
 const normalized = computed(() => props.status?.toLowerCase().trim() || '')
 const colorClass = computed(() => STATUS_COLORS[normalized.value] || 'bg-gray-100 text-gray-600')
-const displayText = computed(() => normalized.value.replace(/_/g, ' '))
+const displayText = computed(() => {
+  const key = `status.${normalized.value}`
+  return te(key) ? t(key) : normalized.value.replace(/_/g, ' ')
+})
 </script>
