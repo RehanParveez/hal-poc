@@ -85,30 +85,19 @@ class SettlementService:
       transaction.on_commit(lambda: NotificationService.notify(loan.farmer.user, 'settlement_complete',
        {'batch_kg': batch.batch_kg, 'farmer_net_profit': farmer_net}, reference_id=invoice.id))
 
-    print(f"\n{'='*60}")
-    print(f"  HAL SETTLEMENT")
-    print(f"{'='*60}")
-    print(f"  Farmer: {loan.farmer.user.full_name}")
-    print(f"  Batch: {batch.batch_kg} kg {loan.crop.name}")
-    print(f"  Grade: {batch.grade_received} ({batch.grade_deduction_pct}% deduction)")
-    print(f"  {'-'*40}")
-    print(f"  Gross Payout: PKR {gross:>12}")
-    print(f"  - Loan Principal: PKR {principal:>12}")
-    print(f"  - Interest: PKR {interest:>12}")
-    print(f"  - Bank Commission: PKR {bank_commission:>12}")
-    if platform_fee:
-      print(f"  - Platform Fee: PKR {platform_fee:>12}")
-    if theka_payment:
-      print(f"  - Theka Rent: PKR {theka_payment:>12}")
-    if batai_landowner_share:
-      print(f"  - Batai (Landowner): PKR {batai_landowner_share:>12}")
-    print(f"  {'-'*40}")
-    print(f"  FARMER NET PROFIT:   PKR {farmer_net:>12}")
-    if insurance_triggered:
-      print(f" the insurance claim is triggered")
-    print(f"{'='*60}\n")
+      logger.info(
+       f"SETTLEMENT COMPLETE | Farmer: {loan.farmer.user.full_name} | "
+       f"Batch: {batch.batch_kg}kg {loan.crop.name} | Grade: {batch.grade_received} "
+       f"({batch.grade_deduction_pct}% deduction) | Gross: PKR {gross} | "
+       f"Principal: PKR {principal} | Interest: PKR {interest} | "
+       f"Bank Commission: PKR {bank_commission}"
+       + (f" | Theka: PKR {theka_payment}" if theka_payment else "")
+       + (f" | Batai: PKR {batai_landowner_share}" if batai_landowner_share else "")
+       + f" | Farmer Net: PKR {farmer_net}"
+       + (" | INSURANCE CLAIM TRIGGERED" if insurance_triggered else "")
+    )
 
-    return invoice
+      return invoice
   
   @staticmethod
   def confirm_factory_settlement(invoice_id, factory_profile):

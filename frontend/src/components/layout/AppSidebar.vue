@@ -1,7 +1,7 @@
 <template>
   <aside class="w-64 min-h-screen bg-slate-900 text-slate-300 flex flex-col shadow-xl">
     <div class="p-5 border-b border-slate-800 bg-slate-950">
-      <h1 class="text-xl font-bold text-white tracking-wide">FasalPay</h1>
+      <h1 class="text-xl font-bold text-white tracking-wide">HAL</h1>
       <p class="text-xs text-slate-500 mt-1">Pakistan</p>
     </div>
 

@@ -38,7 +38,7 @@ const PATH_TITLES = {
 
 const auth = useAuthStore()
 const route = useRoute()
-const pageTitle = computed(() => PATH_TITLES[route.path] || 'FasalPay')
+const pageTitle = computed(() => PATH_TITLES[route.path] || 'HAL')
 
 async function promptForEmail() {
   const email = window.prompt('Enter your email to receive notifications:')

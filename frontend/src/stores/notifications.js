@@ -38,6 +38,11 @@ export const useNotificationsStore = defineStore('notifications', {
         message: data.message,
       })
     },
+
+    showWarning({ title, message }) {
+      this.push({ type: 'warning', title, message })
+    },
+    
     dismiss(id) {
       this.queue = this.queue.filter((n) => n.id !== id)
     },

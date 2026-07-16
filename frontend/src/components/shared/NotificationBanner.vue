@@ -62,6 +62,7 @@ const bannerClass = computed(() => {
   const type = notify.current?.type
   if (type === 'success') return 'bg-green-600 text-white'
   if (type === 'error' || type === 'afo-error') return 'bg-red-600 text-white'
+  if (type === 'warning') return 'bg-amber-500 text-white'
   return 'bg-gray-700 text-white'
 })
 
@@ -70,14 +71,17 @@ const bannerIcon = computed(() => {
   if (type === 'success') return '✓'
   if (type === 'afo-error') return '🚫'
   if (type === 'error') return '✕'
+  if (type === 'warning') return '⚠'
   return 'ℹ'
 })
 
 const bannerTitle = computed(() => {
+  if (notify.current?.title) return notify.current.title
   const type = notify.current?.type
   if (type === 'success') return 'Success'
   if (type === 'afo-error') return 'AFO Limit Exceeded'
   if (type === 'error') return 'Error'
+  if (type === 'warning') return 'Notice'
   return 'Notice'
 })
 
