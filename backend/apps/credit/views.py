@@ -18,6 +18,8 @@ class CreditCheckViewSet(viewsets.ReadOnlyModelViewSet):
   def get_throttles(self):
     if self.action in ('request_otp', 'trigger'):
       self.throttle_scope = 'credit_check'
+    if self.action == 'verify_otp':                  
+      self.throttle_scope = 'otp_verify'               
       return [ScopedRateThrottle()]
     return super().get_throttles()
 
@@ -69,6 +71,8 @@ class CreditCheckViewSet(viewsets.ReadOnlyModelViewSet):
     loan_id = serializer.validated_data.get('loan_id')
     if loan_id:
       loan = LoanApplication.objects.filter(id=loan_id, farmer=request.user.farmer_profile).first()
+      if not loan:                                                                         
+        return Response({'error': 'Loan not found or does not belong to you.'}, status=status.HTTP_404_NOT_FOUND) 
     try:
       check = CreditBureauService.run_credit_check(
         farmer_profile=request.user.farmer_profile, otp_reference=serializer.validated_data['otp_reference'], loan_application=loan)

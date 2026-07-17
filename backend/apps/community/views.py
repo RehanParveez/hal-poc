@@ -31,6 +31,8 @@ class NumberdarProfileViewSet(viewsets.ReadOnlyModelViewSet):
 class FarmerVerificationRequestViewSet(viewsets.ModelViewSet):
   serializer_class = FarmerVerificationRequestSerializer
   http_method_names = ['get', 'post', 'patch', 'head', 'options']
+  throttle_scope = 'numberdar_action'
+  throttle_classes = [ScopedRateThrottle]
 
   def get_permissions(self):
     if self.action == 'create':
@@ -53,6 +55,7 @@ class FarmerVerificationRequestViewSet(viewsets.ModelViewSet):
     if user.role == 'admin':
       return base_qs.all().order_by('-created_at')
     return FarmerVerificationRequest.objects.none()
+  
 
   def create(self, request, *args, **kwargs):
     numberdar_id = request.data.get('numberdar_id')

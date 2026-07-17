@@ -1,7 +1,8 @@
 import logging
 from apps.community.models import NumberdarProfile, FarmerVerificationRequest
 from shared.exceptions import OutOfJurisdictionError, DuplicateVerificationRequestError
-from django.db import transaction
+from django.db import transaction, IntegrityError
+from django.db.models import F 
 from apps.notifications.services import NotificationService
 from django.utils import timezone
 from django.conf import settings
@@ -20,10 +21,13 @@ class NumberdarVerificationService:
     already_active = FarmerVerificationRequest.objects.filter(farmer=farmer_profile, status__in=['pending', 'approved']).exists()
     if already_active:
       raise DuplicateVerificationRequestError()
-
-    with transaction.atomic():
-      req = FarmerVerificationRequest.objects.create(farmer=farmer_profile, numberdar=numberdar, status = 'pending')
-
+    
+    try:
+      with transaction.atomic():
+        req = FarmerVerificationRequest.objects.create(farmer=farmer_profile, numberdar=numberdar, status = 'pending')
+    except IntegrityError:                           
+      raise DuplicateVerificationRequestError()
+    
     transaction.on_commit(lambda: NotificationService.notify(numberdar.user, 'verification_request_received',
       {'farmer_name': farmer_profile.user.full_name, 'farmer_district': farmer_profile.user.district},
       reference_id=req.id))
@@ -45,8 +49,8 @@ class NumberdarVerificationService:
       req.farmer.user.numberdar_verified = True
       req.farmer.user.save(update_fields=['numberdar_verified'])
 
-      req.numberdar.total_farmers_verified += 1
-      req.numberdar.save(update_fields=['total_farmers_verified'])
+      NumberdarProfile.objects.filter(id=req.numberdar_id).update(total_farmers_verified=F('total_farmers_verified') + 1)
+      req.numberdar.refresh_from_db(fields=['total_farmers_verified'])
 
     transaction.on_commit(lambda: NotificationService.notify(req.farmer.user, 'numberdar_approved', {}, reference_id=req.id))
     return req

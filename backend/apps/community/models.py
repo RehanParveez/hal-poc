@@ -38,6 +38,12 @@ class FarmerVerificationRequest(BaseModel):
   class Meta:
     db_table = 'farmer_verification_requests'
     indexes = [models.Index(fields=['numberdar', 'status']), models.Index(fields=['farmer', 'status'])]
+    constraints = [
+      models.UniqueConstraint(
+        fields=['farmer'], condition=models.Q(status__in=['pending', 'approved']),
+        name='unique_active_verification_per_farmer'
+      )
+    ]
 
   def __str__(self):
     return f"{self.farmer.user.full_name} - {self.numberdar.user.full_name} ({self.status})"

@@ -110,10 +110,12 @@ class CreditBureauService:
   def _assign_risk_tier(check):
     if check.ecib_status in ('overdue', 'write_off') or check.default_history_flag or (check.credit_score is not None and check.credit_score < 400):
       return 'high_risk'
-    if (check.ecib_status == 'regular' and check.credit_score is not None and 400 <= check.credit_score <= 599) \
+    ecib_clear = check.ecib_status in ('regular', 'none')
+    if (ecib_clear and check.credit_score is not None and 400 <= check.credit_score <= 599) \
         or (check.active_micro_loans_count is not None and check.active_micro_loans_count >= 2):
       return 'medium_risk'
-    if check.ecib_status == 'regular' and check.credit_score is not None and check.credit_score >= 600 \
+    
+    if ecib_clear and check.credit_score is not None and check.credit_score >= 600 \
         and (check.active_micro_loans_count or 0) <= 1 and not check.default_history_flag:
       return 'low_risk'
     return 'unverified'
