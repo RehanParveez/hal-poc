@@ -9,7 +9,10 @@ class CircuitBreaker:
     self.name = name
     self.failure_threshold = failure_threshold
     self.cooldown_seconds = cooldown_seconds
-    self._redis = redis.Redis.from_url(getattr(settings, 'CELERY_BROKER_URL', 'redis://localhost:6379/0'))
+    broker_url = getattr(settings, 'CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    if broker_url.startswith('memory://'):
+      broker_url = 'redis://localhost:6379/0'
+    self._redis = redis.Redis.from_url(broker_url)
     self._failures_key = f'breaker:{name}:failures'
     self._opened_at_key = f'breaker:{name}:opened_at'
 
