@@ -25,7 +25,11 @@
       <button v-if="creditCheck.raw_bank_response" @click="showRaw = !showRaw" class="text-xs text-green-700 hover:underline">
         {{ showRaw ? 'Hide' : 'Show' }} raw response
       </button>
-      <pre v-if="showRaw" class="text-xs bg-gray-900 text-green-400 p-2 rounded mt-2 overflow-x-auto">{{ JSON.stringify(creditCheck.raw_bank_response, null, 2) }}</pre>
+      <div class="collapse-grid" :class="{ 'is-open': showRaw }">
+        <div>
+          <pre class="text-xs bg-gray-900 text-green-400 p-2 rounded mt-2 overflow-x-auto">{{ JSON.stringify(creditCheck.raw_bank_response, null, 2) }}</pre>
+        </div>
+      </div>
     </div>
     <div v-else-if="creditCheck.status === 'manual_review'" class="bg-amber-50 p-3 rounded text-sm text-amber-700">Manual review required.</div>
     <div v-else-if="creditCheck.status === 'failed'" class="bg-red-50 p-3 rounded text-sm text-red-700">Bureau check failed. Retry or proceed manually.</div>
@@ -38,3 +42,17 @@ import CreditTierBadge from '../../components/shared/CreditTierBadge.vue'
 defineProps({ creditCheck: { type: Object, default: null } })
 const showRaw = ref(false)
 </script>
+
+<style scoped>
+.collapse-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+.collapse-grid.is-open {
+  grid-template-rows: 1fr;
+}
+.collapse-grid > div {
+  overflow: hidden;
+}
+</style>

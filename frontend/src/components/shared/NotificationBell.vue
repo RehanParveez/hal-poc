@@ -2,7 +2,7 @@
   <div class="relative">
     <button @click="toggleOpen" class="relative text-gray-500 hover:text-gray-800">
       <span class="text-xl">🔔</span>
-      <span v-if="inbox.unreadCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+      <span v-if="inbox.unreadCount > 0" :class="['absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center', badgePop ? 'animate-badge-pop' : '']">
         {{ inbox.unreadCount > 9 ? '9+' : inbox.unreadCount }}
       </span>
     </button>
@@ -23,11 +23,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useInboxStore } from '@/stores/inbox.js'
 
 const inbox = useInboxStore()
 const open = ref(false)
+const badgePop = ref(false)
+
+watch(() => inbox.unreadCount, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    badgePop.value = true
+    setTimeout(() => { badgePop.value = false }, 400)
+  }
+})
 
 function toggleOpen() {
   open.value = !open.value

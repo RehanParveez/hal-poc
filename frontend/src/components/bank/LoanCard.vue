@@ -43,9 +43,13 @@
   <div v-if="['bank_approved', 'disbursed'].includes(loan.status)" class="mt-3 border-t pt-3">
     <button @click="toggleCreditPanel" class="text-xs text-green-700 hover:underline">
       {{ showCreditPanel ? 'Hide' : 'View' }} Credit Check Details
-  </button>
-  <CreditCheckPanel v-if="showCreditPanel" :credit-check="loanCreditCheck" class="mt-2" />
-</div>
+    </button>
+    <div class="collapse-grid" :class="{ 'is-open': showCreditPanel }">
+      <div>
+        <CreditCheckPanel :credit-check="loanCreditCheck" class="mt-2" />
+      </div>
+    </div>
+  </div>
 
 </template>
 
@@ -115,3 +119,17 @@ async function toggleCreditPanel() {
 }
 
 </script>
+
+<style scoped>
+.collapse-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+.collapse-grid.is-open {
+  grid-template-rows: 1fr;
+}
+.collapse-grid > div {
+  overflow: hidden;
+}
+</style>

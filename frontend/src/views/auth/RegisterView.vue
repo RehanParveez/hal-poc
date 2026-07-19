@@ -17,7 +17,8 @@
       <p v-if="errorMessage" class="text-red-600 text-sm font-medium bg-red-50 p-2 rounded border border-red-200 mb-4">
         {{ errorMessage }}
       </p>
-      <form v-if="currentStep === 0" @submit.prevent="handleStep0Continue" class="space-y-4">
+      <Transition name="step-fade" mode="out-in">
+        <form v-if="currentStep === 0" :key="0" @submit.prevent="handleStep0Continue" class="space-y-4">
 
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -74,7 +75,7 @@
         </router-link>
       </form>
 
-      <div v-else-if="currentStep === 1 && isFarmerRole">
+      <div v-else-if="currentStep === 1 && isFarmerRole" :key="'farmer-1'">
         <h3 class="font-bold text-gray-800 mb-2">Find Your Local Numberdar</h3>
         <p class="text-sm text-gray-500 mb-3">
           Your local Numberdar verifies your account before you can apply for a loan. You can select one now, or skip and do this later.
@@ -105,7 +106,7 @@
         </button>
       </div>
 
-      <div v-else-if="currentStep === 1 && isCorporateRole" class="space-y-4">
+      <div v-else-if="currentStep === 1 && isCorporateRole" :key="'corp-1'" class="space-y-4">
         <h3 class="font-bold text-gray-800 mb-1">Business Details</h3>
          <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
@@ -126,7 +127,7 @@
         </button>
       </div>
 
-      <div v-else-if="currentStep === 2 && isFarmerRole">
+      <div v-else-if="currentStep === 2 && isFarmerRole" :key="'farmer-2'">
         <h3 class="font-bold text-gray-800 mb-2">Before You Continue</h3>
         <p class="text-sm text-gray-500 mb-3">
           Before your first loan, your bank will need to run a credit history check (through eCIB and Tasdeeq) with your
@@ -146,7 +147,7 @@
         </button>
       </div>
 
-      <div v-else-if="currentStep === 2 && isCorporateRole" class="space-y-4">
+      <div v-else-if="currentStep === 2 && isCorporateRole" :key="'corp-2'" class="space-y-4">
         <h3 class="font-bold text-gray-800 mb-1">Verification Documents</h3>
         <p class="text-sm text-gray-500 mb-2">
           Upload these documents for an admin to verify your business before you can receive payments.
@@ -161,6 +162,7 @@
           Your account is created — an admin will confirm your SECP/NTN details before you can transact.
         </p>
       </div>
+      </Transition>
     </div>
   </div>
 </template>

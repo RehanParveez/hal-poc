@@ -14,7 +14,9 @@
       <option value="rejected">Rejected</option>
     </select>
 
-    <div v-if="loansStore.isLoading" class="text-gray-500">Loading...</div>
+    <div v-if="loansStore.isLoading" class="space-y-3">
+     <SkeletonCard v-for="n in 3" :key="n" />
+    </div>
 
     <div v-else class="space-y-3">
       <LoanCard v-for="loan in loansStore.loans" :key="loan.id" :loan="loan" />
@@ -31,6 +33,7 @@ import { useRouter } from 'vue-router'
 import { useLoansStore } from '@/stores/loans.js'
 import LoanCard from '@/components/bank/LoanCard.vue'
 import SettlementsOverview from '@/components/bank/SettlementsOverview.vue'
+import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 
 const auth = useAuthStore()
 const router = useRouter()

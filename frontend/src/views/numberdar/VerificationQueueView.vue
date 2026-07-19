@@ -8,11 +8,11 @@
       </button>
     </div>
     <div v-if="community.isLoading" class="text-gray-500">Loading...</div>
-    <div v-else class="space-y-3">
+    <TransitionGroup v-else name="list-item" tag="div" class="space-y-3">
       <PendingFarmerCard v-for="req in community.queue" :key="req.id" :request="req" @approve="handleApprove" @reject="handleReject" />
+    </TransitionGroup>
       <p v-if="community.queue.length === 0" class="text-gray-500">No requests in this category.</p>
     </div>
-  </div>
 </template>
 
 <script setup>

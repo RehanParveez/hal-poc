@@ -6,7 +6,7 @@
       <div class="flex items-start justify-between mb-4">
         <div>
           <p class="text-xs text-green-700 font-semibold uppercase tracking-wide">Escrow Balance</p>
-          <p class="text-3xl font-display font-semibold text-gray-800 mt-1 tabular-nums">₨ {{ formatPKR(escrow.remainingBalance) }}</p>
+          <p class="text-3xl font-display font-semibold text-gray-800 mt-1 tabular-nums">₨ {{ formatPKR(animatedBalance) }}</p>
           <p class="text-xs text-gray-500 mt-1 tabular-nums">of ₨ {{ formatPKR(escrow.totalFunded) }} total</p>
         </div>
         <InsuranceBadge :status="policyStatus" />
@@ -38,9 +38,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue' 
+import { useCountUp } from '@/composables/useCountUp.js'
 import { useEscrowStore } from '@/stores/escrow.js'
 import InsuranceBadge from './InsuranceBadge.vue'
 
 const escrow = useEscrowStore()
+const animatedBalance = useCountUp(computed(() => escrow.remainingBalance))
 const formatPKR = (val) => new Intl.NumberFormat('en-PK').format(Math.round(parseFloat(val) || 0))
 </script>

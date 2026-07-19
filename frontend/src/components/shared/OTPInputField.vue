@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex gap-2 justify-center">
+    <div class="['flex gap-2 justify-center', shakeClass]">
       <input
         v-for="(digit, i) in digits"
         :key="i"
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
@@ -31,6 +31,14 @@ const props = defineProps({
   hasError: { type: Boolean, default: false },
 })
 const emit = defineEmits(['update:modelValue', 'complete', 'resend'])
+
+const shakeClass = ref('')
+watch(() => props.hasError, (val) => { 
+  if (val) {
+    shakeClass.value = 'animate-shake'
+    setTimeout(() => { shakeClass.value = '' }, 500)
+  }
+ })
 
 const digits = reactive(['', '', '', '', '', ''])
 const inputRefs = ref([])

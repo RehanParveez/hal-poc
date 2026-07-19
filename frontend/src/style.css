@@ -70,6 +70,50 @@ select:focus, input:focus, textarea:focus {
 .animate-pulse-glow  { animation: pulse-glow 2s ease-in-out infinite; }
 .animate-grow-fill   { animation: grow-fill 0.6s ease-out both; transform-origin: top; }
 
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+@keyframes shimmer { from { background-position: -400px 0; } to { background-position: 400px 0; } }
+.skeleton {
+  background: linear-gradient(90deg, var(--color-gray-100) 25%, var(--color-gray-200) 37%, var(--color-gray-100) 63%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes badge-pop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.animate-badge-pop { animation: badge-pop 0.4s ease-out; }
+
+.collapse-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.collapse-grid.is-open { grid-template-rows: 1fr; }
+.collapse-grid > div { overflow: hidden; }
+
+.modal-enter-active, .modal-leave-active { transition: opacity 0.2s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+.modal-enter-active > div, .modal-leave-active > div { transition: transform 0.2s ease, opacity 0.2s ease; }
+.modal-enter-from > div, .modal-leave-to > div { transform: scale(0.96) translateY(8px); opacity: 0; }
+
+.step-fade-enter-active, .step-fade-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
+.step-fade-enter-from { opacity: 0; transform: translateX(12px); }
+.step-fade-leave-to { opacity: 0; transform: translateX(-12px); }
+
+.list-item-enter-active, .list-item-leave-active { transition: all 0.3s ease; }
+.list-item-enter-from { opacity: 0; transform: translateY(-8px); }
+.list-item-leave-to { opacity: 0; transform: translateX(24px); }
+.list-item-leave-active { position: absolute; }
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in-up, .animate-pulse-glow, .animate-grow-fill { animation: none !important; }
+  .animate-fade-in-up, .animate-pulse-glow, .animate-grow-fill,
+  .animate-shake, .skeleton, .animate-badge-pop, .collapse-grid,
+  .modal-enter-active, .modal-leave-active,
+  .step-fade-enter-active, .step-fade-leave-active,
+  .list-item-enter-active, .list-item-leave-active { animation: none !important; transition: none !important; }
 }

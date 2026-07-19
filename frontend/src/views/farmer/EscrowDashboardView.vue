@@ -13,7 +13,9 @@
     <p v-else-if="!loans.activeLoan" class="text-gray-500">No disbursed loan found yet.</p>
     <p v-else class="text-red-600">Could not load your escrow account. Please refresh the page.</p>
     </template>
-    <PaymentModal v-if="showModal" @close="showModal = false" @success="handleSuccess" :escrowId="loans.activeLoan?.escrow_id" />
+    <Transition name="modal">
+      <PaymentModal v-if="showModal" @close="showModal = false" @success="handleSuccess" :escrowId="loans.activeLoan?.escrow_id" />
+    </Transition>
   </div>
 </template>
 
@@ -53,3 +55,15 @@ const handleSuccess = () => {
   escrow.fetchCaps(loans.activeLoan.escrow_id)
 }
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+</style>

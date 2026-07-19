@@ -17,11 +17,13 @@
     </div>
     <div id="contracts-section"><BrowseContracts /></div>
     <RequestAgreementForm v-if="auth.user?.role === 'tenant'" />
-    <FileClaimModal 
-      v-if="showClaimModal" 
-      @close="showClaimModal = false" 
-      @success="showClaimModal = false" 
-    />
+    <Transition name="modal">
+      <FileClaimModal 
+        v-if="showClaimModal" 
+        @close="showClaimModal = false" 
+        @success="showClaimModal = false" 
+      />
+    </Transition>
     </template>
     <p v-else class="text-gray-500">Please log in to view your dashboard.</p>
     </div>
@@ -45,3 +47,15 @@ const showClaimModal = ref(false)
 const auth = useAuthStore()
 
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+</style>
