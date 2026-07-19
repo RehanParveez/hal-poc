@@ -1,16 +1,19 @@
 <template>
   <div class="min-h-screen flex">
-    <div class="hidden lg:flex lg:w-[42%] relative flex-col justify-between p-12 bg-slate-950 text-white overflow-hidden field-texture">
+    <div class="hidden lg:flex lg:w-[42%] relative flex-col justify-between p-12 bg-slate-950 text-white overflow-hidden login-texture animate-fade-in-up">
       <div class="relative z-10 flex items-center gap-2">
         <Wheat :size="26" class="text-gold-400" />
         <span class="text-2xl font-display font-semibold tracking-tight">Hal</span>
       </div>
-      <p class="relative z-10 text-lg leading-relaxed text-slate-200 max-w-sm font-display">
-        Every phase of the loan unlocks with the crop itself — funded step by step, not handed over all at once.
-      </p>
-      <p class="relative z-10 text-xs text-slate-500">Punjab · Pakistan</p>
-      <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-green-800/40 blur-3xl"></div>
-      <div class="absolute -left-10 bottom-24 w-40 h-40 rounded-full bg-gold-600/20 blur-3xl"></div>
+
+      <div class="relative z-10 space-y-4 max-w-sm mt-auto">
+        <div class="bg-slate-950/40 backdrop-blur-xs p-4 rounded-xl border border-white/5">
+          <p class="text-lg leading-relaxed text-slate-100 font-display">
+            Every phase of the loan unlocks with the crop itself — funded step by step, not handed over all at once.
+          </p>
+        </div>
+        <p class="text-xs text-slate-400/80 tracking-wide">Punjab · Pakistan</p>
+      </div>
     </div>
 
     <div class="flex-1 flex items-center justify-center bg-gray-50 px-4">

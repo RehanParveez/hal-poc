@@ -1,37 +1,63 @@
 <template>
-  <div class="p-8">
-    <template v-if="auth.isLoggedIn">
-    <div class="mb-6">
-      <button @click="showClaimModal = true" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-bold shadow">
-        File Crop Damage Claim
-      </button>
-    </div>
-    <div id="community-section"><CommunityVerificationCard /></div>
-    <div id="credit-section"><CreditCheckSection /></div>
-    <div id="escrow-section"><EscrowDashboardView v-if="auth.isLoggedIn" /></div>
-    <div id="settlements-section"><SettlementsList v-if="auth.isLoggedIn" /></div>
-    <div id="delivery-section"><LogDeliveryForm v-if="auth.isLoggedIn" /> </div>
-    <div id="loan-section">
+  <template v-if="auth.isLoggedIn">
+    <DashboardHero
+      eyebrow="Farmer Dashboard"
+      :title="`Welcome back, ${auth.user?.full_name?.split(' ')[0] || 'Farmer'}`"
+      subtitle="Track your escrow, loans, and harvest — funded step by step, tied to the season."
+      :stats="heroStats"
+    >
+      <template #action>
+        <button @click="showClaimModal = true" class="btn-danger">File Crop Damage Claim</button>
+      </template>
+    </DashboardHero>
+
+    <DashboardSection id="community-section" tone="white" eyebrow="Trust & Eligibility" title="Community Verification">
+      <CommunityVerificationCard />
+    </DashboardSection>
+
+    <DashboardSection id="credit-section" tone="tint" eyebrow="Before You Borrow" title="Credit Check">
+      <CreditCheckSection />
+    </DashboardSection>
+
+    <DashboardSection id="escrow-section" tone="white" eyebrow="Your Funds" title="Escrow Account">
+      <EscrowDashboardView />
+    </DashboardSection>
+
+    <DashboardSection id="loan-section" tone="tint" eyebrow="Financing" title="Loans">
       <LoanHistory />
       <ApplyLoanForm />
-    </div>
-    <div id="contracts-section"><BrowseContracts /></div>
-    <RequestAgreementForm v-if="auth.user?.role === 'tenant'" />
+    </DashboardSection>
+
+    <DashboardSection id="contracts-section" tone="white" eyebrow="Harvest Buyers" title="Open Contracts">
+      <BrowseContracts />
+    </DashboardSection>
+
+    <DashboardSection v-if="auth.user?.role === 'tenant'" id="agreement-section" tone="tint" eyebrow="Land" title="Tenant Agreement">
+      <RequestAgreementForm />
+    </DashboardSection>
+
+    <DashboardSection id="delivery-section" tone="white" eyebrow="Log Your Harvest" title="Delivery">
+      <LogDeliveryForm />
+    </DashboardSection>
+
+    <DashboardSection id="settlements-section" tone="tint" eyebrow="Getting Paid" title="Settlements">
+      <SettlementsList />
+    </DashboardSection>
+
     <Transition name="modal">
-      <FileClaimModal 
-        v-if="showClaimModal" 
-        @close="showClaimModal = false" 
-        @success="showClaimModal = false" 
-      />
+      <FileClaimModal v-if="showClaimModal" @close="showClaimModal = false" @success="showClaimModal = false" />
     </Transition>
-    </template>
-    <p v-else class="text-gray-500">Please log in to view your dashboard.</p>
-    </div>
+  </template>
+  <p v-else class="content-container py-16 text-gray-500">Please log in to view your dashboard.</p>
 </template>
 
 <script setup>
+import { computed, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
-import { ref } from 'vue'
+import { useEscrowStore } from '@/stores/escrow.js'
+import { useLoansStore } from '@/stores/loans.js'
+import DashboardHero from '@/components/layout/DashboardHero.vue'
+import DashboardSection from '@/components/layout/DashboardSection.vue'
 import EscrowDashboardView from './EscrowDashboardView.vue'
 import SettlementsList from '@/components/farmer/SettlementsList.vue'
 import LogDeliveryForm from '@/components/farmer/LogDeliveryForm.vue'
@@ -45,17 +71,12 @@ import CreditCheckSection from '@/components/farmer/CreditCheckSection.vue'
 
 const showClaimModal = ref(false)
 const auth = useAuthStore()
+const escrow = useEscrowStore()
+const loans = useLoansStore()
 
+const heroStats = computed(() => [
+  { label: 'Escrow Balance', value: `₨${new Intl.NumberFormat('en-PK').format(Math.round(escrow.remainingBalance || 0))}` },
+  { label: 'Active Loans', value: loans.myLoans.filter(l => ['disbursed', 'repaid'].includes(l.status)).length },
+  { label: 'Credit Tier', value: (auth.user?.credit_tier || 'unverified').replace('_', ' ') },
+])
 </script>
-
-<style scoped>
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-</style>

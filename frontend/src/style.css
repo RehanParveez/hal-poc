@@ -44,6 +44,60 @@
 body { font-family: var(--font-sans); }
 h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 
+@layer components {
+  .btn-primary {
+    @apply bg-green-700 hover:bg-green-800 active:scale-95 text-white px-4 py-2.5 rounded-lg font-medium
+           transition-all duration-150 shadow-sm hover:shadow-md disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 active:scale-95 text-gray-700 border border-gray-300 px-4 py-2.5 rounded-lg
+           font-medium transition-all duration-150 disabled:opacity-50;
+  }
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 active:scale-95 text-white px-4 py-2.5 rounded-lg font-medium
+           transition-all duration-150 shadow-sm hover:shadow-md disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100 active:scale-95 px-3 py-1.5 rounded-lg
+           text-sm font-medium transition-all duration-150;
+  }
+  .card {
+    @apply bg-white rounded-2xl border border-gray-200 shadow-sm p-5;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+  }
+  
+  .content-container {
+    @apply max-w-6xl mx-auto px-4 md:px-8;
+  }
+}
+
+.mesh-hero {
+  background-color: var(--color-green-900); 
+  background-image:
+    radial-gradient(circle at 15% 20%, rgb(201 154 62 / 0.15), transparent 40%),
+    radial-gradient(circle at 85% 60%, rgb(255 255 255 / 0.08), transparent 45%),
+    linear-gradient(to bottom right, var(--color-green-900), var(--color-green-800), var(--color-slate-900));
+}
+
+.login-texture {
+  background-color: var(--color-slate-950);
+
+  background-image:
+    repeating-linear-gradient(100deg, rgb(255 255 255 / 0.035) 0px, rgb(255 255 255 / 0.035) 1px, transparent 1px, transparent 40px),
+   
+    radial-gradient(circle at 15% 20%, rgb(201 154 62 / 0.12), transparent 40%),
+    radial-gradient(circle at 85% 70%, rgb(70 138 87 / 0.2), transparent 45%),
+    
+    linear-gradient(to bottom, rgba(14, 32, 21, 0.65), rgba(22, 41, 30, 0.75)),
+    
+    url('/pak water levles 12.jpg'); 
+
+  background-size: cover;
+  background-position: center;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-gold-400);
   outline-offset: 2px;
