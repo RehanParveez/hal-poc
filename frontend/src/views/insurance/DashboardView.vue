@@ -1,8 +1,16 @@
 <template>
-  <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4">Insurance Claims</h1>
-
-    <div id="claims-section">
+  <DashboardHero
+    eyebrow="Insurance Portal"
+    :title="`${greeting}, ${firstName}`"
+    subtitle="Review incoming damage claims and manage your active insurance policies."
+    :stats="heroStats"
+  />
+ 
+  <div class="content-container -mt-8 relative z-20">
+    <QuickActionsBar :actions="quickActions" />
+  </div>
+ 
+  <DashboardSection id="claims-section" tone="white" eyebrow="Claims" title="Incoming Damage Claims">
       <div v-if="isInitialLoading" class="text-gray-500">Loading...</div>
       <div v-else class="space-y-3">
         <div v-for="claim in insurance.claims" :key="claim.id" class="bg-white p-4 rounded shadow">
@@ -13,7 +21,7 @@
             </div>
             <StatusBadge :status="claim.status" />
           </div>
-
+ 
           <div v-if="claim.status === 'pending'" class="mt-3 border-t pt-3 space-y-2">
             <input v-model.number="reviewForm[claim.id].approved_amount" type="number" min="0" step="0.01" placeholder="Approved Amount (if approving)" class="border rounded px-2 py-1 text-sm w-full" />
             <input v-model="reviewForm[claim.id].reviewer_note" type="text" placeholder="Reviewer note (optional)" class="border rounded px-2 py-1 text-sm w-full" />
@@ -27,13 +35,12 @@
             </div>
             <p v-if="reviewForm[claim.id].error" class="text-red-600 text-sm mt-1">{{ reviewForm[claim.id].error }}</p>
           </div>
-          </div>
         </div>
         <p v-if="!isInitialLoading && insurance.claims.length === 0" class="text-gray-500">No claims yet.</p>
       </div>
-
-    <div id="policies-section">
-      <h2 class="text-2xl font-bold mt-8 mb-4">All Policies</h2>
+    </DashboardSection>
+ 
+  <DashboardSection id="policies-section" tone="tint" eyebrow="Portfolio" title="All Policies">
       <div v-if="isInitialLoading" class="text-gray-500">Loading...</div>
       <div class="space-y-2">
         <div v-for="p in insurance.policies" :key="p.id" class="bg-white p-3 rounded shadow flex justify-between text-sm">
@@ -42,19 +49,43 @@
         </div>
         <p v-if="!isInitialLoading && insurance.policies.length === 0" class="text-gray-500">No policies yet.</p>
       </div>
-    </div>
-  </div>
+  </DashboardSection>
 </template>
-
+ 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { useInsuranceStore } from '@/stores/insurance.js'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
-
+import { FileWarning, ShieldCheck, Activity } from 'lucide-vue-next'
+import { useAuthStore } from '@/stores/auth.js'
+import { useScrollTo } from '@/composables/useScrollTo.js'
+import DashboardHero from '@/components/layout/DashboardHero.vue'
+import DashboardSection from '@/components/layout/DashboardSection.vue'
+import QuickActionsBar from '@/components/shared/QuickActionsBar.vue'
+ 
 const insurance = useInsuranceStore()
+const auth = useAuthStore()
+const scrollToSection = useScrollTo()
 const reviewForm = reactive({})
 const isInitialLoading = ref(true)
-
+ 
+const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Agent')
+const greeting = computed(() => {
+  const hour = new Date().getHours()
+  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+})
+ 
+const heroStats = computed(() => [
+  { icon: FileWarning, label: 'Pending Claims', value: insurance.claims.filter(c => c.status === 'pending').length },
+  { icon: ShieldCheck, label: 'Active Policies', value: insurance.policies.length },
+  { icon: Activity, label: 'Total Claims', value: insurance.claims.length }
+])
+ 
+const quickActions = computed(() => [
+  { label: 'Review Claims', icon: FileWarning, onClick: () => scrollToSection('claims-section') },
+  { label: 'View Policies', icon: ShieldCheck, onClick: () => scrollToSection('policies-section') },
+])
+ 
 watch(
   () => insurance.claims,
   (claims) => {
@@ -66,7 +97,7 @@ watch(
   },
   { immediate: true }
 )
-
+ 
 onMounted(async () => {
   try {
     await Promise.all([
@@ -79,7 +110,7 @@ onMounted(async () => {
     isInitialLoading.value = false
   }
 })
-
+ 
 async function handleReview(claimId, decision) {
   const form = reviewForm[claimId]
   if (decision === 'approved' && !form.approved_amount) return

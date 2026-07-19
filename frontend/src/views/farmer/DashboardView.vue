@@ -1,15 +1,19 @@
 <template>
   <template v-if="auth.isLoggedIn">
     <DashboardHero
-      eyebrow="Farmer Dashboard"
-      :title="`Welcome back, ${auth.user?.full_name?.split(' ')[0] || 'Farmer'}`"
-      subtitle="Track your escrow, loans, and harvest — funded step by step, tied to the season."
+      :eyebrow="`${auth.user?.district}, ${auth.user?.province}`"
+      :title="`${greeting}, ${firstName}`"
+      subtitle="Here's where your loan, escrow, and harvest stand today."
       :stats="heroStats"
     >
       <template #action>
         <button @click="showClaimModal = true" class="btn-danger">File Crop Damage Claim</button>
       </template>
     </DashboardHero>
+
+    <div class="content-container -mt-8 relative z-20">
+      <QuickActionsBar :actions="quickActions" />
+    </div>
 
     <DashboardSection id="community-section" tone="white" eyebrow="Trust & Eligibility" title="Community Verification">
       <CommunityVerificationCard />
@@ -53,11 +57,16 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { Wallet, Landmark, FileSignature, Truck } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth.js'
 import { useEscrowStore } from '@/stores/escrow.js'
 import { useLoansStore } from '@/stores/loans.js'
+import { useScrollTo } from '@/composables/useScrollTo.js'
+
 import DashboardHero from '@/components/layout/DashboardHero.vue'
 import DashboardSection from '@/components/layout/DashboardSection.vue'
+import QuickActionsBar from '@/components/shared/QuickActionsBar.vue'
+
 import EscrowDashboardView from './EscrowDashboardView.vue'
 import SettlementsList from '@/components/farmer/SettlementsList.vue'
 import LogDeliveryForm from '@/components/farmer/LogDeliveryForm.vue'
@@ -73,10 +82,25 @@ const showClaimModal = ref(false)
 const auth = useAuthStore()
 const escrow = useEscrowStore()
 const loans = useLoansStore()
+const scrollToSection = useScrollTo()
+
+const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Farmer')
+
+const greeting = computed(() => {
+  const hour = new Date().getHours()
+  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+})
 
 const heroStats = computed(() => [
-  { label: 'Escrow Balance', value: `₨${new Intl.NumberFormat('en-PK').format(Math.round(escrow.remainingBalance || 0))}` },
-  { label: 'Active Loans', value: loans.myLoans.filter(l => ['disbursed', 'repaid'].includes(l.status)).length },
-  { label: 'Credit Tier', value: (auth.user?.credit_tier || 'unverified').replace('_', ' ') },
+  { icon: Wallet, label: 'Escrow Balance', value: `₨${new Intl.NumberFormat('en-PK').format(Math.round(escrow.remainingBalance || 0))}` },
+  { icon: Landmark, label: 'Active Loans', value: loans.myLoans.filter(l => ['disbursed', 'repaid'].includes(l.status)).length },
+  { icon: FileSignature, label: 'Credit Tier', value: (auth.user?.credit_tier || 'unverified').replace('_', ' ') },
+])
+
+const quickActions = computed(() => [
+  { label: 'Apply for Loan', icon: Landmark, onClick: () => scrollToSection('loan-section') },
+  { label: 'View Escrow', icon: Wallet, onClick: () => scrollToSection('escrow-section') },
+  { label: 'Log Delivery', icon: Truck, onClick: () => scrollToSection('delivery-section') },
+  { label: 'Browse Contracts', icon: FileSignature, onClick: () => scrollToSection('contracts-section') },
 ])
 </script>

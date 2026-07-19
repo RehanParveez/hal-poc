@@ -1,27 +1,31 @@
 <template>
-  <div class="mt-6">
-    <h2 class="text-lg font-bold mb-3">Open Contracts</h2>
-    <div class="space-y-2">
+  <div>
+    <div v-if="contracts.isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <SkeletonCard v-for="n in 3" :key="n" class="h-32" />
+    </div>
 
-      <div v-if="contracts.isLoading" class="space-y-3">
-        <SkeletonCard v-for="n in 3" :key="n" />
-      </div>
-
-      <template v-else>
-        <div v-for="c in contracts.openContracts" :key="c.id" class="bg-white p-3 rounded shadow">
-          <p class="font-medium">{{ cropName(c.crop) }} — PKR {{ c.base_price_per_kg }}/kg</p>
-          <p class="text-sm text-gray-500">Remaining: {{ c.required_kg - c.allocated_kg }} kg — Deadline: {{ c.delivery_deadline }}</p>
-          <div class="mt-2 flex gap-2 items-end">
-            <div class="flex-1">
-              <label class="block text-xs font-medium text-gray-600 mb-1">Committed Quantity (kg)</label>
-              <input v-model.number="kgForm[c.id]" type="number" placeholder="e.g. 1000" class="w-full border rounded px-2 py-1 text-sm" />
+    <template v-else>
+      <p class="text-sm text-gray-500 mb-4">{{ contracts.openContracts.length }} open contract(s) available to commit your harvest to</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div v-for="c in contracts.openContracts" :key="c.id" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden card-hover">
+          <div class="h-2 bg-gradient-to-r from-green-600 to-gold-400"></div>
+          
+          <div class="p-5">
+            <p class="font-display font-semibold text-gray-900">{{ cropName(c.crop) }}</p>
+            <p class="text-2xl font-display font-semibold text-green-700 mt-1 tabular-nums">₨{{ c.base_price_per_kg }}<span class="text-sm font-sans text-gray-400">/kg</span></p>
+            <p class="text-xs text-gray-500 mt-2">{{ c.required_kg - c.allocated_kg }} kg remaining · deadline {{ c.delivery_deadline }}</p>
+            
+            <div class="mt-4 flex gap-2">
+              <input v-model.number="kgForm[c.id]" type="number" placeholder="kg" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+              <button @click="handleAllocate(c.id)" class="btn-primary whitespace-nowrap">Allocate</button>
             </div>
-            <button @click="handleAllocate(c.id)" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">Allocate</button>
           </div>
         </div>
-        <p v-if="contracts.openContracts.length === 0" class="text-gray-500">No open contracts available.</p>
-      </template>
-    </div>
+      </div>
+      
+      <p v-if="contracts.openContracts.length === 0" class="text-gray-500 text-center py-8">No open contracts available.</p>
+    </template>
   </div>
 </template>
 

@@ -2,15 +2,8 @@
   <DashboardHero eyebrow="Bank Portal" title="Loan Approval Queue" subtitle="Review, approve, and disburse farmer loan applications." :stats="heroStats" />
 
   <DashboardSection tone="white">
-    <select v-model="loansStore.statusFilter" @change="handleStatusChange" class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white mb-6">
-      <option value="">All statuses</option>
-      <option value="submitted">Submitted</option>
-      <option value="bank_approved">Bank Approved</option>
-      <option value="disbursed">Disbursed</option>
-      <option value="repaid">Repaid</option>
-      <option value="rejected">Rejected</option>
-    </select>
-
+    <PillTabs :tabs="statusTabs" v-model="loansStore.statusFilter" @update:model-value="handleStatusChange" class="mb-6" />
+      
     <div v-if="loansStore.isLoading" class="space-y-3">
       <SkeletonCard v-for="n in 3" :key="n" />
     </div>
@@ -33,6 +26,11 @@ import SettlementsOverview from '@/components/bank/SettlementsOverview.vue'
 import DashboardHero from '@/components/layout/DashboardHero.vue'
 import DashboardSection from '@/components/layout/DashboardSection.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
+import PillTabs from '@/components/shared/PillTabs.vue' 
+const statusTabs = [
+  { label: 'All', value: '' }, { label: 'Submitted', value: 'submitted' }, { label: 'Approved', value: 'bank_approved' },
+  { label: 'Disbursed', value: 'disbursed' }, { label: 'Repaid', value: 'repaid' }, { label: 'Rejected', value: 'rejected' },
+]
 
 const loansStore = useLoansStore()
 
