@@ -6,25 +6,21 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n' 
 
-const { t, te } = useI18n()
-const props = defineProps({
-  status: { type: String, required: true },
-})
+const props = defineProps({ status: { type: String, required: true } })
 
 const STATUS_COLORS = {
-  active: 'bg-green-100 text-green-700',
-  disbursed: 'bg-green-100 text-green-700',
-  repaid: 'bg-green-100 text-green-700',
-  approved: 'bg-green-100 text-green-700',
-  verified: 'bg-green-100 text-green-700',
-  grade_confirmed: 'bg-green-100 text-green-700',
-  payment_triggered: 'bg-green-100 text-green-700',
-  factsettl: 'bg-green-100 text-green-700',
-  completed: 'bg-green-100 text-green-700',
-  complete: 'bg-green-100 text-green-700',
-  paid: 'bg-green-100 text-green-700',
+  active: 'bg-green-100 text-green-800',
+  disbursed: 'bg-green-100 text-green-800',
+  repaid: 'bg-green-100 text-green-800',
+  approved: 'bg-green-100 text-green-800',
+  verified: 'bg-green-100 text-green-800',
+  grade_confirmed: 'bg-green-100 text-green-800',
+  payment_triggered: 'bg-green-100 text-green-800',
+  factsettl: 'bg-green-100 text-green-800',
+  completed: 'bg-green-100 text-green-800',
+  complete: 'bg-green-100 text-green-800',
+  paid: 'bg-green-100 text-green-800',
   pending: 'bg-amber-100 text-amber-700',
   submitted: 'bg-amber-100 text-amber-700',
   in_transit: 'bg-amber-100 text-amber-700',
@@ -40,8 +36,5 @@ const STATUS_COLORS = {
 
 const normalized = computed(() => props.status?.toLowerCase().trim() || '')
 const colorClass = computed(() => STATUS_COLORS[normalized.value] || 'bg-gray-100 text-gray-600')
-const displayText = computed(() => {
-  const key = `status.${normalized.value}`
-  return te(key) ? t(key) : normalized.value.replace(/_/g, ' ')
-})
+const displayText = computed(() => normalized.value.replace(/_/g, ' '))
 </script>

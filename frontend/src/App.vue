@@ -1,7 +1,11 @@
 <template>
   <NotificationBanner />
   <AppShell v-if="!PUBLIC_ROUTES.includes(route.path)">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </AppShell>
   <router-view v-else />
 </template>
@@ -14,3 +18,8 @@ import NotificationBanner from '@/components/shared/NotificationBanner.vue'
 const PUBLIC_ROUTES = ['/login', '/register']
 const route = useRoute()
 </script>
+
+<style>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.15s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

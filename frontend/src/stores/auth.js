@@ -86,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async updateProfile(payload) {
-     const res = await authApi.updateProfile({ payload })
+     const res = await authApi.updateProfile(payload)
      this.user = res.data
      return this.user
     },

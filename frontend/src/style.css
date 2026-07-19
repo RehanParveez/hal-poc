@@ -1,1 +1,75 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-green-50:  #f1f7f2;
+  --color-green-100: #dfeee1;
+  --color-green-200: #c1ddc6;
+  --color-green-300: #98c5a1;
+  --color-green-400: #6aa878;
+  --color-green-500: #468a57;
+  --color-green-600: #337045;
+  --color-green-700: #295c39;
+  --color-green-800: #22492e;
+  --color-green-900: #1c3a26;
+  --color-green-950: #0e2015;
+
+  --color-gray-50:  #faf7f0;
+  --color-gray-100: #f3ede0;
+  --color-gray-200: #e7e0d3;
+  --color-gray-300: #d3c9b8;
+  --color-gray-400: #a89b85;
+  --color-gray-500: #7d7263;
+  --color-gray-600: #5c5346;
+  --color-gray-700: #443d33;
+  --color-gray-800: #2e2921;
+  --color-gray-900: #1c1911;
+  --color-gray-950: #100e0a;
+
+  --color-slate-300: #93b0a1;
+  --color-slate-400: #6f8f7d;
+  --color-slate-700: #2c4438;
+  --color-slate-800: #1e3128;
+  --color-slate-900: #16241d;
+  --color-slate-950: #0c1610;
+
+  --color-gold-100: #f8ecc9;
+  --color-gold-300: #e0bc5a;
+  --color-gold-400: #c99a3e;
+  --color-gold-600: #966b24;
+}
+
+body { font-family: var(--font-sans); }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 2px;
+}
+
+select:focus, input:focus, textarea:focus {
+  border-color: var(--color-green-600);
+  box-shadow: 0 0 0 3px rgb(41 92 57 / 0.12);
+  outline: none;
+}
+
+.field-texture {
+  background-image: repeating-linear-gradient(
+    100deg, rgb(255 255 255 / 0.035) 0px, rgb(255 255 255 / 0.035) 1px,
+    transparent 1px, transparent 40px
+  );
+}
+
+@keyframes fade-in-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgb(201 154 62 / 0.45); } 50% { box-shadow: 0 0 0 6px rgb(201 154 62 / 0); } }
+@keyframes grow-fill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+.animate-fade-in-up  { animation: fade-in-up 0.5s ease-out both; }
+.animate-pulse-glow  { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-grow-fill   { animation: grow-fill 0.6s ease-out both; transform-origin: top; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up, .animate-pulse-glow, .animate-grow-fill { animation: none !important; }
+}

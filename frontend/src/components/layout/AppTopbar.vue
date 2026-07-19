@@ -1,19 +1,16 @@
 <template>
   <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
     <div>
-      <h2 class="text-sm font-semibold text-gray-700">{{ pageTitle }}</h2>
-      <p class="text-xs text-gray-400">{{ auth.user?.district }} · {{ auth.user?.province }}</p>
+      <p class="text-xs font-medium text-green-700 uppercase tracking-wide">{{ auth.user?.district }} · {{ auth.user?.province }}</p>
+      <h2 class="text-lg font-semibold text-gray-800">{{ pageTitle }}</h2>
     </div>
-    <div class="flex items-center gap-4">    
-    <LanguageSwitcher />           
-    <NotificationBell />
-    <button v-if="!auth.user?.email" @click="promptForEmail" class="text-xs text-green-700 hover:underline">
-    + Add email
-  </button>
-    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium capitalize">
-      {{ auth.user?.role }}
-    </span>
-   </div>
+    <div class="flex items-center gap-3">
+      <LanguageSwitcher />
+      <NotificationBell />
+      <span class="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium capitalize">
+        {{ auth.user?.role }}
+      </span>
+    </div>
   </header>
 </template>
 
