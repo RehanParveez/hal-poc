@@ -1,21 +1,21 @@
 <template>
   <div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Tenant Agreements</h2>
+    <h2 class="text-xl font-bold mb-4">{{ $t('landowner.tenantAgreements') }}</h2>
     <button @click="showForm = !showForm" class="mb-4 bg-green-700 text-white px-3 py-1.5 rounded text-sm">
-      {{ showForm ? 'Cancel' : '+ New Agreement' }}
+      {{ showForm ? $t('common.cancel') : $t('landowner.newAgreement') }}
     </button>
     <div v-if="showForm" class="bg-white p-4 rounded shadow mb-4 space-y-2">
-      <input v-model="form.tenant_phone" placeholder="Tenant Phone" class="w-full border rounded px-2 py-1 text-sm" />
+      <input v-model="form.tenant_phone" placeholder="$t('landowner.tenantPhone')" class="w-full border rounded px-2 py-1 text-sm" />
       <select v-model="form.parcel" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="" disabled>Select Land Parcel</option>
+        <option value="" disabled>{{ $t('landowner.selectLandParcel') }}</option>
         <option v-for="p in availableParcels" :key="p.id" :value="p.id">
           {{ p.parcel_ref }}
         </option>
       </select>
       
       <select v-model="form.agreement_type" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="theka">Theka</option>
-        <option value="batai">Batai</option>
+        <option value="theka">{{ $t('farmer.theka') }}</option>
+        <option value="batai">{{ $t('farmer.batai') }}</option>
       </select>
 
     <div v-if="form.agreement_type === 'batai'" class="space-y-2">
@@ -28,32 +28,32 @@
     </div>
       
       <select v-model="form.season" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="" disabled selected>Select Season</option>
-        <option value="Kharif">Kharif</option>
-        <option value="Rabi">Rabi</option>
+        <option value="" disabled selected>{{ $t('farmer.selectSeason') }}</option>
+        <option value="Kharif">{{ $t('farmer.kharif') }}</option>
+        <option value="Rabi">{{ $t('farmer.rabi') }}</option>
       </select>
-      <input v-model.number="form.leased_acres" type="number" placeholder="Leased Acres" class="w-full border rounded px-2 py-1 text-sm" />
+      <input v-model.number="form.leased_acres" type="number" :placeholder="$t('farmer.leasedAcres')" class="w-full border rounded px-2 py-1 text-sm" />
       
-      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm w-full">Save Agreement</button>
+      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm w-full">{{ $t('landowner.saveAgreement') }}</button>
     </div>
     <div class="space-y-2">
       <div v-for="a in land.agreements" :key="a.id" class="bg-white p-4 rounded shadow">
         <div class="flex justify-between items-start">
           <div>
             <p class="font-semibold">{{ a.tenant_name }} — {{ a.parcel_ref }}</p>
-            <p class="text-sm text-gray-500">{{ a.agreement_type }} — {{ a.leased_acres }} acres — {{ a.season }}</p>
-            <p v-if="a.agreement_type === 'theka'" class="text-sm text-gray-500">Rent: PKR {{ a.theka_amount }}</p>
-            <p v-else class="text-sm text-gray-500">Farmer {{ a.farmer_share_pct }}% / Landowner {{ a.landowner_share_pct }}%</p>
+            <p class="text-sm text-gray-500">{{ $t('farmer.' + a.agreement_type) }} — {{ a.leased_acres }} {{ $t('farmer.acresAppliedFor') }} — {{ $t('farmer.' + a.season.toLowerCase()) }}</p>
+            <p v-if="a.agreement_type === 'theka'" class="text-sm text-gray-500">{{ $t('landowner.rent') }}: PKR {{ a.theka_amount }}</p>
+            <p v-else class="text-sm text-gray-500">{{ $t('farmer.farmerShare') }} {{ a.farmer_share_pct }}% / {{ $t('farmer.landownerShare') }} {{ a.landowner_share_pct }}%</p>
           </div>
           <StatusBadge :status="a.status" />
         </div>
 
         <div v-if="a.status === 'pending'" class="mt-3 flex gap-2">
-          <button @click="handleApprove(a.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
-          <button @click="handleReject(a.id)" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">Reject</button>
+          <button @click="handleApprove(a.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('common.approve') }}</button>
+          <button @click="handleReject(a.id)" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">{{ $t('common.reject') }}</button>
         </div>
       </div>
-      <p v-if="land.agreements.length === 0" class="text-gray-500">No tenant agreements yet.</p>
+      <p v-if="land.agreements.length === 0" class="text-gray-500">{{ $t('landowner.noAgreementsYet') }}</p>
     </div>
   </div>
 </template>
@@ -86,15 +86,15 @@ onMounted(async () => {
 
 async function submit() {
   if (!form.tenant_phone.trim() || !form.parcel || !form.season) {
-    notify.showError('Tenant phone, parcel, and season are all required.')
+    notify.showError(t('landowner.errorAgreementRequired'))
     return
   }
   if (!form.leased_acres || form.leased_acres <= 0) {
-    notify.showError('Leased acres must be greater than zero.')
+    notify.showError(t('landowner.errorLeasedAcresZero'))
     return
   }
   if (form.agreement_type === 'theka' && (!form.theka_amount || form.theka_amount <= 0)) {
-    notify.showError('Enter a theka amount greater than zero.')
+    notify.showError(t('landowner.errorThekaAmountZero'))
     return
   }
   try {
@@ -110,7 +110,7 @@ async function submit() {
     form.theka_amount = 0
     await land.fetchAgreements()
   } catch (error) {
-    notify.showError(error.response?.data?.error ?? 'Failed to create agreement.')
+    notify.showError(error.response?.data?.error ?? t('landowner.errorCreateAgreement'))
   }
 }
 
@@ -118,7 +118,7 @@ async function handleApprove(id) {
   try {
     await land.approveAgreement(id)
   } catch (error) {
-    notify.showError(error.response?.data?.error ?? 'Failed to approve agreement.')
+    notify.showError(error.response?.data?.error ?? t('landowner.errorApproveAgreement'))
   }
 }
 
@@ -126,7 +126,7 @@ function handleReject(id) {
   const reason = window.prompt('Rejection reason:')
   if (reason) {
     land.rejectAgreement(id, reason).catch((error) => {
-      notify.showError(error.response?.data?.error ?? 'Failed to reject agreement.')
+      notify.showError(error.response?.data?.error ?? t('landowner.errorRejectAgreement'))
     })
   }
 }

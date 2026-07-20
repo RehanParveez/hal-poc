@@ -1,30 +1,30 @@
 <template>
   <div class="mt-6 bg-white p-4 rounded shadow">
-    <h2 class="text-lg font-bold mb-3">Post a New Contract</h2>
+    <h2 class="text-lg font-bold mb-3">{{ $t('factory.postNewContract') }}</h2>
     <div class="space-y-2">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Crop</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.selectCrop') }}</label>
       <select v-model="form.crop" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Crop</option>
+        <option value="">{{ $t('farmer.selectCrop') }}</option>
         <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
       </select>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Required Quantity (kg)</label>
-      <input v-model.number="form.required_kg" type="number" placeholder="e.g. 5000" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.requiredQuantity') }}</label>
+      <input v-model.number="form.required_kg" type="number" placeholder="$t('factory.requiredQuantityPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Base Price per kg (PKR)</label>
-      <input v-model.number="form.base_price_per_kg" type="number" placeholder="e.g. 120.50" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.basePricePerKg') }}</label>
+      <input v-model.number="form.base_price_per_kg" type="number" :placeholder="$t('factory.basePricePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Payment Defer Days</label>
-      <input v-model.number="form.payment_defer_days" type="number" placeholder="1-30" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.paymentDeferDays') }}</label>
+      <input v-model.number="form.payment_defer_days" type="number" :placeholder="$t('factory.paymentDeferPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Quality Grade Expected</label>
-      <input v-model="form.quality_grade_expected" type="text" placeholder="e.g. Grade A" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.qualityGradeExpected') }}</label>
+      <input v-model="form.quality_grade_expected" type="text" :placeholder="$t('factory.qualityGradePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Delivery Deadline</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.deliveryDeadline') }}</label>
       <input v-model="form.delivery_deadline" type="date" class="w-full border rounded px-2 py-1 text-sm" />
 
       <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
-      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Post Contract</button>
+      <button @click="submit" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('factory.postContractBtn') }}</button>
     </div>
   </div>
 </template>
@@ -33,7 +33,9 @@
 import { reactive, ref, onMounted } from 'vue'
 import { useContractsStore } from '@/stores/contracts.js'
 import { useCropsStore } from '@/stores/crops.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const contracts = useContractsStore()
 const crops = useCropsStore()
 const errorMessage = ref('')
@@ -47,16 +49,16 @@ onMounted(async () => {
 
 async function submit() {
   errorMessage.value = ''
-  if (!form.crop) { errorMessage.value = 'Select a crop first.'; return }
-  if (!form.required_kg || form.required_kg <= 0) { errorMessage.value = 'Required quantity must be greater than zero.'; return }
-  if (!form.base_price_per_kg || form.base_price_per_kg <= 0) { errorMessage.value = 'Base price per kg must be greater than zero.'; return }
-  if (!form.payment_defer_days || form.payment_defer_days < 1 || form.payment_defer_days > 30) { errorMessage.value = 'Payment defer days must be between 1 and 30.'; return }
-  if (!form.delivery_deadline) { errorMessage.value = 'Select a delivery deadline.'; return }
+  if (!form.crop) { errorMessage.value = t('factory.errorSelectCrop'); return }
+  if (!form.required_kg || form.required_kg <= 0) { errorMessage.value = t('factory.errorRequiredQuantity'); return }
+  if (!form.base_price_per_kg || form.base_price_per_kg <= 0) { errorMessage.value = t('factory.errorBasePrice'); return }
+  if (!form.payment_defer_days || form.payment_defer_days < 1 || form.payment_defer_days > 30) { errorMessage.value = t('factory.errorPaymentDefer'); return }
+  if (!form.delivery_deadline) { errorMessage.value = t('factory.errorDeliveryDeadline'); return }
   try {
     await contracts.createContract({ ...form })
   } catch (err) {
     const data = err.response?.data
-    errorMessage.value = Object.values(data || {})[0]?.[0] || 'Failed to post contract.'
+    errorMessage.value = Object.values(data || {})[0]?.[0] || t('factory.errorPostContract')
   }
 }
 </script>

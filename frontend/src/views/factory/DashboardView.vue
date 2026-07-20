@@ -38,7 +38,9 @@
             <option value="Grade C">{{ $t('factory.gradeC') }}</option>
           </select>
 
-          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.deductionPercentage') }}</label>
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.deductionPct') }}</label>
+          <input v-model.number="gradeForm[batch.id].grade_deduction_pct" type="number"
+           :placeholder="$t('factory.deductionPctPlaceholder')" class="border rounded px-2 py-1 text-sm w-full" />
           <button @click="submitGrade(batch.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
            {{ $t('factory.confirmGrade') }}
           </button>

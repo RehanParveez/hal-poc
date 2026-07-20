@@ -10,7 +10,7 @@
     <QuickActionsBar :actions="quickActions" />
   </div>
 
-  <DashboardSection id="wallet-section" tone="white" eyebrow="Finances" title="Recent Transactions">
+  <DashboardSection id="wallet-section" tone="white" :eyebrow="$t('landowner.financesEyebrow')" :title="$t('landowner.recentTransactions')">
     <div class="space-y-2">
       <div v-for="txn in wallets.transactions" :key="txn.id" class="bg-white p-3 rounded shadow flex justify-between text-sm">
         <div>
@@ -26,11 +26,11 @@
     </div>
   </DashboardSection>
 
-  <DashboardSection id="parcels-section" tone="tint" eyebrow="Properties" title="Land Parcels">
+  <DashboardSection id="parcels-section" tone="tint" :eyebrow="$t('landowner.propertiesEyebrow')" :title="$t('landowner.landParcelsTitle')">
     <ParcelsList />
   </DashboardSection>
 
-  <DashboardSection id="agreements-section" tone="white" eyebrow="Tenants" title="Tenant Agreements">
+  <DashboardSection id="agreements-section" tone="white" :eyebrow="$t('landowner.tenantsEyebrow')" :title="$t('landowner.tenantAgreements')">
     <AgreementsList />
   </DashboardSection>
 </template>
@@ -63,7 +63,8 @@ const isInitialLoading = ref(true)
 
 const formatPKR = (val) => new Intl.NumberFormat('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(val) || 0)
 
-const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Landowner')
+const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || t('landowner.landownerFallback'))
+
 const greeting = computed(() => {
   const hour = new Date().getHours()
   return hour < 12 ? t('landowner.goodMorning') : hour < 17 ? t('landowner.goodAfternoon') : t('landowner.goodEvening')

@@ -10,7 +10,9 @@
     "viewDetails": "تفصیلات دیکھیں", "noDataFound": "کوئی ڈیٹا نہیں ملا۔", "confirm": "تصدیق کریں",
     "signOut": "سائن آؤٹ →",
     "submitting": "جمع ہو رہا ہے...",
-    "pleaseWait": "براہ کرم انتظار کریں..."
+    "pleaseWait": "براہ کرم انتظار کریں...",
+    "hide": "چھپائیں",
+    "view": "دیکھیں"
   },
 
   "nav": {
@@ -94,7 +96,23 @@
     "qaAgreements": "معاہدے",
     "qaWalletHistory": "والیٹ کی تاریخ",
     "loadingTransactions": "لین دین لوڈ ہو رہا ہے...",
-    "noTransactions": "ابھی تک کوئی لین دین نہیں۔"
+    "noTransactions": "ابھی تک کوئی لین دین نہیں۔",
+    "financesEyebrow": "مالیات",
+    "propertiesEyebrow": "جائداد",
+    "tenantsEyebrow": "بٹائی دار",
+    "landParcelsTitle": "زمین کے پلاٹ",
+    "landownerFallback": "زمیندار",
+    "errorParcelRequired": "پلاٹ کا حوالہ اور ضلع دونوں ضروری ہیں۔",
+    "errorTotalAcresZero": "کل ایکڑ صفر سے زیادہ ہونا چاہیے۔",
+    "errorRegisterParcel": "پلاٹ رجسٹر کرنے میں ناکامی۔",
+    "selectLandParcel": "زمین کا پلاٹ منتخب کریں",
+    "rent": "کرایہ",
+    "errorAgreementRequired": "بٹائی دار کا فون، پلاٹ، اور موسم سب ضروری ہیں۔",
+    "errorLeasedAcresZero": "لیز شدہ ایکڑ صفر سے زیادہ ہونا چاہیے۔",
+    "errorThekaAmountZero": "ٹھیکہ کی رقم صفر سے زیادہ درج کریں۔",
+    "errorCreateAgreement": "معاہدہ بنانے میں ناکامی۔",
+    "errorApproveAgreement": "معاہدہ منظور کرنے میں ناکامی۔",
+    "errorRejectAgreement": "معاہدہ رد کرنے میں ناکامی۔"
   },
 
   "bank": {
@@ -111,7 +129,16 @@
     "disbursed": "جاری شدہ",
     "noLoansFound": "کوئی قرض کی درخواست نہیں ملی۔",
     "factoringEyebrow": "فیکٹرنگ",
-    "settlementsTitle": "ادائیگیاں"
+    "settlementsTitle": "ادائیگیاں",
+    "approvedAmountPlaceholder": "مثلاً 50000",
+    "interestRatePlaceholder": "مثلاً 12.5",
+    "creditCheckDetails": "کریڈٹ چیک کی تفصیلات",
+    "errorApprovedAmountZero": "منظور شدہ رقم صفر سے زیادہ درج کریں۔",
+    "errorInterestRateRange": "شرح سود 0 اور 50 کے درمیان درج کریں۔",
+    "errorApproveLoan": "قرض منظور کرنے میں ناکامی۔",
+    "errorRejectLoan": "قرض رد کرنے میں ناکامی۔",
+    "errorDisburseLoan": "قرض جاری کرنے میں ناکامی۔",
+    "rejectionReasonPrompt": "رد کرنے کی وجہ:"
   },
 
   "factory": {
@@ -171,13 +198,26 @@
     "errorSubmitRequest": "درخواست جمع کروانے میں ناکامی۔",
     "thekaAmountPlaceholder": "مثلاً 80000",
     "farmerSharePlaceholder": "مثلاً 60",
-    "landownerSharePlaceholder": "مثلاً 40"
+    "landownerSharePlaceholder": "مثلاً 40",
+    "requiredQuantityPlaceholder": "مثلاً 5000",
+    "basePricePlaceholder": "مثلاً 120.50",
+    "paymentDeferPlaceholder": "1-30",
+    "qualityGradePlaceholder": "مثلاً درجہ A",
+    "errorSelectCrop": "پہلے فصل منتخب کریں۔",
+    "errorRequiredQuantity": "مطلوبہ مقدار صفر سے زیادہ ہونی چاہیے۔",
+    "errorBasePrice": "بنیادی قیمت فی کلوگرام صفر سے زیادہ ہونی چاہیے۔",
+    "errorPaymentDefer": "ادائیگی موخر دن 1 اور 30 کے درمیان ہونے چاہییں۔",
+    "errorDeliveryDeadline": "ترسیل کی آخری تاریخ منتخب کریں۔",
+    "errorPostContract": "معاہدہ پوسٹ کرنے میں ناکامی۔"
   },
 
   "shopkeeper": {
     "payShopkeeperTitle": "دکاندار کو ادائیگی", "inputCategory": "ان پٹ کیٹگری", "selectCategory": "کیٹگری منتخب کریں",
     "selectShopkeeper": "دکاندار منتخب کریں", "payNow": "ابھی ادائیگی کریں",
-    "verificationPending": "آپ کا کاروباری رجسٹریشن (SECP/NTN) ایڈمن کی تصدیق کا منتظر ہے۔ تصدیق ہونے تک آپ ادائیگیاں وصول نہیں کر سکتے۔"
+    "verificationPending": "آپ کا کاروباری رجسٹریشن (SECP/NTN) ایڈمن کی تصدیق کا منتظر ہے۔ تصدیق ہونے تک آپ ادائیگیاں وصول نہیں کر سکتے۔",
+    "amountExceedsCap": "یہ رقم اس کیٹگری کی بچی ہوئی اے ایف او حد سے زیادہ ہے۔",
+    "errorFetchShopkeepers": "دکانداروں کی فہرست حاصل کرنے میں ناکامی:",
+    "errorLoadShopkeepers": "دکانداروں کی فہرست لوڈ کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔"
   },
 
   "insurance": {

@@ -12,37 +12,37 @@
      </div>
 
     <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
-      <div><span class="text-gray-500">Acres applied:</span> {{ loan.acres_applied_for }}</div>
-      <div><span class="text-gray-500">Requested:</span> PKR {{ loan.requested_amount }}</div>
-      <div v-if="loan.approved_amount"><span class="text-gray-500">Approved:</span> PKR {{ loan.approved_amount }}</div>
-      <div v-if="loan.interest_rate_pct"><span class="text-gray-500">Rate:</span> {{ loan.interest_rate_pct }}%</div>
+      <div><span class="text-gray-500">{{ $t('bank.acresApplied') }}:</span> {{ loan.acres_applied_for }}</div>
+      <div><span class="text-gray-500">{{ $t('bank.requested') }}:</span> PKR {{ loan.requested_amount }}</div>
+      <div v-if="loan.approved_amount"><span class="text-gray-500">{{ $t('bank.approved') }}:</span> PKR {{ loan.approved_amount }}</div>
+      <div v-if="loan.interest_rate_pct"><span class="text-gray-500">{{ $t('bank.rate') }}:</span> {{ loan.interest_rate_pct }}%</div>
     </div>
 
     <div v-if="loan.status === 'submitted'" class="mt-4 border-t pt-3 space-y-2">
       <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Approved Amount (PKR)</label>
-            <input v-model="approvedAmount" type="number" placeholder="e.g. 50000" class="w-full border rounded px-2 py-1 text-sm" />
+            <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('bank.approvedAmountLabel') }}</label>
+            <input v-model="approvedAmount" type="number" placeholder="$t('bank.approvedAmountPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Interest Rate (%)</label>
-            <input v-model="interestRate" type="number" placeholder="e.g. 12.5" class="w-full border rounded px-2 py-1 text-sm" />
+            <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('bank.interestRateLabel') }}</label>
+            <input v-model="interestRate" type="number" placeholder="$t('bank.interestRatePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
           </div>
         </div>
       <div class="flex gap-2">
-        <button @click="handleApprove" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Approve</button>
-        <button @click="handleReject" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">Reject</button>
+        <button @click="handleApprove" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('common.approve') }}</button>
+        <button @click="handleReject" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm">{{ $t('common.reject') }}</button>
       </div>
     </div>
 
     <div v-if="loan.status === 'bank_approved'" class="mt-4 border-t pt-3">
-      <button @click="handleDisburse" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">Disburse</button>
+      <button @click="handleDisburse" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('bank.disburse') }}</button>
     </div>
   </div>
 
   <div v-if="['bank_approved', 'disbursed'].includes(loan.status)" class="mt-3 border-t pt-3">
     <button @click="toggleCreditPanel" class="text-xs text-green-700 hover:underline">
-      {{ showCreditPanel ? 'Hide' : 'View' }} Credit Check Details
+      {{ showCreditPanel ? $t('common.hide') : $t('common.view') }} {{ $t('bank.creditCheckDetails') }}
     </button>
     <div class="collapse-grid" :class="{ 'is-open': showCreditPanel }">
       <div>
@@ -76,11 +76,11 @@ const interestRate = ref('')
 
 async function handleApprove() {
   if (!approvedAmount.value || Number(approvedAmount.value) <= 0) {
-    notify.showError('Enter an approved amount greater than zero.')
+    notify.showError(t('bank.errorApprovedAmountZero'))
     return
   }
   if (!interestRate.value || Number(interestRate.value) <= 0 || Number(interestRate.value) > 50) {
-    notify.showError('Enter an interest rate between 0 and 50.')
+    notify.showError(t('bank.errorInterestRateRange'))
     return
   }
 
@@ -88,17 +88,17 @@ async function handleApprove() {
   await loansStore.approveLoan(props.loan.id, approvedAmount.value, interestRate.value)
 
   } catch (error) {
-    notify.showError(error.response?.data?.error ?? 'Failed to approve loan.')
+    notify.showError(error.response?.data?.error ?? t('bank.errorApproveLoan'))
   }
 }
 
 async function handleReject() {
-  const reason = window.prompt('Rejection reason:')
+  const reason = window.prompt(t('bank.rejectionReasonPrompt'))
   if (reason) {
     try {
     await loansStore.rejectLoan(props.loan.id, reason)
     } catch (error) {
-      notify.showError(error.response?.data?.error ?? 'Failed to reject loan.')
+      notify.showError(error.response?.data?.error ?? t('bank.errorRejectLoan'))
     }
   }
 }
@@ -107,7 +107,7 @@ async function handleDisburse() {
   try {
   await loansStore.disburseLoan(props.loan.id)
   } catch (error) {
-    notify.showError(error.response?.data?.error ?? 'Failed to disburse loan.')
+    notify.showError(error.response?.data?.error ?? t('bank.errorDisburseLoan'))
   }
 }
 

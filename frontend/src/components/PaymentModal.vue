@@ -1,23 +1,23 @@
 <template>
   <div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-96">
-      <h2 class="text-lg font-bold mb-4">Pay Shopkeeper</h2>
+      <h2 class="text-lg font-bold mb-4">{{ $t('shopkeeper.payShopkeeperTitle') }}</h2>
       
-      <label class="block text-xs font-medium text-gray-600 mb-1">Input Category</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('shopkeeper.inputCategory') }}</label>
       <select v-model="form.input_category" class="w-full border p-2 mb-2">
-        <option value="">Select Category</option>
+        <option value="">{{ $t('shopkeeper.selectCategory') }}</option>
         <option v-for="cat in escrow.spendableCategories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
       
-      <label class="block text-xs font-medium text-gray-600 mb-1">Shopkeeper</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('shopkeeper.selectShopkeeper') }}</label>
       <select v-model="form.shopkeeper_id" class="w-full border p-2 mb-2">
-        <option value="">Select Shopkeeper</option>
+        <option value="">{{ $t('shopkeeper.selectShopkeeper') }}</option>
         <option v-for="s in shopkeepersList" :key="s.id" :value="s.id">{{ s.name }} ({{ s.phone }})</option>
       </select>
       
-      <label class="block text-xs font-medium text-gray-600 mb-1">Amount (PKR)</label>
-      <input v-model.number="form.amount" type="number" placeholder="Amount (PKR)" class="w-full border p-2 mb-2" />
-      <p v-if="amountExceedsCap" class="text-xs text-red-600 mb-2">Amount exceeds the remaining AFO cap for this category.</p>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('common.amount') }}</label>
+      <input v-model.number="form.amount" type="number" placeholder="$t('common.amount')" class="w-full border p-2 mb-2" />
+      <p v-if="amountExceedsCap" class="text-xs text-red-600 mb-2">{{ $t('shopkeeper.amountExceedsCap') }}</p>
 
       <AFOLimitDisplay
         :category="form.input_category"
@@ -26,9 +26,9 @@
       />
 
       <button @click="submit" :disabled="inputs.isSubmitting || !isFormValid" class="bg-green-600 text-white w-full py-2 rounded">
-        {{ inputs.isSubmitting ? 'Processing...' : 'Pay Now' }}
+       {{ inputs.isSubmitting ? $t('common.loading') : $t('shopkeeper.payNow') }}
       </button>
-      <button @click="$emit('close')" class="mt-2 w-full text-gray-500">Cancel</button>
+      <button @click="$emit('close')" class="mt-2 w-full text-gray-500">{{ $t('common.cancel') }}</button>
     </div>
   </div>
 </template>
@@ -40,7 +40,9 @@ import { useInputsStore } from '@/stores/inputs.js'
 import { useEscrowStore } from '@/stores/escrow.js'
 import { useNotificationsStore } from '@/stores/notifications.js'
 import { listShopkeepers } from '@/api/accounts.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const props = defineProps(['escrowId'])
 const emit = defineEmits(['close', 'success'])
 const inputs = useInputsStore()
@@ -71,8 +73,8 @@ onMounted(async () => {
     const res = await listShopkeepers()
     shopkeepersList.value = res.data
   } catch (error) {
-    console.error("Failed to fetch shopkeepers:", error)
-    notify.showError('Failed to load shopkeeper list. Please try again.')
+    console.error(t('shopkeeper.errorFetchShopkeepers'), error)
+    notify.showError(t('shopkeeper.errorLoadShopkeepers'))
   }
   
     await escrow.fetchCaps(props.escrowId)

@@ -10,8 +10,11 @@
     "viewDetails": "View Details", "noDataFound": "No data found.", "confirm": "Confirm",
     "signOut": "Sign out →",
     "submitting": "Submitting...",
-    "pleaseWait": "Please wait..."
+    "pleaseWait": "Please wait...",
+    "hide": "Hide",
+    "view": "View"
   },
+
   "nav": {
     "dashboard": "Dashboard", "escrow": "Escrow", "settlements": "Settlements",
     "logDelivery": "Log Delivery", "myLoans": "My Loans", "contracts": "Contracts",
@@ -99,7 +102,23 @@
     "dashboardSubtitle": "Manage your land parcels, tenant agreements, and track your wallet.",
     "walletBalance": "Wallet Balance", "transactions": "Transactions",
     "qaMyParcels": "My Parcels", "qaAgreements": "Agreements", "qaWalletHistory": "Wallet History",
-    "loadingTransactions": "Loading transactions...", "noTransactions": "No transactions yet."
+    "loadingTransactions": "Loading transactions...", "noTransactions": "No transactions yet.",
+    "financesEyebrow": "Finances",
+    "propertiesEyebrow": "Properties",
+    "tenantsEyebrow": "Tenants",
+    "landParcelsTitle": "Land Parcels",
+    "landownerFallback": "Landowner",
+    "errorParcelRequired": "Parcel reference and district are required.",
+    "errorTotalAcresZero": "Total acres must be greater than zero.",
+    "errorRegisterParcel": "Failed to register parcel.",
+    "selectLandParcel": "Select Land Parcel",
+    "rent": "Rent",
+    "errorAgreementRequired": "Tenant phone, parcel, and season are all required.",
+    "errorLeasedAcresZero": "Leased acres must be greater than zero.",
+    "errorThekaAmountZero": "Enter a theka amount greater than zero.",
+    "errorCreateAgreement": "Failed to create agreement.",
+    "errorApproveAgreement": "Failed to approve agreement.",
+    "errorRejectAgreement": "Failed to reject agreement."
   },
 
   "bank": {
@@ -109,7 +128,16 @@
     "statusAll": "All", "statusSubmitted": "Submitted", "statusApproved": "Approved", "statusDisbursed": "Disbursed",
     "statusRepaid": "Repaid", "statusRejected": "Rejected", "pendingReview": "Pending Review",
     "disbursed": "Disbursed", "noLoansFound": "No loan applications found.", "factoringEyebrow": "Factoring",
-    "settlementsTitle": "Settlements"
+    "settlementsTitle": "Settlements",
+    "approvedAmountPlaceholder": "e.g. 50000",
+    "interestRatePlaceholder": "e.g. 12.5",
+    "creditCheckDetails": "Credit Check Details",
+    "errorApprovedAmountZero": "Enter an approved amount greater than zero.",
+    "errorInterestRateRange": "Enter an interest rate between 0 and 50.",
+    "errorApproveLoan": "Failed to approve loan.",
+    "errorRejectLoan": "Failed to reject loan.",
+    "errorDisburseLoan": "Failed to disburse loan.",
+    "rejectionReasonPrompt": "Rejection reason:"
   },
 
   "factory": {
@@ -145,13 +173,26 @@
     "expectedPayout": "Expected",
     "invoiceLabel": "Invoice",
     "deductionPctPlaceholder": "Deduction %",
-    "factoryFallback": "Factory"
+    "factoryFallback": "Factory",
+    "requiredQuantityPlaceholder": "e.g. 5000",
+    "basePricePlaceholder": "e.g. 120.50",
+    "paymentDeferPlaceholder": "1-30",
+    "qualityGradePlaceholder": "e.g. Grade A",
+    "errorSelectCrop": "Select a crop first.",
+    "errorRequiredQuantity": "Required quantity must be greater than zero.",
+    "errorBasePrice": "Base price per kg must be greater than zero.",
+    "errorPaymentDefer": "Payment defer days must be between 1 and 30.",
+    "errorDeliveryDeadline": "Select a delivery deadline.",
+    "errorPostContract": "Failed to post contract."
   },
 
   "shopkeeper": {
     "payShopkeeperTitle": "Pay Shopkeeper", "inputCategory": "Input Category", "selectCategory": "Select Category",
     "selectShopkeeper": "Select Shopkeeper", "payNow": "Pay Now",
-    "verificationPending": "Your business registration (SECP/NTN) is pending admin verification. You cannot receive payments until this is confirmed."
+    "verificationPending": "Your business registration (SECP/NTN) is pending admin verification. You cannot receive payments until this is confirmed.",
+    "amountExceedsCap": "Amount exceeds the remaining AFO cap for this category.",
+    "errorFetchShopkeepers": "Failed to fetch shopkeepers:",
+    "errorLoadShopkeepers": "Failed to load shopkeeper list. Please try again."
   },
 
   "insurance": {
