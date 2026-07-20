@@ -2,7 +2,7 @@
   <div>
     <DashboardHero
       eyebrow="Numberdar Portal"
-      :title="`السلام علیکم، ${firstName}`"
+      :title="`${$t('numberdar.welcome')}، ${firstName}`"
       :subtitle="auth.user?.district ? `${auth.user.district} Community Region` : 'Community Verification Portal'"
       :stats="heroStats"
     />
@@ -14,11 +14,11 @@
     <DashboardSection id="queue-section" tone="white" eyebrow="Community" title="Farmer Verification Queue">
       <div class="max-w-xl">
         <div :class="['p-4 rounded-xl shadow-sm bg-white border mb-6', community.pendingQueueCount > 0 ? 'border-amber-400' : 'border-gray-100']">
-          <p class="text-xs font-medium text-gray-500 mb-1">Pending Approvals</p>
+          <p class="text-xs font-medium text-gray-500 mb-1">{{ $t('numberdar.pendingApprovals') }}</p>
           <p class="text-3xl font-bold" :class="community.pendingQueueCount > 0 ? 'text-amber-600' : 'text-gray-800'">{{ community.pendingQueueCount }}</p>
         </div>
         <router-link to="/numberdar/queue" class="btn-primary inline-flex items-center gap-2">
-          Go to Verification Queue →
+          {{ $t('numberdar.goToQueue') }}
         </router-link>
       </div>
     </DashboardSection>

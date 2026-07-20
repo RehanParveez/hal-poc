@@ -1,10 +1,5 @@
 <template>
-  <DashboardHero
-    eyebrow="Factory Portal"
-    :title="`${greeting}, ${firstName}`"
-    subtitle="Manage harvest deliveries, post procurement contracts, and settle bank invoices."
-    :stats="heroStats"
-  />
+  <DashboardHero eyebrow="Hal" :title="$t('factory.confirmGradeTitle')" />
 
   <div class="content-container -mt-8 relative z-20">
     <QuickActionsBar :actions="quickActions" />
@@ -12,12 +7,12 @@
 
   <DashboardSection v-if="!auth.isCorporateVerified" tone="white" eyebrow="Action Required" title="Account Pending">
     <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-sm font-medium">
-      ⚠ Your business registration (SECP/NTN) is pending admin verification. You cannot post new contracts until this is confirmed.
+      ⚠ {{ $t('factory.accountPendingWarning') }}
     </div>
   </DashboardSection>
 
   <DashboardSection id="deliveries-section" tone="tint" eyebrow="Logistics" title="Deliveries & Grading">
-    <div v-if="delivery.isLoading" class="text-gray-500">Loading...</div>
+    <div v-if="delivery.isLoading" class="text-gray-500">{{ $t('common.loading') }}</div>
     <div v-else class="space-y-3">
       <div v-for="batch in delivery.batches" :key="batch.id" class="bg-white p-4 rounded shadow">
         <div class="flex justify-between items-start">
@@ -30,33 +25,31 @@
 
         <div v-if="batch.status === 'in_transit'" class="mt-3">
           <button @click="handleMarkReceived(batch.id)" class="bg-blue-700 text-white px-3 py-1.5 rounded text-sm">
-            Mark Received
+            {{ $t('factory.markReceived') }}
           </button>
         </div>
 
         <div v-if="batch.status === 'received' && gradeForm[batch.id]" class="mt-3 border-t pt-3 space-y-2">
-          <label class="block text-xs font-medium text-gray-600 mb-1">Quality Grade</label>
-          <select v-model="gradeForm[batch.id].grade_received" class="border rounded px-2 py-1 text-sm w-full">
-            <option value="">Select Grade</option>
-            <option value="Grade A">Grade A</option>
-            <option value="Grade B">Grade B</option>
-            <option value="Grade C">Grade C</option>
-          </select>
-          <label class="block text-xs font-medium text-gray-600 mb-1">Deduction Percentage</label>
-          <input v-model.number="gradeForm[batch.id].grade_deduction_pct" type="number" placeholder="Deduction %" class="border rounded px-2 py-1 text-sm w-full" />
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.qualityGrade') }}</label>
+          <option value="">{{ $t('factory.selectGrade') }}</option>
+          <option value="Grade A">{{ $t('factory.gradeA') }}</option>
+          <option value="Grade B">{{ $t('factory.gradeB') }}</option>
+          <option value="Grade C">{{ $t('factory.gradeC') }}</option>
+
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.deductionPercentage') }}</label>
           <button @click="submitGrade(batch.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
-            Confirm Grade
+           {{ $t('factory.confirmGrade') }}
           </button>
         </div>
       </div>
-      <p v-if="delivery.batches.length === 0" class="text-gray-500">No deliveries yet.</p>
+      <p v-if="delivery.batches.length === 0" class="text-gray-500">{{ $t('factory.noDeliveries') }}</p>
     </div>
     </DashboardSection>
 
   <DashboardSection id="settlements-section" tone="white" eyebrow="Finance" title="Bank Settlements">
     <div v-for="inv in settlements.invoices.filter(i => i.status === 'advanced')" :key="inv.id" class="bg-white p-4 rounded shadow mb-3 flex justify-between items-center">
       <span class="text-sm">Invoice #{{ inv.id.slice(0, 8) }} — PKR {{ inv.gross_payout }}</span>
-      <button @click="handleFactorySettle(inv.id)" class="bg-purple-700 text-white px-3 py-1.5 rounded text-sm">Settle with Bank</button>
+      <button @click="handleFactorySettle(inv.id)" class="bg-purple-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('factory.settleWithBank') }}</button>
     </div>
    </DashboardSection>
 
@@ -87,21 +80,22 @@ const auth = useAuthStore()
 const scrollToSection = useScrollTo()
 
 const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Factory')
+
 const greeting = computed(() => {
   const hour = new Date().getHours()
-  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  return hour < 12 ? t('factory.goodMorning') : hour < 17 ? t('factory.goodAfternoon') : t('factory.goodEvening')
 })
 
 const heroStats = computed(() => [
-  { icon: Truck, label: 'Pending Deliveries', value: delivery.batches.filter(b => b.status === 'in_transit').length },
-  { icon: Building2, label: 'Verified Status', value: auth.isCorporateVerified ? 'Verified' : 'Pending' },
-  { icon: Banknote, label: 'Open Invoices', value: settlements.invoices.filter(i => i.status === 'advanced').length },
+  { icon: Truck, label: t('factory.pendingDeliveries'), value: delivery.batches.filter(b => b.status === 'in_transit').length },
+  { icon: Building2, label: t('factory.verifiedStatus'), value: auth.isCorporateVerified ? t('factory.verified') : t('factory.pending') },
+  { icon: Banknote, label: t('factory.openInvoices'), value: settlements.invoices.filter(i => i.status === 'advanced').length },
 ])
 
 const quickActions = computed(() => [
-  { label: 'Receive Delivery', icon: Truck, onClick: () => scrollToSection('deliveries-section') },
-  { label: 'Bank Settlements', icon: Banknote, onClick: () => scrollToSection('settlements-section') },
-  { label: 'Post Contract', icon: FileSignature, onClick: () => scrollToSection('post-contract-section') },
+  { label: t('factory.qaReceiveDelivery'), icon: Truck, onClick: () => scrollToSection('deliveries-section') },
+  { label: t('factory.qaBankSettlements'), icon: Banknote, onClick: () => scrollToSection('settlements-section') },
+  { label: t('factory.qaPostContract'), icon: FileSignature, onClick: () => scrollToSection('post-contract-section') },
 ])
 
 function syncGradeForm() {
@@ -123,17 +117,17 @@ watch(() => delivery.batches, syncGradeForm)
 async function submitGrade(batchId) {
   const form = gradeForm[batchId]
   if (!form.grade_received) {
-    notify.showError({ message: 'Select a grade before confirming.' })
+    notify.showError({ message: t('factory.errorSelectGrade') })
     return
   }
   if (form.grade_deduction_pct < 0 || form.grade_deduction_pct > 100) {
-    notify.showError({ message: 'Deduction percentage must be between 0 and 100.' })
+    notify.showError({ message: t('factory.errorDeductionRange') })
     return
   }
   try {
     await delivery.confirmGrade(batchId, form.grade_received, form.grade_deduction_pct, '')
   } catch (error) {
-    notify.showError(error.response?.data ?? { message: 'Failed to confirm grade.' })
+    notify.showError(error.response?.data ?? { message: t('factory.errorConfirmGrade') })
   }
 }
 
@@ -141,7 +135,7 @@ async function handleMarkReceived(batchId) {
   try {
     await delivery.markReceived(batchId)
   } catch (error) {
-    notify.showError(error.response?.data ?? { message: 'Failed to mark batch received.' })
+    notify.showError(error.response?.data ?? { message: t('factory.errorMarkReceived') })
   }
 }
 
@@ -149,7 +143,7 @@ async function handleFactorySettle(invoiceId) {
   try {
     await settlements.factorySettle(invoiceId)
   } catch (error) {
-    notify.showError(error.response?.data ?? { message: 'Failed to settle with bank.' })
+    notify.showError(error.response?.data ?? { message: t('factory.errorSettleBank') })
   }
 }
 

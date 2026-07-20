@@ -1,10 +1,10 @@
 <template>
   <DashboardHero
-    :eyebrow="auth.user?.district ? `${auth.user.district}, ${auth.user.province}` : 'Landowner Portal'"
-    :title="`${greeting}, ${firstName}`"
-    subtitle="Manage your land parcels, tenant agreements, and track your wallet."
-    :stats="heroStats"
-  />
+  :eyebrow="auth.user?.district ? `${auth.user.district}, ${auth.user.province}` : 'Landowner Portal'"
+  :title="`${greeting}, ${firstName}`"
+  :subtitle="$t('landowner.dashboardSubtitle')"
+  :stats="heroStats"
+/>
 
   <div class="content-container -mt-8 relative z-20">
     <QuickActionsBar :actions="quickActions" />
@@ -21,8 +21,8 @@
           {{ txn.direction === 'credit' ? '+' : '-' }} PKR {{ formatPKR(txn.amount) }}
         </p>
       </div>
-      <div v-if="isInitialLoading" class="text-gray-500">Loading transactions...</div>
-      <p v-else-if="wallets.transactions.length === 0" class="text-gray-500">No transactions yet.</p>
+      <div v-if="isInitialLoading" class="text-gray-500">{{ $t('landowner.loadingTransactions') }}</div>
+      <p v-else-if="wallets.transactions.length === 0" class="text-gray-500">{{ $t('landowner.noTransactions') }}</p>
     </div>
   </DashboardSection>
 
@@ -51,7 +51,9 @@ import { useCountUp } from '@/composables/useCountUp.js'
 
 import ParcelsList from '@/components/landowner/ParcelsList.vue'
 import AgreementsList from '@/components/landowner/AgreementsList.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n() 
 const auth = useAuthStore()
 const wallets = useWalletsStore()
 const scrollToSection = useScrollTo()
@@ -64,18 +66,18 @@ const formatPKR = (val) => new Intl.NumberFormat('en-PK', { minimumFractionDigit
 const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Landowner')
 const greeting = computed(() => {
   const hour = new Date().getHours()
-  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  return hour < 12 ? t('landowner.goodMorning') : hour < 17 ? t('landowner.goodAfternoon') : t('landowner.goodEvening')
 })
 
 const heroStats = computed(() => [
-  { icon: Wallet, label: 'Wallet Balance', value: `₨${formatPKR(animatedBalance.value)}` },
-  { icon: Activity, label: 'Transactions', value: wallets.transactions.length.toString() }
+  { icon: Wallet, label: t('landowner.walletBalance'), value: `₨${formatPKR(animatedBalance.value)}` },
+  { icon: Activity, label: t('landowner.transactions'), value: wallets.transactions.length.toString() }
 ])
 
 const quickActions = computed(() => [
-  { label: 'My Parcels', icon: Map, onClick: () => scrollToSection('parcels-section') },
-  { label: 'Agreements', icon: FileSignature, onClick: () => scrollToSection('agreements-section') },
-  { label: 'Wallet History', icon: Wallet, onClick: () => scrollToSection('wallet-section') },
+  { label: t('landowner.qaMyParcels'), icon: Map, onClick: () => scrollToSection('parcels-section') },
+  { label: t('landowner.qaAgreements'), icon: FileSignature, onClick: () => scrollToSection('agreements-section') },
+  { label: t('landowner.qaWalletHistory'), icon: Wallet, onClick: () => scrollToSection('wallet-section') },
 ])
 
 onMounted(async () => {

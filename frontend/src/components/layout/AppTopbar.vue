@@ -8,6 +8,8 @@
       <div v-if="showWalletPill" class="hidden sm:flex items-center gap-1.5 bg-green-50 text-green-800 text-sm font-medium px-3 py-1.5 rounded-full tabular-nums">
         <Wallet :size="14" /> ₨ {{ formattedBalance }}
       </div>
+      <NotificationBell />
+      <LanguageSwitcher />
       <span class="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium capitalize">{{ auth.user?.role }}</span>
     </div>
   </header>

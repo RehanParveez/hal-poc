@@ -3,38 +3,179 @@
     "login": "Login", "logout": "Sign out", "submit": "Submit", "cancel": "Cancel",
     "loading": "Loading...", "save": "Save", "back": "Back", "continue": "Continue",
     "phone": "Phone", "password": "Password", "district": "District", "province": "Province",
-    "fullName": "Full Name", "cnic": "CNIC Number"
+    "fullName": "Full Name", "cnic": "CNIC Number", "approve": "Approve", "reject": "Reject",
+    "close": "Close", "add": "Add", "edit": "Edit", "delete": "Delete", "select": "Select",
+    "none": "None", "all": "All statuses", "actions": "Actions", "status": "Status",
+    "amount": "Amount (PKR)", "date": "Date", "reason": "Reason", "notes": "Notes",
+    "viewDetails": "View Details", "noDataFound": "No data found.", "confirm": "Confirm",
+    "signOut": "Sign out →",
+    "submitting": "Submitting...",
+    "pleaseWait": "Please wait..."
   },
+  "nav": {
+    "dashboard": "Dashboard", "escrow": "Escrow", "settlements": "Settlements",
+    "logDelivery": "Log Delivery", "myLoans": "My Loans", "contracts": "Contracts",
+    "landParcels": "Land Parcels", "agreements": "Agreements", "loanQueue": "Loan Queue",
+    "deliveries": "Deliveries", "postContract": "Post Contract", "claims": "Claims",
+    "policies": "Policies", "cropTypes": "Crop Types", "spendingCaps": "Spending Caps",
+    "milestones": "Milestones", "verificationQueue": "Verification Queue"
+  },
+  
   "auth": {
     "loginTitle": "Hal Login", "createAccount": "Create Account", "joinPlatform": "Join the Hal Platform",
     "alreadyHaveAccount": "Already have an account? Login",
     "loginFailed": "Login failed. Please check your phone and password.",
     "selectRole": "Select System Access Level",
-    "smallholder": "Smallholder Farmer", "tenant": "Tenant Farmer", "landowner": "Landowner", "shopkeeper": "Shopkeeper"
+    "smallholder": "Smallholder Farmer", "tenant": "Tenant Farmer", "landowner": "Landowner", "shopkeeper": "Shopkeeper",
+    "cnicPlaceholder": "35202-1234567-1", "phonePlaceholder": "03001234567",
+    "basicInfo": "Basic Info", "communityLink": "Community Link", "consentNotice": "Consent",
+    "businessDetails": "Business Details", "documents": "Documents",
+    "findNumberdar": "Find Your Local Numberdar",
+    "communityLinkExplain": "Your local Numberdar verifies your account before you can apply for a loan. You can select one now, or skip and do this later.",
+    "skipWarning": "If you skip this step, you won't be able to apply for a loan until a Numberdar verifies your account later from your dashboard.",
+    "skipForNow": "Skip for now", "submitRequest": "Submit Request",
+    "consentExplain": "Before your first loan, your bank will need to run a credit history check with your explicit consent. You'll be asked to confirm this separately, with an OTP, at that time.",
+    "consentUnderstand": "I understand a credit check will be required before my first loan",
+    "consentTerms": "I agree to Hal's Terms & Privacy Policy",
+    "completeRegistration": "Complete Registration",
+    "shopName": "Shop Name", "secpNumber": "SECP Registration Number", "ntnNumber": "NTN Number",
+    "uploadSecpCert": "SECP Certificate", "uploadIncorporation": "Incorporation Certificate",
+    "submitForVerification": "Submit for Verification",
+    "pendingVerificationNote": "Your account is created — an admin will confirm your SECP/NTN details before you can transact."
   },
-  "escrow": {
-    "title": "Escrow Balance", "totalFunded": "of {amount} total", "spentOnInputs": "Spent on inputs",
-    "activePhase": "Phase {number}: {name}", "allowed": "Allowed"
+  "footer": {
+    "tagline": "Digital escrow connecting farmers, banks, shopkeepers, and factory buyers on one transparent platform.",
+    "quickLinks": "Quick Links", "support": "Support", "builtFor": "Built for Pakistan's farmers"
   },
-  "credit": {
-    "title": "Credit History Check Required",
-    "consentIntro": "Before your loan can be disbursed, your bank needs to check your credit history through eCIB and Tasdeeq. This information is only shared with your partner bank and Hal.",
-    "consent1": "I authorize Hal and my partner bank to access my eCIB credit history",
-    "consent2": "I authorize access to my Tasdeeq credit score",
-    "consent3": "I understand this check will be logged and stored per SBP regulations",
-    "sendOtp": "Send OTP", "otpSent": "Enter the 6-digit code sent to your phone:",
-    "otpError": "Incorrect or expired OTP. Please try again.",
-    "passed": "Credit Check Passed", "maxLimit": "Maximum Loan Limit", "notEligible": "Credit Check — Not Eligible",
-    "pending": "Your credit check is being processed...", "manualReview": "Under Manual Review",
-    "manualReviewText": "Our team is reviewing your file. We will contact you within 2 business days."
+  "help": { "needHelp": "Need help?", "supportText": "Our support team is here for you, in Urdu or English." },
+
+  "farmer": {
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "dashboardSubtitle": "Here's where your loan, escrow, and harvest stand today.",
+    "fileClaimBtn": "File Crop Damage Claim",
+    "qaApplyLoan": "Apply for Loan", "qaViewEscrow": "View Escrow", "qaLogDelivery": "Log Delivery", "qaBrowseContracts": "Browse Contracts",
+    "escrowBalance": "Escrow Balance", "ofTotal": "of ₨{amount} total", "spentOnInputs": "Spent on inputs",
+    "activePhase": "Phase {number}: {name}", "allowed": "Allowed",
+    "myLoanApplications": "My Loan Applications", "noLoanApplications": "No loan applications yet.",
+    "applyForNewLoan": "Apply for a New Loan", "selectBank": "Select Bank", "selectCrop": "Select Crop",
+    "tenantAgreement": "Tenant Agreement", "acresAppliedFor": "Acres Applied For", "requestedAmount": "Requested Amount (PKR)",
+    "submitApplication": "Submit Application", "submitting": "Submitting...",
+    "openContracts": "Open Contracts", "remaining": "Remaining", "deadline": "Deadline",
+    "committedQuantity": "Committed Quantity (kg)", "allocate": "Allocate", "noOpenContracts": "No open contracts available.",
+    "logADelivery": "Log a Delivery", "contractAllocation": "Contract Allocation", "selectAllocation": "Select Allocation",
+    "batchWeight": "Batch Weight (kg)", "logging": "Logging...", "noAllocationsFound": "No contract allocations found.",
+    "mySettlements": "My Settlements", "noSettlementsYet": "No settlements yet.",
+    "requestTenantAgreement": "Request a Tenant Agreement", "selectParcel": "Select Parcel",
+    "agreementType": "Agreement Type", "theka": "Theka (Fixed Rent)", "batai": "Batai (Crop Share)",
+    "leasedAcres": "Leased Acres", "season": "Season", "kharif": "Kharif", "rabi": "Rabi",
+    "thekaAmount": "Theka Amount (PKR)", "farmerShare": "Farmer Share (%)", "landownerShare": "Landowner Share (%)",
+    "activeLoans": "Active Loans",
+    "creditTier": "Credit Tier"
   },
-  "community": {
-    "title": "Community Verification", "verified": "Verified by your Numberdar — you're eligible to apply for a loan.",
-    "pending": "Verification request pending with {name}.", "findNumberdar": "Find My Numberdar",
-    "request": "Request", "noneFound": "No Numberdars found in your district yet."
+
+  "landowner": {
+    "dashboardTitle": "Landowner Dashboard", "myWallet": "My Wallet", "currentBalance": "Current Balance",
+    "recentTransactions": "Recent Transactions", "noTransactionsYet": "No transactions yet.",
+    "myLandParcels": "My Land Parcels", "registerParcel": "+ Register Parcel",
+    "parcelReference": "Parcel Reference", "tehsil": "Tehsil (optional)", "totalAcres": "Total Acres",
+    "saveParcel": "Save Parcel", "noParcelsYet": "No parcels registered yet.", "verified": "Verified",
+    "tenantAgreements": "Tenant Agreements", "newAgreement": "+ New Agreement", "tenantPhone": "Tenant Phone",
+    "saveAgreement": "Save Agreement", "noAgreementsYet": "No tenant agreements yet.", "available": "available",
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "dashboardSubtitle": "Manage your land parcels, tenant agreements, and track your wallet.",
+    "walletBalance": "Wallet Balance", "transactions": "Transactions",
+    "qaMyParcels": "My Parcels", "qaAgreements": "Agreements", "qaWalletHistory": "Wallet History",
+    "loadingTransactions": "Loading transactions...", "noTransactions": "No transactions yet."
   },
-  "status": {
-    "pending": "Pending", "approved": "Approved", "rejected": "Rejected",
-    "disbursed": "Disbursed", "repaid": "Repaid", "active": "Active"
+
+  "bank": {
+    "loanApprovalQueue": "Loan Approval Queue", "acresApplied": "Acres applied", "requested": "Requested",
+    "approved": "Approved", "rate": "Rate", "approvedAmountLabel": "Approved Amount (PKR)", "interestRateLabel": "Interest Rate (%)",
+    "disburse": "Disburse", "settlementsPayBank": "Settlements", "noApplicationsFound": "No loan applications found.",
+    "statusAll": "All", "statusSubmitted": "Submitted", "statusApproved": "Approved", "statusDisbursed": "Disbursed",
+    "statusRepaid": "Repaid", "statusRejected": "Rejected", "pendingReview": "Pending Review",
+    "disbursed": "Disbursed", "noLoansFound": "No loan applications found."
+  },
+
+  "factory": {
+    "confirmGradeTitle": "Deliveries — Confirm Grade", "markReceived": "Mark Received",
+    "qualityGrade": "Quality Grade", "selectGrade": "Select Grade", "deductionPct": "Deduction Percentage",
+    "confirmGradeBtn": "Confirm Grade", "settlementsPayBank": "Settlements — Pay the Bank",
+    "settleWithBank": "Settle with Bank", "noDeliveriesYet": "No deliveries yet.",
+    "postNewContract": "Post a New Contract", "requiredQuantity": "Required Quantity (kg)",
+    "basePricePerKg": "Base Price per kg (PKR)", "paymentDeferDays": "Payment Defer Days",
+    "qualityGradeExpected": "Quality Grade Expected", "deliveryDeadline": "Delivery Deadline", "postContractBtn": "Post Contract",
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "pendingDeliveries": "Pending Deliveries", "verifiedStatus": "Verified Status", "openInvoices": "Open Invoices",
+    "verified": "Verified", "pending": "Pending",
+    "qaReceiveDelivery": "Receive Delivery", "qaBankSettlements": "Bank Settlements", "qaPostContract": "Post Contract",
+    "accountPendingWarning": "Your business registration (SECP/NTN) is pending admin verification. You cannot post new contracts until this is confirmed.",
+    "noDeliveries": "No deliveries yet.",
+    "gradeA": "Grade A", "gradeB": "Grade B", "gradeC": "Grade C",
+    "deductionPercentage": "Deduction Percentage", "confirmGrade": "Confirm Grade",
+    "errorSelectGrade": "Select a grade before confirming.",
+    "errorDeductionRange": "Deduction percentage must be between 0 and 100.",
+    "errorConfirmGrade": "Failed to confirm grade.",
+    "errorMarkReceived": "Failed to mark batch received.",
+    "errorSettleBank": "Failed to settle with bank."
+  },
+
+  "shopkeeper": {
+    "payShopkeeperTitle": "Pay Shopkeeper", "inputCategory": "Input Category", "selectCategory": "Select Category",
+    "selectShopkeeper": "Select Shopkeeper", "payNow": "Pay Now",
+    "verificationPending": "Your business registration (SECP/NTN) is pending admin verification. You cannot receive payments until this is confirmed."
+  },
+
+  "insurance": {
+    "claimsTitle": "Insurance Claims", "claimAmount": "Claim Amount", "reviewerNote": "Reviewer note (optional)",
+    "noClaimsYet": "No claims yet.", "allPoliciesTitle": "All Policies", "noPoliciesYet": "No policies yet.",
+    "coverage": "Coverage",
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "dashboardTitle": "Insurance Dashboard",
+    "pendingClaims": "Pending Claims", "activePolicies": "Active Policies", "totalClaims": "Total Claims",
+    "qaReviewClaims": "Review Claims", "qaViewPolicies": "View Policies",
+    "noClaims": "No claims yet.", "noPolicies": "No policies yet.",
+    "approve": "Approve", "reject": "Reject",
+    "approvedAmountPlaceholder": "Approved Amount (if approving)",
+    "reviewerNotePlaceholder": "Reviewer note (optional)",
+    "errorReviewClaim": "Failed to review claim."
+  },
+
+  "afo": {
+    "cropConfigTitle": "AFO — Crop Configuration", "cropTypesTitle": "Crop Types", "cropName": "Crop Name",
+    "cropCode": "Crop Code", "selectSeason": "Select Season", "addCropType": "Add Crop Type",
+    "spendingCapsTitle": "AFO Spending Caps", "selectCrop": "Select Crop", "district": "District",
+    "selectCategory": "Select Category", "maxCostPerAcre": "Max Cost per Acre (PKR)", "saveCap": "Save Cap",
+    "milestonesTitle": "Crop Lifecycle Milestones", "phaseNumber": "Phase Number", "phaseName": "Phase Name",
+    "dayOffset": "Day Offset (days after sowing)", "unlockPct": "Unlock Percentage (0-100)",
+    "allowedCategoriesPhase": "Allowed Categories This Phase", "saveMilestone": "Save Milestone",
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "dashboardTitle": "AFO Dashboard",
+    "cropTypes": "Crop Types", "spendingCaps": "Spending Caps", "milestones": "Milestones",
+    "qaManageCrops": "Manage Crops", "qaSpendingCaps": "Spending Caps", "qaLifecycle": "Lifecycle",
+    "cropNamePlaceholder": "e.g. Maize", "cropCodePlaceholder": "e.g. MAIZE",
+    "seasonRabi": "Rabi", "seasonKharif": "Kharif",
+    "districtPlaceholder": "e.g. Multan",
+    "categorySeed": "Seed", "categoryFertilizer": "Fertilizer", "categoryPesticide": "Pesticide",
+    "categoryIrrigation": "Irrigation", "categoryLabour": "Labour",
+    "maxCostPerAcrePlaceholder": "Max Cost per Acre (PKR)",
+    "phaseNumberPlaceholder": "e.g. 1", "phaseNamePlaceholder": "e.g. Mid-Season Growth",
+    "dayOffsetPlaceholder": "e.g. 30", "unlockPercentagePlaceholder": "e.g. 40",
+    "errorCropRequired": "Crop name, code, and season are all required.",
+    "errorAddCropType": "Failed to add crop type.",
+    "errorCapFieldsRequired": "All cap fields are required.",
+    "errorMaxCostZero": "Max cost per acre must be greater than zero.",
+    "errorSaveCap": "Failed to save cap.",
+    "errorMilestoneRequired": "Crop and phase name are required.",
+    "errorUnlockPercentage": "Unlock percentage must be between 0 and 100.",
+    "errorSaveMilestone": "Failed to save milestone."
+  },
+
+  "numberdar": {
+    "welcome": "Welcome", "pendingApprovals": "Pending Approvals", "farmersVerified": "Farmers Verified",
+    "activeGroups": "Active Groups", "goToQueue": "Go to Verification Queue →",
+    "verificationQueueTitle": "Verification Queue", "pending": "Pending", "overdue": "Overdue",
+    "daysAgo": "Requested {n} day(s) ago", "confirmApprove": "Are you sure you want to verify {name}? This will allow them to apply for a loan.",
+    "rejectionReason": "Reason for rejection...", "confirmReject": "Confirm Reject", "noRequests": "No requests in this category."
   }
 }

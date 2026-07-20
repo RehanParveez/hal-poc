@@ -7,10 +7,7 @@
     leave-from-class="translate-y-0 opacity-100"
     leave-to-class="-translate-y-full opacity-0"
   >
-    <div
-      v-if="notify.current"
-      :class="['fixed top-0 left-0 right-0 z-50 px-4 py-3 shadow-lg', bannerClass]"
-    >
+    <div v-if="notify.current" dir="ltr" :class="['fixed top-0 left-0 right-0 z-50 px-4 py-3 shadow-lg', bannerClass]">
       <div class="max-w-4xl mx-auto flex items-start gap-3">
         <span class="text-xl flex-shrink-0 mt-0.5">{{ bannerIcon }}</span>
         <div class="flex-1 min-w-0">

@@ -2,8 +2,8 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <div class="text-center mb-2">
-        <h1 class="text-2xl font-bold text-gray-900">Create Account</h1>
-        <p class="text-sm text-gray-500 mt-1">Join the HAL AgroChain Platform</p>
+        <h1 class="text-2xl font-bold text-gray-900">{{ $t('auth.createAccount') }}</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ $t('auth.joinPlatform') }}</p>
       </div>
 
       <StepWizard
@@ -21,45 +21,45 @@
         <form v-if="currentStep === 0" :key="0" @submit.prevent="handleStep0Continue" class="space-y-4">
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.fullName') }}</label>
         <input v-model="form.full_name" type="text" placeholder="e.g., Muhammad Ali" required class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.phone') }}</label>
           <input v-model="form.phone" type="text" placeholder="03001234567" required class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">CNIC Number</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.cnic') }}</label>
           <input v-model="form.cnic" type="text" placeholder="35202-1234567-1" required class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.password') }}</label>
         <input v-model="form.password" type="password" placeholder="••••••••" required class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Platform Role</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('auth.selectRole') }}</label>
         <select v-model="form.role" required class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:ring-2 focus:ring-green-600 focus:outline-none">
-          <option value="">Select System Access Level</option>
-          <option value="smallholder">Smallholder Farmer</option>
-          <option value="tenant">Tenant Farmer</option>
-          <option value="landowner">Landowner</option>
-          <option value="shopkeeper">Shopkeeper</option>
+          <option value="">{{ $t('auth.selectRolePlaceholder') }}</option>
+          <option value="smallholder">{{ $t('auth.smallholder') }}</option>
+          <option value="tenant">{{ $t('auth.tenant') }}</option>
+          <option value="landowner">{{ $t('auth.landowner') }}</option>
+          <option value="shopkeeper">{{ $t('auth.shopkeeper') }}</option>
         </select>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.district') }}</label>
             <input v-model="form.district" type="text" placeholder="e.g., Faisalabad" required
               class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('common.province') }}</label>
             <input v-model="form.province" type="text" placeholder="punjab"
               class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none" />
           </div>
@@ -67,18 +67,18 @@
 
         <button type="submit" :disabled="isSubmitting"
           class="w-full bg-green-700 hover:bg-green-800 text-white font-medium py-2.5 rounded transition disabled:opacity-50 mt-2">
-          {{ isSubmitting ? 'Please wait...' : (isLandownerRole || !form.role ? 'Register' : 'Continue') }}
+          {{ isSubmitting ? $t('common.pleaseWait') : (isLandownerRole || !form.role ? $t('auth.register') : $t('common.continue')) }}
         </button>
 
         <router-link to="/login" class="block text-center text-sm text-gray-600 hover:text-green-700 transition mt-2">
-          Already have an account? Login
+          {{ $t('auth.alreadyHaveAccount') }}
         </router-link>
       </form>
 
       <div v-else-if="currentStep === 1 && isFarmerRole" :key="'farmer-1'">
-        <h3 class="font-bold text-gray-800 mb-2">Find Your Local Numberdar</h3>
+        <h3 class="font-bold text-gray-800 mb-2">{{ $t('auth.findNumberdar') }}</h3>
         <p class="text-sm text-gray-500 mb-3">
-          Your local Numberdar verifies your account before you can apply for a loan. You can select one now, or skip and do this later.
+          {{ $t('auth.communityLinkExplain') }}
         </p>
         <div v-if="community.numberdars.length > 0" class="space-y-2 mb-4 max-h-64 overflow-y-auto">
           <label v-for="nd in community.numberdars" :key="nd.id"
@@ -91,75 +91,74 @@
             <input type="radio" :value="nd.id" v-model="selectedNumberdarId" class="ml-2" />
           </label>
         </div>
-        <p v-else class="text-sm text-gray-400 mb-4">No Numberdars found in {{ form.district }} yet.</p>
+        <p v-else class="text-sm text-gray-400 mb-4">{{ $t('auth.noNumberdarsFound', { district: form.district }) }}</p>
 
         <button @click="handleSubmitVerificationRequest" :disabled="!selectedNumberdarId"
           class="w-full bg-green-700 text-white py-2.5 rounded font-medium disabled:opacity-50 mb-2">
-          Submit Request
+          {{ $t('auth.submitRequest') }}
         </button>
 
         <p class="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
-          ⚠ If you skip this step, you won't be able to apply for a loan until a Numberdar verifies your account later from your dashboard.
+          ⚠ {{ $t('auth.skipWarning') }}
         </p>
         <button @click="handleSkipVerification" type="button" class="w-full text-sm text-gray-500 hover:text-gray-700 py-1">
-          Skip for now
+          {{ $t('auth.skipForNow') }}
         </button>
       </div>
 
       <div v-else-if="currentStep === 1 && isCorporateRole" :key="'corp-1'" class="space-y-4">
-        <h3 class="font-bold text-gray-800 mb-1">Business Details</h3>
+        <h3 class="font-bold text-gray-800 mb-1">{{ $t('auth.businessDetails') }}</h3>
          <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('auth.shopName') }}</label>
           <input v-model="form.shop_name" type="text" placeholder="e.g., Ali Traders" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">SECP Registration Number</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('auth.secpNumber') }}</label>
           <input v-model="form.secp_registration_number" type="text" placeholder="SECP-NTN-XXXXXXXX" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">NTN Number</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('auth.ntnNumber') }}</label>
           <input v-model="form.ntn_number" type="text" placeholder="7 digits" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
 
        <button @click="handleBusinessDetailsContinue" :disabled="isSubmitting"
           class="w-full bg-green-700 text-white py-2.5 rounded font-medium disabled:opacity-50">
-          {{ isSubmitting ? 'Please wait...' : 'Continue' }}
+          {{ isSubmitting ? $t('common.pleaseWait') : $t('common.continue') }}
         </button>
       </div>
 
       <div v-else-if="currentStep === 2 && isFarmerRole" :key="'farmer-2'">
-        <h3 class="font-bold text-gray-800 mb-2">Before You Continue</h3>
+        <h3 class="font-bold text-gray-800 mb-2">{{ $t('auth.beforeYouContinue') }}</h3>
         <p class="text-sm text-gray-500 mb-3">
-          Before your first loan, your bank will need to run a credit history check (through eCIB and Tasdeeq) with your
-          explicit consent. You'll be asked to confirm this separately, with an OTP, at that time.
+          {{ $t('auth.consentExplain') }}
         </p>
         <label class="flex items-start gap-2 text-sm mb-2">
           <input type="checkbox" v-model="consent1" class="mt-1" />
-          <span>I understand a credit check will be required before my first loan</span>
+          <span>{{ $t('auth.consentUnderstand') }}</span>
         </label>
         <label class="flex items-start gap-2 text-sm mb-4">
           <input type="checkbox" v-model="consent2" class="mt-1" />
-          <span>I agree to FasalPay's Terms & Privacy Policy</span>
+          <span>{{ $t('auth.consentTerms') }}</span>
         </label>
         <button @click="handleCompleteFarmerRegistration" :disabled="!allConsented"
           class="w-full bg-green-700 text-white py-2.5 rounded font-medium disabled:opacity-50">
-          Complete Registration
+          {{ $t('auth.completeRegistration') }}
         </button>
       </div>
 
       <div v-else-if="currentStep === 2 && isCorporateRole" :key="'corp-2'" class="space-y-4">
-        <h3 class="font-bold text-gray-800 mb-1">Verification Documents</h3>
+        <h3 class="font-bold text-gray-800 mb-1">{{ $t('auth.verificationDocuments') }}</h3>
         <p class="text-sm text-gray-500 mb-2">
-          Upload these documents for an admin to verify your business before you can receive payments.
+          {{ $t('auth.uploadDocumentsExplain') }}
         </p>
-        <DocumentUpload v-model="secpDocument" label="SECP Certificate" />
-        <DocumentUpload v-model="incorporationDocument" label="Incorporation Certificate" />
+        <DocumentUpload v-model="secpDocument" :label="$t('auth.uploadSecpCert')" />
+        <DocumentUpload v-model="incorporationDocument" :label="$t('auth.uploadIncorporation')" />
         <button @click="handleFinishCorporateRegistration" :disabled="!documentsReady"
           class="w-full bg-green-700 text-white py-2.5 rounded font-medium disabled:opacity-50">
-          Submit for Verification
+          {{ $t('auth.submitForVerification') }}
         </button>
         <p class="text-xs text-gray-500 text-center">
-          Your account is created — an admin will confirm your SECP/NTN details before you can transact.
+          {{ $t('auth.pendingVerificationNote') }}
         </p>
       </div>
       </Transition>

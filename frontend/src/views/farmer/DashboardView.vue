@@ -3,11 +3,11 @@
     <DashboardHero
       :eyebrow="`${auth.user?.district}, ${auth.user?.province}`"
       :title="`${greeting}, ${firstName}`"
-      subtitle="Here's where your loan, escrow, and harvest stand today."
+      :subtitle="$t('farmer.dashboardSubtitle')"
       :stats="heroStats"
     >
       <template #action>
-        <button @click="showClaimModal = true" class="btn-danger">File Crop Damage Claim</button>
+        <button @click="showClaimModal = true" class="btn-danger">{{ $t('farmer.fileClaimBtn') }}</button>
       </template>
     </DashboardHero>
 
@@ -57,6 +57,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Wallet, Landmark, FileSignature, Truck } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth.js'
 import { useEscrowStore } from '@/stores/escrow.js'
@@ -78,6 +79,7 @@ import FileClaimModal from '@/components/farmer/FileClaimModal.vue'
 import CommunityVerificationCard from '@/components/farmer/CommunityVerificationCard.vue'
 import CreditCheckSection from '@/components/farmer/CreditCheckSection.vue'
 
+const { t } = useI18n()
 const showClaimModal = ref(false)
 const auth = useAuthStore()
 const escrow = useEscrowStore()
@@ -88,19 +90,20 @@ const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Farmer'
 
 const greeting = computed(() => {
   const hour = new Date().getHours()
-  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  return hour < 12 ? t('farmer.goodMorning') : hour < 17 ? t('farmer.goodAfternoon') : t('farmer.goodEvening')
 })
 
 const heroStats = computed(() => [
-  { icon: Wallet, label: 'Escrow Balance', value: `₨${new Intl.NumberFormat('en-PK').format(Math.round(escrow.remainingBalance || 0))}` },
-  { icon: Landmark, label: 'Active Loans', value: loans.myLoans.filter(l => ['disbursed', 'repaid'].includes(l.status)).length },
-  { icon: FileSignature, label: 'Credit Tier', value: (auth.user?.credit_tier || 'unverified').replace('_', ' ') },
+  { icon: Wallet, label: t('farmer.escrowBalance'), value: `₨${new Intl.NumberFormat('en-PK').format(Math.round(escrow.remainingBalance || 0))}` },
+  { icon: Landmark, label: t('farmer.activeLoans'), value: loans.myLoans.filter(l => ['disbursed', 'repaid'].includes(l.status)).length },
+  { icon: FileSignature, label: t('farmer.creditTier'), value: (auth.user?.credit_tier || 'unverified').replace('_', ' ') },
 ])
 
 const quickActions = computed(() => [
-  { label: 'Apply for Loan', icon: Landmark, onClick: () => scrollToSection('loan-section') },
-  { label: 'View Escrow', icon: Wallet, onClick: () => scrollToSection('escrow-section') },
-  { label: 'Log Delivery', icon: Truck, onClick: () => scrollToSection('delivery-section') },
-  { label: 'Browse Contracts', icon: FileSignature, onClick: () => scrollToSection('contracts-section') },
+  { label: t('farmer.qaApplyLoan'), icon: Landmark, onClick: () => scrollToSection('loan-section') },
+  { label: t('farmer.qaViewEscrow'), icon: Wallet, onClick: () => scrollToSection('escrow-section') },
+  { label: t('farmer.qaLogDelivery'), icon: Truck, onClick: () => scrollToSection('delivery-section') },
+  { label: t('farmer.qaBrowseContracts'), icon: FileSignature, onClick: () => scrollToSection('contracts-section') },
 ])
+
 </script>

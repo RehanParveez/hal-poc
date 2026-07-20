@@ -18,15 +18,15 @@
 
     <div class="flex-1 flex items-center justify-center bg-gray-50 px-4">
       <form @submit.prevent="handleSubmit" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-sm space-y-4 animate-fade-in-up">
-        <h1 class="text-2xl font-bold text-center">Hal Login</h1>
+        <h1 class="text-2xl font-bold text-center">{{ $t('auth.loginTitle') }}</h1>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Phone</label>
-          <input v-model="phone" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="03001234567" />
+          <label class="block text-sm font-medium mb-1">{{ $t('common.phone') }}</label>
+          <input v-model="phone" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2" :placeholder="$t('auth.phonePlaceholder')" />
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Password</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('common.password') }}</label>
           <input v-model="password" type="password" required class="w-full border border-gray-300 rounded-lg px-3 py-2" />
         </div>
 
@@ -34,7 +34,7 @@
 
         <button type="submit" :disabled="auth.isLoading"
           class="w-full bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50">
-          {{ auth.isLoading ? 'Logging in...' : 'Login' }}
+          {{ auth.isLoading ? $t('common.loading') : $t('common.login') }}
         </button>
       </form>
     </div>

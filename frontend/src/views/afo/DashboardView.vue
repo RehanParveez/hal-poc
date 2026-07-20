@@ -1,11 +1,5 @@
-
 <template>
-  <DashboardHero
-    eyebrow="AFO Portal"
-    :title="`${greeting}, ${firstName}`"
-    subtitle="Configure crop types, input spending caps, and define growth lifecycle milestones."
-    :stats="heroStats"
-  />
+  <DashboardHero eyebrow="Hal" :title="$t('afo.dashboardTitle')" />
  
   <div class="content-container -mt-8 relative z-20">
     <QuickActionsBar :actions="quickActions" />
@@ -13,16 +7,16 @@
  
   <DashboardSection id="crop-types-section" tone="white" eyebrow="Configuration" title="Crop Types">
     <div class="bg-white p-4 rounded shadow mb-4 space-y-2">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Crop Name</label>
-      <input v-model="cropForm.name" type="text" placeholder="e.g. Maize" class="w-full border rounded px-2 py-1 text-sm" />
-      <label class="block text-xs font-medium text-gray-600 mb-1">Crop Code</label>
-      <input v-model="cropForm.code" type="text" placeholder="e.g. MAIZE" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.cropName') }}</label>
+      <input v-model="cropForm.name" type="text" placeholder="$t('afo.cropNamePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.cropCode') }}</label>
+      <input v-model="cropForm.code" type="text" placeholder="$t('afo.cropNamePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
       <select v-model="cropForm.season" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Season</option>
-        <option value="rabi">Rabi</option>
-        <option value="kharif">Kharif</option>
+        <option value="">{{ $t('afo.selectSeason') }}</option>
+        <option value="rabi">{{ $t('afo.seasonRabi') }}</option>
+        <option value="kharif">{{ $t('afo.seasonKharif') }}</option>
       </select>
-      <button @click="submitCrop" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Add Crop Type</button>
+      <button @click="submitCrop" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('afo.addCropType') }}</button>
     </div>
     <div class="space-y-1">
       <div v-for="c in crops.cropTypes" :key="c.id" class="bg-white p-2 rounded shadow text-sm flex justify-between">
@@ -35,26 +29,26 @@
   <DashboardSection id="input-caps-section" tone="tint" eyebrow="Financials" title="AFO Spending Caps">
     <div class="bg-white p-4 rounded shadow mb-4 space-y-2">
       <select v-model="capForm.crop" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Crop</option>
+        <option value="">{{ $t('afo.selectCrop') }}</option>
         <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
       </select>
-      <label class="block text-xs font-medium text-gray-600 mb-1">District</label>
-      <input v-model="capForm.district" type="text" placeholder="e.g. Multan" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('common.district') }}</label>
+      <input v-model="capForm.district" type="text" placeholder="$t('afo.districtPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
       <select v-model="capForm.input_category" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Category</option>
-        <option value="seed">Seed</option>
-        <option value="fertilizer">Fertilizer</option>
-        <option value="pesticide">Pesticide</option>
-        <option value="irrigation">Irrigation</option>
-        <option value="labour">Labour</option>
+        <option value="">{{ $t('afo.selectCategory') }}</option>
+        <option value="seed">{{ $t('afo.categorySeed') }}</option>
+        <option value="fertilizer">{{ $t('afo.categoryFertilizer') }}</option>
+        <option value="pesticide">{{ $t('afo.categoryPesticide') }}</option>
+        <option value="irrigation">{{ $t('afo.categoryIrrigation') }}</option>
+        <option value="labour">{{ $t('afo.categoryLabour') }}</option>
       </select>
       <select v-model="capForm.valid_season" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Season</option>
-        <option value="rabi">Rabi</option>
-        <option value="kharif">Kharif</option>
+        <option value="">{{ $t('afo.selectSeason') }}</option>
+        <option value="rabi">{{ $t('afo.seasonRabi') }}</option>
+        <option value="kharif">{{ $t('afo.seasonKharif') }}</option>
       </select>
-      <input v-model.number="capForm.max_cost_per_acre" type="number" placeholder="Max Cost per Acre (PKR)" class="w-full border rounded px-2 py-1 text-sm" />
-      <button @click="submitCap" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Save Cap</button>
+      <input v-model.number="capForm.max_cost_per_acre" type="number" placeholder="$t('afo.maxCostPerAcrePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <button @click="submitCap" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('afo.saveCap') }}</button>
     </div>
     <div class="space-y-1">
       <div v-for="cap in crops.inputCaps" :key="cap.id" class="bg-white p-2 rounded shadow text-sm flex justify-between">
@@ -67,18 +61,18 @@
   <DashboardSection id="milestones-section" tone="white" eyebrow="Growth" title="Crop Lifecycle Milestones">
     <div class="bg-white p-4 rounded shadow mb-4 space-y-2">
       <select v-model="milestoneForm.crop" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Crop</option>
+        <option value="">{{ $t('afo.selectCrop') }}</option>
         <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
       </select>
-      <label class="block text-xs font-medium text-gray-600 mb-1">Phase Number</label>
-      <input v-model.number="milestoneForm.phase_number" type="number" placeholder="e.g. 1" class="w-full border rounded px-2 py-1 text-sm" />
-      <label class="block text-xs font-medium text-gray-600 mb-1">Phase Name</label>
-      <input v-model="milestoneForm.phase_name" type="text" placeholder="e.g. Mid-Season Growth" class="w-full border rounded px-2 py-1 text-sm" />
-      <label class="block text-xs font-medium text-gray-600 mb-1">Day Offset (days after sowing)</label>
-      <input v-model.number="milestoneForm.day_offset" type="number" placeholder="e.g. 30" class="w-full border rounded px-2 py-1 text-sm" />
-      <label class="block text-xs font-medium text-gray-600 mb-1">Unlock Percentage (0-100)</label>
-      <input v-model.number="milestoneForm.unlock_pct" type="number" placeholder="e.g. 40" class="w-full border rounded px-2 py-1 text-sm" />
-      <label class="block text-xs font-medium text-gray-600 mb-1">Allowed Categories This Phase</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.phaseNumber') }}</label>
+      <input v-model.number="milestoneForm.phase_number" type="number" placeholder="$t('afo.phaseNumberPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.phaseName') }}</label>
+      <input v-model="milestoneForm.phase_name" type="text" placeholder="$t('afo.phaseNamePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.dayOffset') }}</label>
+      <input v-model.number="milestoneForm.day_offset" type="number" placeholder="$t('afo.dayOffsetPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.unlockPercentage') }}</label>
+      <input v-model.number="milestoneForm.unlock_pct" type="number" placeholder="$t('afo.unlockPercentagePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('afo.allowedCategories') }}</label>
       <div class="flex gap-2 flex-wrap">
         <label
           v-for="cat in ['seed', 'fertilizer', 'pesticide', 'irrigation', 'labour']"
@@ -90,7 +84,7 @@
           {{ cat }}
         </label>
       </div>
-      <button @click="submitMilestone" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Save Milestone</button>
+      <button @click="submitMilestone" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('afo.saveMilestone') }}</button>
     </div>
     <div class="space-y-1">
       <div v-for="m in crops.milestones" :key="m.id" class="bg-white p-2 rounded shadow text-sm flex justify-between">
@@ -123,21 +117,22 @@ const auth = useAuthStore()
 const scrollToSection = useScrollTo()
  
 const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Admin')
+
 const greeting = computed(() => {
   const hour = new Date().getHours()
-  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  return hour < 12 ? t('afo.goodMorning') : hour < 17 ? t('afo.goodAfternoon') : t('afo.goodEvening')
 })
  
 const heroStats = computed(() => [
-  { icon: Sprout, label: 'Crop Types', value: crops.cropTypes.length },
-  { icon: BarChart3, label: 'Spending Caps', value: crops.inputCaps.length },
-  { icon: Clock3, label: 'Milestones', value: crops.milestones.length }
+  { icon: Sprout, label: t('afo.cropTypes'), value: crops.cropTypes.length },
+  { icon: BarChart3, label: t('afo.spendingCaps'), value: crops.inputCaps.length },
+  { icon: Clock3, label: t('afo.milestones'), value: crops.milestones.length }
 ])
  
 const quickActions = computed(() => [
-  { label: 'Manage Crops', icon: Sprout, onClick: () => scrollToSection('crop-types-section') },
-  { label: 'Spending Caps', icon: BarChart3, onClick: () => scrollToSection('input-caps-section') },
-  { label: 'Lifecycle', icon: Clock3, onClick: () => scrollToSection('milestones-section') },
+  { label: t('afo.qaManageCrops'), icon: Sprout, onClick: () => scrollToSection('crop-types-section') },
+  { label: t('afo.qaSpendingCaps'), icon: BarChart3, onClick: () => scrollToSection('input-caps-section') },
+  { label: t('afo.qaLifecycle'), icon: Clock3, onClick: () => scrollToSection('milestones-section') },
 ])
  
 onMounted(async () => {
@@ -148,7 +143,7 @@ onMounted(async () => {
  
 async function submitCrop() {
   if (!cropForm.name.trim() || !cropForm.code.trim() || !cropForm.season) {
-    notify.showError({ message: 'Crop name, code, and season are all required.' })
+    notify.showError({ message: t('afo.errorCropRequired') })
     return
   }
   try {
@@ -158,17 +153,17 @@ async function submitCrop() {
     cropForm.season = ''
   } catch (error) {
     const fieldError = Object.values(error.response?.data || {})[0]?.[0]
-    notify.showError({ message: fieldError || 'Failed to add crop type.' })
+    notify.showError({ message: fieldError || t('afo.errorAddCropType') })
   }
 }
  
 async function submitCap() {
   if (!capForm.crop || !capForm.district.trim() || !capForm.input_category || !capForm.valid_season) {
-    notify.showError({ message: 'All cap fields are required.' })
+    notify.showError({ message: t('afo.errorCapFieldsRequired') })
     return
   }
   if (!capForm.max_cost_per_acre || capForm.max_cost_per_acre <= 0) {
-    notify.showError({ message: 'Max cost per acre must be greater than zero.' })
+    notify.showError({ message: t('afo.errorMaxCostZero') })
     return
   }
   try {
@@ -177,17 +172,17 @@ async function submitCap() {
     capForm.max_cost_per_acre = 0
   } catch (error) {
     const fieldError = Object.values(error.response?.data || {})[0]?.[0]
-    notify.showError({ message: fieldError || 'Failed to save cap.' })
+    notify.showError({ message: fieldError || t('afo.errorSaveCap') })
   }
 }
  
 async function submitMilestone() {
   if (!milestoneForm.crop || !milestoneForm.phase_name.trim()) {
-    notify.showError({ message: 'Crop and phase name are required.' })
+    notify.showError({ message: t('afo.errorMilestoneRequired') })
     return
   }
   if (!milestoneForm.unlock_pct || milestoneForm.unlock_pct <= 0 || milestoneForm.unlock_pct > 100) {
-    notify.showError({ message: 'Unlock percentage must be between 0 and 100.' })
+    notify.showError({ message: t('afo.errorUnlockPercentage') })
     return
   }
   try {
@@ -198,7 +193,7 @@ async function submitMilestone() {
     milestoneForm.allowed_input_categories = []
   } catch (error) {
     const fieldError = Object.values(error.response?.data || {})[0]?.[0]
-    notify.showError({ message: fieldError || 'Failed to save milestone.' })
+    notify.showError({ message: fieldError || t('afo.errorSaveMilestone') })
   }
 }
 </script>
