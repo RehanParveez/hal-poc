@@ -1,47 +1,47 @@
 <template>
   <div class="mt-6 bg-white p-4 rounded shadow">
-    <h2 class="text-lg font-bold mb-3">Request a Tenant Agreement</h2>
+    <h2 class="text-lg font-bold mb-3">{{ $t('farmer.requestTenantAgreement') }}</h2>
     <div class="space-y-2">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Land Parcel</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.selectParcel') }}</label>
       <select v-model="form.parcel" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Parcel</option>
-        <option v-for="p in land.parcels" :key="p.id" :value="p.id">{{ p.parcel_ref }} — {{ p.district }} ({{ p.available_acres }} acres available)</option>
+        <option value="">{{ $t('farmer.selectParcel') }}</option>
+        <option v-for="p in land.parcels" :key="p.id" :value="p.id">{{ p.parcel_ref }} — {{ p.district }} ({{ p.available_acres }} {{ $t('farmer.acresAppliedFor') }} {{ $t('landowner.available') }})</option>
       </select>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Agreement Type</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.agreementType') }}</label>
       <select v-model="form.agreement_type" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Type</option>
-        <option value="theka">Theka (Fixed Rent)</option>
-        <option value="batai">Batai (Crop Share)</option>
+        <option value="">{{ $t('common.select') }}</option>
+        <option value="theka">{{ $t('farmer.theka') }}</option>
+        <option value="batai">{{ $t('farmer.batai') }}</option>
       </select>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Leased Acres</label>
-      <input v-model.number="form.leased_acres" type="number" placeholder="e.g. 5" class="w-full border rounded px-2 py-1 text-sm" />
-      <p v-if="acreageExceedsAvailable" class="text-xs text-red-600">Leased acres exceeds this parcel's available acres.</p>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.leasedAcres') }}</label>
+      <input v-model.number="form.leased_acres" type="number" placeholder="$t('farmer.acresPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+      <p v-if="acreageExceedsAvailable" class="text-xs text-red-600">{{ $t('farmer.errorAcreageExceeds') }}</p>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Season</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.season') }}</label>
       <select v-model="form.season" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Season</option>
-        <option value="kharif">Kharif</option>
-        <option value="rabi">Rabi</option>
+        <option value="">{{ $t('common.select') }}</option>
+        <option value="kharif">{{ $t('farmer.kharif') }}</option>
+        <option value="rabi">{{ $t('farmer.rabi') }}</option>
       </select>
 
       <template v-if="form.agreement_type === 'theka'">
-        <label class="block text-xs font-medium text-gray-600 mb-1">Theka Amount (PKR)</label>
-        <input v-model.number="form.theka_amount" type="number" min="0" step="0.01" placeholder="e.g. 80000" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.thekaAmount') }}</label>
+        <input v-model.number="form.theka_amount" type="number" min="0" step="0.01" placeholder="$t('farmer.thekaAmountPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
       </template>
 
       <template v-if="form.agreement_type === 'batai'">
-        <label class="block text-xs font-medium text-gray-600 mb-1">Farmer Share (%)</label>
-        <input v-model.number="form.farmer_share_pct" type="number" min="0" max="100" step="0.01" placeholder="e.g. 60" class="w-full border rounded px-2 py-1 text-sm" />
-        <label class="block text-xs font-medium text-gray-600 mb-1">Landowner Share (%)</label>
-        <input v-model.number="form.landowner_share_pct" type="number" min="0" max="100" step="0.01" placeholder="e.g. 40" class="w-full border rounded px-2 py-1 text-sm" />
-        <p v-if="!bataiSharesValid" class="text-xs text-red-600">Farmer and landowner shares must add up to 100%.</p>
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.farmerShare') }}</label>
+        <input v-model.number="form.farmer_share_pct" type="number" min="0" max="100" step="0.01" placeholder="$t('farmer.farmerSharePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.landownerShare') }}</label>
+        <input v-model.number="form.landowner_share_pct" type="number" min="0" max="100" step="0.01" placeholder="$t('farmer.landownerSharePlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
+        <p v-if="!bataiSharesValid" class="text-xs text-red-600">{{ $t('farmer.errorBataiShares') }}</p>
       </template>
 
       <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
-      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Request
-        {{ isSubmitting ? 'Submitting...' : 'Submit Request' }}
+      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
+        {{ isSubmitting ? $t('farmer.submitting') : $t('farmer.submitApplication') }}
       </button>
     </div>
   </div>
@@ -51,7 +51,9 @@
 import { reactive, ref, onMounted, computed, watch } from 'vue'
 import { useLandStore } from '@/stores/land.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const land = useLandStore()
 const auth = useAuthStore()
 const errorMessage = ref('')
@@ -105,7 +107,7 @@ async function submit() {
     Object.assign(form, initialForm())
   } catch (err) {
     const data = err.response?.data
-    errorMessage.value = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : (data?.message || 'Failed to submit request.')
+    errorMessage.value = Array.isArray(data?.non_field_errors) ? data.non_field_errors[0] : (data?.message || t('farmer.errorSubmitRequest'))
   } finally {
     isSubmitting.value = false
   }

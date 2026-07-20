@@ -109,7 +109,9 @@
     "statusRejected": "رد شدہ",
     "pendingReview": "زیر جائزہ",
     "disbursed": "جاری شدہ",
-    "noLoansFound": "کوئی قرض کی درخواست نہیں ملی۔"
+    "noLoansFound": "کوئی قرض کی درخواست نہیں ملی۔",
+    "factoringEyebrow": "فیکٹرنگ",
+    "settlementsTitle": "ادائیگیاں"
   },
 
   "factory": {
@@ -142,7 +144,34 @@
     "errorDeductionRange": "کٹوتی فیصد 0 اور 100 کے درمیان ہونا چاہیے۔",
     "errorConfirmGrade": "درجہ کی تصدیق ناکام ہوئی۔",
     "errorMarkReceived": "بیچ موصول شدہ نشان زد کرنے میں ناکامی۔",
-    "errorSettleBank": "بینک کے ساتھ تصفیہ کرنے میں ناکامی۔"
+    "errorSettleBank": "بینک کے ساتھ تصفیہ کرنے میں ناکامی۔",
+    "actionRequiredEyebrow": "کارروائی ضروری ہے",
+    "accountPendingTitle": "اکاؤنٹ زیر التوا",
+    "logisticsEyebrow": "ترسیل",
+    "deliveriesGradingTitle": "ترسیلات اور درجہ بندی",
+    "financeEyebrow": "مالیات",
+    "bankSettlementsTitle": "بینک ادائیگیاں",
+    "procurementEyebrow": "خریداری",
+    "postNewContractTitle": "نیا معاہدہ پوسٹ کریں",
+    "batchLabel": "کھیپ",
+    "expectedPayout": "متوقع ادائیگی",
+    "invoiceLabel": "انوائس",
+    "deductionPctPlaceholder": "کٹوتی فیصد",
+    "factoryFallback": "فیکٹری", "errorSubmitLoan": "قرض کی درخواست جمع کروانے میں ناکامی۔",
+    "acresPlaceholder": "مثلاً 5",
+    "amountPlaceholder": "مثلاً 50000", "errorEnterKg": "پہلے کلوگرام کی طے شدہ مقدار درج کریں۔",
+    "errorNeedLoan": "معاہدے میں مختص کرنے سے پہلے آپ کو جاری شدہ قرض درکار ہے۔",
+    "errorAllocateFailed": "مختص کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
+    "unknownCrop": "نامعلوم فصل", "committed": "طے شدہ",
+    "delivered": "ترسیل شدہ",
+    "batchWeightPlaceholder": "کھیپ کا وزن (کلوگرام)",
+    "errorLogDelivery": "ترسیل کی کھیپ درج کرنے میں ناکامی۔",
+    "errorAcreageExceeds": "لیز شدہ ایکڑ اس پلاٹ کے دستیاب ایکڑ سے زیادہ ہے۔",
+    "errorBataiShares": "کسان اور زمیندار کا حصہ مل کر 100% ہونا چاہیے۔",
+    "errorSubmitRequest": "درخواست جمع کروانے میں ناکامی۔",
+    "thekaAmountPlaceholder": "مثلاً 80000",
+    "farmerSharePlaceholder": "مثلاً 60",
+    "landownerSharePlaceholder": "مثلاً 40"
   },
 
   "shopkeeper": {
@@ -170,7 +199,8 @@
     "reject": "رد کریں",
     "approvedAmountPlaceholder": "منظور شدہ رقم (اگر منظور کر رہے ہیں)",
     "reviewerNotePlaceholder": "جائزہ لینے والے کا نوٹ (اختیاری)",
-    "errorReviewClaim": "کلیم کا جائزہ لینے میں ناکامی۔"
+    "errorReviewClaim": "کلیم کا جائزہ لینے میں ناکامی۔",
+    "agentFallback": "ایجنٹ", "policiesEyebrow": "پورٹ فولیو", "claimsEyebrow": "کلیمز"
   },
 
   "afo": {
@@ -213,7 +243,12 @@
     "errorSaveCap": "کیپ محفوظ کرنے میں ناکامی۔",
     "errorMilestoneRequired": "فصل اور مرحلے کا نام ضروری ہیں۔",
     "errorUnlockPercentage": "ان لاک فیصد 0 اور 100 کے درمیان ہونا چاہیے۔",
-    "errorSaveMilestone": "مرحلہ محفوظ کرنے میں ناکامی۔"
+    "errorSaveMilestone": "مرحلہ محفوظ کرنے میں ناکامی۔",
+    "configEyebrow": "ترتیب",
+    "financialsEyebrow": "مالیات",
+    "growthEyebrow": "نشوونما",
+    "phaseLabel": "مرحلہ",
+    "adminFallback": "ایڈمن"
 
   },
   "numberdar": {
@@ -221,6 +256,13 @@
     "activeGroups": "فعال گروپس", "goToQueue": "تصدیقی قطار پر جائیں →",
     "verificationQueueTitle": "تصدیقی قطار", "pending": "زیر التوا", "overdue": "میعاد ختم",
     "daysAgo": "{n} دن پہلے درخواست دی گئی", "confirmApprove": "کیا آپ واقعی {name} کی تصدیق کرنا چاہتے ہیں؟ اس سے وہ قرض کے لیے درخواست دے سکیں گے۔",
-    "rejectionReason": "رد کرنے کی وجہ...", "confirmReject": "رد کرنے کی تصدیق کریں", "noRequests": "اس زمرے میں کوئی درخواست نہیں۔"
+    "rejectionReason": "رد کرنے کی وجہ...", "confirmReject": "رد کرنے کی تصدیق کریں", "noRequests": "اس زمرے میں کوئی درخواست نہیں۔",
+    "communityRegion": "کمیونٹی علاقہ",
+    "communityPortal": "کمیونٹی تصدیقی پورٹل",
+    "communityEyebrow": "کمیونٹی",
+    "farmerVerificationQueue": "کسان تصدیقی قطار",
+    "districtLabel": "ضلع",
+    "assignedArea": "تفویض شدہ علاقہ",
+    "qaVerificationQueue": "تصدیقی قطار"
   }
 }

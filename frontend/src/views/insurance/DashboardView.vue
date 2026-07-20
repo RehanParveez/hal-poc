@@ -5,14 +5,14 @@
     <QuickActionsBar :actions="quickActions" />
   </div>
  
-  <DashboardSection id="claims-section" tone="white" eyebrow="Claims" title="Incoming Damage Claims">
-      <div v-if="isInitialLoading" class="text-gray-500">Loading...</div>
+  <DashboardSection id="claims-section" tone="white" :eyebrow="$t('insurance.claimsEyebrow')" :title="$t('insurance.claimsTitle')">
+      <div v-if="isInitialLoading" class="text-gray-500">{{ $t('common.loading') }}</div>
       <div v-else class="space-y-3">
         <div v-for="claim in insurance.claims" :key="claim.id" class="bg-white p-4 rounded shadow">
           <div class="flex justify-between items-start">
             <div>
               <p class="font-semibold">{{ claim.farmer_name }}</p>
-              <p class="text-sm text-gray-500">Claim Amount: PKR {{ claim.claim_amount }}</p>
+              <p class="text-sm text-gray-500">{{ $t('insurance.claimAmount') }}: PKR {{ claim.claim_amount }}</p>
             </div>
             <StatusBadge :status="claim.status" />
           </div>
@@ -35,11 +35,11 @@
       </div>
     </DashboardSection>
  
-  <DashboardSection id="policies-section" tone="tint" eyebrow="Portfolio" title="All Policies">
+  <DashboardSection id="policies-section" tone="tint" :eyebrow="$t('insurance.policiesEyebrow')" :title="$t('insurance.allPoliciesTitle')">
       <div v-if="isInitialLoading" class="text-gray-500">{{ $t('common.loading') }}</div>
       <div class="space-y-2">
         <div v-for="p in insurance.policies" :key="p.id" class="bg-white p-3 rounded shadow flex justify-between text-sm">
-          <span>{{ p.farmer_name }} — Coverage PKR {{ p.coverage_amount }}</span>
+          <span>{{ p.farmer_name }} — {{ $t('insurance.coverage') }} PKR {{ p.coverage_amount }}</span>
           <StatusBadge :status="p.status" />
         </div>
         <p v-if="!isInitialLoading && insurance.policies.length === 0" class="text-gray-500">{{ $t('insurance.noPolicies') }}</p>
@@ -57,14 +57,16 @@ import { useScrollTo } from '@/composables/useScrollTo.js'
 import DashboardHero from '@/components/layout/DashboardHero.vue'
 import DashboardSection from '@/components/layout/DashboardSection.vue'
 import QuickActionsBar from '@/components/shared/QuickActionsBar.vue'
- 
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 const insurance = useInsuranceStore()
 const auth = useAuthStore()
 const scrollToSection = useScrollTo()
 const reviewForm = reactive({})
 const isInitialLoading = ref(true)
  
-const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Agent')
+const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || t('insurance.agentFallback'))
 
 const greeting = computed(() => {
   const hour = new Date().getHours()
@@ -115,7 +117,7 @@ async function handleReview(claimId, decision) {
   try {
     await insurance.reviewClaim(claimId, decision, form.approved_amount, form.reviewer_note)
   } catch (err) {
-    form.error = err.response?.data?.error ?? 'Failed to review claim.'
+    form.error = err.response?.data?.error ?? t('insurance.errorReviewClaim')
   } finally {
     form.isSubmitting = false
   }

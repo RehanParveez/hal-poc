@@ -1,10 +1,10 @@
 <template>
   <div class="mt-6">
-    <h2 class="text-xl font-bold mb-4">My Settlements</h2>
+    <h2 class="text-xl font-bold mb-4">{{ $t('farmer.mySettlements') }}</h2>
     <div v-if="settlements.isLoading" class="space-y-3">
       <SkeletonCard v-for="n in 3" :key="n" />
     </div>
-    <div v-else-if="settlements.invoices.length === 0" class="text-gray-500">No settlements yet.</div>
+    <div v-else-if="settlements.invoices.length === 0" class="text-gray-500">{{ $t('farmer.noSettlementsYet') }}</div>
     <div v-else class="space-y-2 mb-6">
       <button
         v-for="inv in settlements.invoices"

@@ -1,38 +1,38 @@
 <template>
   <div class="mt-6 bg-white p-4 rounded shadow">
-    <h2 class="text-lg font-bold mb-3">Apply for a New Loan</h2>
+    <h2 class="text-lg font-bold mb-3">{{ $t('farmer.applyForNewLoan') }}</h2>
     <div class="space-y-2">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Bank</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.selectBank') }}</label>
       <select v-model="form.bank" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Bank</option>
+        <option value="">{{ $t('farmer.selectBank') }}</option>
         <option v-for="b in banksList" :key="b.id" :value="b.id">{{ b.name }}</option>
       </select>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Crop</label>
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.selectCrop') }}</label>
       <select v-model="form.crop" class="w-full border rounded px-2 py-1 text-sm">
-        <option value="">Select Crop</option>
+        <option value="">{{ $t('farmer.selectCrop') }}</option>
         <option v-for="c in crops.cropTypes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.code }})</option>
       </select>
 
       <template v-if="activeAgreements.length > 0">
-        <label class="block text-xs font-medium text-gray-600 mb-1">Tenant Agreement</label>
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.tenantAgreement') }}</label>
         <select v-model="form.tenant_agreement" class="w-full border rounded px-2 py-1 text-sm">
-          <option value="">None</option>
+          <option value="">{{ $t('common.none') }}</option>
           <option v-for="a in activeAgreements" :key="a.id" :value="a.id">
             {{ a.parcel_ref }} — {{ a.leased_acres }} acres — {{ a.season }}
           </option>
         </select>
       </template>
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Acres Applied For</label>
-      <input v-model.number="form.acres_applied_for" type="number" min="0" step="0.01" placeholder="e.g. 5" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.acresAppliedFor') }}</label>
+      <input v-model.number="form.acres_applied_for" type="number" min="0" step="0.01" :placeholder="$t('farmer.acresPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
-      <label class="block text-xs font-medium text-gray-600 mb-1">Requested Amount (PKR)</label>
-      <input v-model.number="form.requested_amount" type="number" min="0" step="0.01" placeholder="e.g. 50000" class="w-full border rounded px-2 py-1 text-sm" />
+      <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('farmer.requestedAmount') }}</label>
+      <input v-model.number="form.requested_amount" type="number" min="0" step="0.01" placeholder="$t('farmer.amountPlaceholder')" class="w-full border rounded px-2 py-1 text-sm" />
 
       <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
-      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">Submit Application
-        {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+      <button @click="submit" :disabled="isSubmitting || !isFormValid" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
+       {{ isSubmitting ? $t('farmer.submitting') : $t('farmer.submitApplication') }}
       </button>
     </div>
   </div>
@@ -45,7 +45,9 @@ import { useCropsStore } from '@/stores/crops.js'
 import { useLandStore } from '@/stores/land.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { listBanks } from '@/api/accounts.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const loans = useLoansStore()
 const crops = useCropsStore()
 const land = useLandStore()
@@ -102,12 +104,11 @@ async function submit() {
     } else if (data?.detail) {
       errorMessage.value = data.detail
     } else if (data && typeof data === 'object') {
-      // Safely flattens the dictionary of field arrays and grabs the first error message string
       const firstError = Object.values(data).flat()[0]
-      errorMessage.value = firstError || 'Failed to submit loan application.'
-    } else {
-      errorMessage.value = 'Failed to submit loan application.'
-    }
+      errorMessage.value = firstError || t('farmer.errorSubmitLoan')
+      } else {
+        errorMessage.value = t('farmer.errorSubmitLoan')
+      }
   } finally {
     isSubmitting.value = false
   }

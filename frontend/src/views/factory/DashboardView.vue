@@ -5,20 +5,20 @@
     <QuickActionsBar :actions="quickActions" />
   </div>
 
-  <DashboardSection v-if="!auth.isCorporateVerified" tone="white" eyebrow="Action Required" title="Account Pending">
+  <DashboardSection v-if="!auth.isCorporateVerified" tone="white" :eyebrow="$t('factory.actionRequiredEyebrow')" :title="$t('factory.accountPendingTitle')">
     <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-sm font-medium">
       ⚠ {{ $t('factory.accountPendingWarning') }}
     </div>
   </DashboardSection>
 
-  <DashboardSection id="deliveries-section" tone="tint" eyebrow="Logistics" title="Deliveries & Grading">
+  <DashboardSection id="deliveries-section" tone="tint" :eyebrow="$t('factory.logisticsEyebrow')" :title="$t('factory.deliveriesGradingTitle')">
     <div v-if="delivery.isLoading" class="text-gray-500">{{ $t('common.loading') }}</div>
     <div v-else class="space-y-3">
       <div v-for="batch in delivery.batches" :key="batch.id" class="bg-white p-4 rounded shadow">
         <div class="flex justify-between items-start">
           <div>
-            <p class="font-semibold">Batch #{{ batch.id.slice(0, 8) }}</p>
-            <p class="text-sm text-gray-500">{{ batch.batch_kg }} kg — Expected: PKR {{ batch.expected_payout }}</p>
+            <p class="font-semibold">{{ $t('factory.batchLabel') }} #{{ batch.id.slice(0, 8) }}</p>
+             <p class="text-sm text-gray-500">{{ batch.batch_kg }} kg — {{ $t('factory.expectedPayout') }}: PKR {{ batch.expected_payout }}</p>
           </div>
           <StatusBadge :status="batch.status" />
         </div>
@@ -31,10 +31,12 @@
 
         <div v-if="batch.status === 'received' && gradeForm[batch.id]" class="mt-3 border-t pt-3 space-y-2">
           <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.qualityGrade') }}</label>
-          <option value="">{{ $t('factory.selectGrade') }}</option>
-          <option value="Grade A">{{ $t('factory.gradeA') }}</option>
-          <option value="Grade B">{{ $t('factory.gradeB') }}</option>
-          <option value="Grade C">{{ $t('factory.gradeC') }}</option>
+          <select v-model="gradeForm[batch.id].grade_received" class="border rounded px-2 py-1 text-sm w-full">
+            <option value="">{{ $t('factory.selectGrade') }}</option>
+            <option value="Grade A">{{ $t('factory.gradeA') }}</option>
+            <option value="Grade B">{{ $t('factory.gradeB') }}</option>
+            <option value="Grade C">{{ $t('factory.gradeC') }}</option>
+          </select>
 
           <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('factory.deductionPercentage') }}</label>
           <button @click="submitGrade(batch.id)" class="bg-green-700 text-white px-3 py-1.5 rounded text-sm">
@@ -46,14 +48,14 @@
     </div>
     </DashboardSection>
 
-  <DashboardSection id="settlements-section" tone="white" eyebrow="Finance" title="Bank Settlements">
+  <DashboardSection id="settlements-section" tone="white" :eyebrow="$t('factory.financeEyebrow')" :title="$t('factory.bankSettlementsTitle')">
     <div v-for="inv in settlements.invoices.filter(i => i.status === 'advanced')" :key="inv.id" class="bg-white p-4 rounded shadow mb-3 flex justify-between items-center">
-      <span class="text-sm">Invoice #{{ inv.id.slice(0, 8) }} — PKR {{ inv.gross_payout }}</span>
+      <span class="text-sm">{{ $t('factory.invoiceLabel') }} #{{ inv.id.slice(0, 8) }} — PKR {{ inv.gross_payout }}</span>
       <button @click="handleFactorySettle(inv.id)" class="bg-purple-700 text-white px-3 py-1.5 rounded text-sm">{{ $t('factory.settleWithBank') }}</button>
     </div>
    </DashboardSection>
 
-  <DashboardSection id="post-contract-section" tone="tint" eyebrow="Procurement" title="Post New Contract">
+  <DashboardSection id="post-contract-section" tone="tint" :eyebrow="$t('factory.procurementEyebrow')" :title="$t('factory.postNewContractTitle')">
     <PostContractForm />
   </DashboardSection>
 </template>
@@ -71,7 +73,9 @@ import DashboardHero from '@/components/layout/DashboardHero.vue'
 import DashboardSection from '@/components/layout/DashboardSection.vue'
 import QuickActionsBar from '@/components/shared/QuickActionsBar.vue'
 import { useScrollTo } from '@/composables/useScrollTo.js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const delivery = useDeliveryStore()
 const settlements = useSettlementsStore()
 const notify = useNotificationsStore()
@@ -79,7 +83,7 @@ const gradeForm = reactive({})
 const auth = useAuthStore() 
 const scrollToSection = useScrollTo()
 
-const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || 'Factory')
+const firstName = computed(() => auth.user?.full_name?.split(' ')[0] || t('factory.factoryFallback'))
 
 const greeting = computed(() => {
   const hour = new Date().getHours()

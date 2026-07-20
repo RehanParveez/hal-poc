@@ -70,7 +70,21 @@
     "leasedAcres": "Leased Acres", "season": "Season", "kharif": "Kharif", "rabi": "Rabi",
     "thekaAmount": "Theka Amount (PKR)", "farmerShare": "Farmer Share (%)", "landownerShare": "Landowner Share (%)",
     "activeLoans": "Active Loans",
-    "creditTier": "Credit Tier"
+    "creditTier": "Credit Tier", "errorSubmitLoan": "Failed to submit loan application.",
+    "acresPlaceholder": "e.g. 5",
+    "amountPlaceholder": "e.g. 50000", "errorEnterKg": "Enter the committed kg amount first.",
+    "errorNeedLoan": "You need a disbursed loan before you can allocate to a contract.",
+    "errorAllocateFailed": "Failed to allocate. Please try again.",
+    "unknownCrop": "Unknown crop", "committed": "Committed",
+    "delivered": "Delivered",
+    "batchWeightPlaceholder": "Batch weight (kg)",
+    "errorLogDelivery": "Failed to log delivery batch.", 
+    "errorAcreageExceeds": "Leased acres exceeds this parcel's available acres.",
+    "errorBataiShares": "Farmer and landowner shares must add up to 100%.",
+    "errorSubmitRequest": "Failed to submit request.",
+    "thekaAmountPlaceholder": "e.g. 80000",
+    "farmerSharePlaceholder": "e.g. 60",
+    "landownerSharePlaceholder": "e.g. 40"
   },
 
   "landowner": {
@@ -94,7 +108,8 @@
     "disburse": "Disburse", "settlementsPayBank": "Settlements", "noApplicationsFound": "No loan applications found.",
     "statusAll": "All", "statusSubmitted": "Submitted", "statusApproved": "Approved", "statusDisbursed": "Disbursed",
     "statusRepaid": "Repaid", "statusRejected": "Rejected", "pendingReview": "Pending Review",
-    "disbursed": "Disbursed", "noLoansFound": "No loan applications found."
+    "disbursed": "Disbursed", "noLoansFound": "No loan applications found.", "factoringEyebrow": "Factoring",
+    "settlementsTitle": "Settlements"
   },
 
   "factory": {
@@ -117,7 +132,20 @@
     "errorDeductionRange": "Deduction percentage must be between 0 and 100.",
     "errorConfirmGrade": "Failed to confirm grade.",
     "errorMarkReceived": "Failed to mark batch received.",
-    "errorSettleBank": "Failed to settle with bank."
+    "errorSettleBank": "Failed to settle with bank.",
+    "actionRequiredEyebrow": "Action Required",
+    "accountPendingTitle": "Account Pending",
+    "logisticsEyebrow": "Logistics",
+    "deliveriesGradingTitle": "Deliveries & Grading",
+    "financeEyebrow": "Finance",
+    "bankSettlementsTitle": "Bank Settlements",
+    "procurementEyebrow": "Procurement",
+    "postNewContractTitle": "Post New Contract",
+    "batchLabel": "Batch",
+    "expectedPayout": "Expected",
+    "invoiceLabel": "Invoice",
+    "deductionPctPlaceholder": "Deduction %",
+    "factoryFallback": "Factory"
   },
 
   "shopkeeper": {
@@ -138,7 +166,8 @@
     "approve": "Approve", "reject": "Reject",
     "approvedAmountPlaceholder": "Approved Amount (if approving)",
     "reviewerNotePlaceholder": "Reviewer note (optional)",
-    "errorReviewClaim": "Failed to review claim."
+    "errorReviewClaim": "Failed to review claim.",
+    "agentFallback": "Agent", "policiesEyebrow": "پورٹ فولیو"
   },
 
   "afo": {
@@ -168,7 +197,13 @@
     "errorSaveCap": "Failed to save cap.",
     "errorMilestoneRequired": "Crop and phase name are required.",
     "errorUnlockPercentage": "Unlock percentage must be between 0 and 100.",
-    "errorSaveMilestone": "Failed to save milestone."
+    "errorSaveMilestone": "Failed to save milestone.",
+    "configEyebrow": "Configuration",
+    "financialsEyebrow": "Financials",
+    "growthEyebrow": "Growth",
+    "phaseLabel": "Phase",
+    "adminFallback": "Admin"
+    
   },
 
   "numberdar": {
@@ -176,6 +211,9 @@
     "activeGroups": "Active Groups", "goToQueue": "Go to Verification Queue →",
     "verificationQueueTitle": "Verification Queue", "pending": "Pending", "overdue": "Overdue",
     "daysAgo": "Requested {n} day(s) ago", "confirmApprove": "Are you sure you want to verify {name}? This will allow them to apply for a loan.",
-    "rejectionReason": "Reason for rejection...", "confirmReject": "Confirm Reject", "noRequests": "No requests in this category."
+    "rejectionReason": "Reason for rejection...", "confirmReject": "Confirm Reject", "noRequests": "No requests in this category.",
+    "communityRegion": "Community Region", "communityPortal": "Community Verification Portal", "communityEyebrow": "Community",
+    "farmerVerificationQueue": "Farmer Verification Queue",
+    "districtLabel": "District", "assignedArea": "Assigned Area", "qaVerificationQueue": "Verification Queue"
   }
 }

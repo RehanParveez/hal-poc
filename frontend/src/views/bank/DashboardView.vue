@@ -13,7 +13,7 @@
     <p v-if="!loansStore.isLoading && loansStore.loans.length === 0" class="text-gray-500 text-center py-8">{{ $t('bank.noLoansFound') }}</p>
   </DashboardSection>
 
-  <DashboardSection id="settlements-section" tone="tint" eyebrow="Factoring" title="Settlements">
+  <DashboardSection id="settlements-section" tone="tint" :eyebrow="$t('bank.factoringEyebrow')" :title="$t('bank.settlementsTitle')">
     <SettlementsOverview />
   </DashboardSection>
 </template>
@@ -27,18 +27,21 @@ import DashboardHero from '@/components/layout/DashboardHero.vue'
 import DashboardSection from '@/components/layout/DashboardSection.vue'
 import SkeletonCard from '@/components/shared/SkeletonCard.vue'
 import PillTabs from '@/components/shared/PillTabs.vue' 
+import { useI18n } from 'vue-i18n'
 
-const statusTabs = [
-  { label: $t('bank.statusAll'), value: '' }, { label: $t('bank.statusSubmitted'), value: 'submitted' }, { label: $t('bank.statusApproved'), value: 'bank_approved' },
-  { label: $t('bank.statusDisbursed'), value: 'disbursed' }, { label: $t('bank.statusRepaid'), value: 'repaid' }, { label: $t('bank.statusRejected'), value: 'rejected' },
-]
+const { t } = useI18n()
+
+const statusTabs = computed(() => [
+  { label: t('bank.statusAll'), value: '' }, { label: t('bank.statusSubmitted'), value: 'submitted' }, { label: t('bank.statusApproved'), value: 'bank_approved' },
+  { label: t('bank.statusDisbursed'), value: 'disbursed' }, { label: t('bank.statusRepaid'), value: 'repaid' }, { label: t('bank.statusRejected'), value: 'rejected' },
+])
 
 const loansStore = useLoansStore()
 
 const heroStats = computed(() => [
-  { label: $t('bank.pendingReview'), value: loansStore.loans.filter(l => l.status === 'submitted').length },
-  { label: $t('bank.approved'), value: loansStore.loans.filter(l => l.status === 'bank_approved').length },
-  { label: $t('bank.disbursed'), value: loansStore.loans.filter(l => l.status === 'disbursed').length },
+  { label: t('bank.pendingReview'), value: loansStore.loans.filter(l => l.status === 'submitted').length },
+  { label: t('bank.approved'), value: loansStore.loans.filter(l => l.status === 'bank_approved').length },
+  { label: t('bank.disbursed'), value: loansStore.loans.filter(l => l.status === 'disbursed').length },
 ])
 
 function handleStatusChange() {
