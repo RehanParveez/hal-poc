@@ -4,6 +4,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from apps.credit.serializers import CreditCheckSerializer1, CreditCheckSerializer, RequestOTPSerializer, VerifyOTPSerializer, TriggerCreditCheckSerializer
 from apps.credit.models import CreditCheck, OTPConsent
 from apps.credit.services import CreditBureauService
+from apps.loans.models import LoanApplication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -66,13 +67,12 @@ class CreditCheckViewSet(viewsets.ReadOnlyModelViewSet):
   def trigger(self, request):
     serializer = TriggerCreditCheckSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    from apps.loans.models import LoanApplication
     loan = None
-    loan_id = serializer.validated_data.get('loan_id')
-    if loan_id:
-      loan = LoanApplication.objects.filter(id=loan_id, farmer=request.user.farmer_profile).first()
-      if not loan:                                                                         
-        return Response({'error': 'Loan not found or does not belong to you.'}, status=status.HTTP_404_NOT_FOUND) 
+    loan_id = serializer.validated_data('loan_id')
+    loan = LoanApplication.objects.filter(id=loan_id, farmer=request.user.farmer_profile).first()
+  
+    if not loan:                                                                         
+      return Response({'error': 'Loan not found or does not belong to you.'}, status=status.HTTP_404_NOT_FOUND) 
     try:
       check = CreditBureauService.run_credit_check(
         farmer_profile=request.user.farmer_profile, otp_reference=serializer.validated_data['otp_reference'], loan_application=loan)

@@ -1,14 +1,15 @@
 import sys
 import os
 import django
-from decimal import Decimal
-from shared.constants import PUNJAB_DISTRICTS
-from apps.crops.models import CropType
-from apps.crops.services import CropInputCapService
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
+
+from decimal import Decimal
+from shared.constants import PUNJAB_DISTRICTS
+from apps.crops.models import CropType
+from apps.crops.services import CropInputCapService
 
 BASE_CAPS = {
   'seed': Decimal('4500'), 'fertilizer': Decimal('12000'), 'pesticide': Decimal('6000'),

@@ -1,12 +1,13 @@
 import sys
 import os
 import django
-from apps.crops.models import CropType
-from apps.crops.services import CropLifecycleMilestoneService
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
+
+from apps.crops.models import CropType
+from apps.crops.services import CropLifecycleMilestoneService
 
 CROPS = [
   {'name': 'Wheat', 'code': 'WHEAT', 'season': 'rabi'},

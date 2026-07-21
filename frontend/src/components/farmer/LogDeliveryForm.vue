@@ -36,7 +36,7 @@ onMounted(() => {
 })
 
 async function submit() {
-  if (!form.allocationId || !form.batchKg || !form.batchKg <= 0) return
+  if (!form.allocationId || !form.batchKg || form.batchKg <= 0) return
   isSubmitting.value = true
   try {
     await delivery.createBatch(form.allocationId, form.batchKg)

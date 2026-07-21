@@ -1,12 +1,12 @@
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4">Verification Queue</h1>
-    <PillTabs :tabs="[{label:'Pending',value:'pending'},{label:'Approved',value:'approved'},{label:'Rejected',value:'rejected'}]" v-model="activeTab" @update:model-value="community.fetchQueue" class="mb-4" />
-    <div v-if="community.isLoading" class="text-gray-500">Loading...</div>
+    <h1 class="text-2xl font-bold mb-4">{{ $t('numberdar.verificationQueueTitle') }}</h1>
+    <PillTabs :tabs="[{label:$t('numberdar.pending'),value:'pending'},{label:$t('common.approve'),value:'approved'},{label:$t('common.reject'),value:'rejected'}]" v-model="activeTab" @update:model-value="community.fetchQueue" class="mb-4" />
+    <div v-if="community.isLoading" class="text-gray-500">{{ $t('common.loading') }}</div>
     <TransitionGroup v-else name="list-item" tag="div" class="space-y-3">
       <PendingFarmerCard v-for="req in community.queue" :key="req.id" :request="req" @approve="handleApprove" @reject="handleReject" />
     </TransitionGroup>
-      <p v-if="community.queue.length === 0" class="text-gray-500">No requests in this category.</p>
+      <p v-if="community.queue.length === 0" class="text-gray-500">{{ $t('numberdar.noRequests') }}</p>
     </div>
 </template>
 

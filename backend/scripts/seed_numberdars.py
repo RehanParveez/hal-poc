@@ -1,12 +1,13 @@
 import sys
 import os
 import django
-from shared.constants import PUNJAB_DISTRICTS
-from apps.accounts.models import User
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
+
+from shared.constants import PUNJAB_DISTRICTS
+from apps.accounts.models import User
 
 SEED_DISTRICTS = PUNJAB_DISTRICTS[:6]
 

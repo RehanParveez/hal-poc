@@ -47,7 +47,7 @@ def execute_bureau_check(self, credit_check_id, payload):
   decision = raw_response['bank_decision']
 
   with transaction.atomic():
-    check = CreditCheck.objects.select_for_update().select_related('farmer__user', 'loan_application').get(id=credit_check_id)
+    check = CreditCheck.objects.select_for_update().get(id=credit_check_id)
     check.credit_score = tasdeeq.get('credit_score')
     check.active_micro_loans_count = tasdeeq.get('active_micro_loans')
     check.total_outstanding_debt = ecib.get('total_exposure_pkr')

@@ -10,7 +10,7 @@ class VerifyOTPSerializer(serializers.Serializer):
 
 class TriggerCreditCheckSerializer(serializers.Serializer):
   otp_reference = serializers.UUIDField()
-  loan_id = serializers.UUIDField(required=False, allow_null=True)
+  loan_id = serializers.UUIDField()
 
 class CreditCheckSerializer1(serializers.ModelSerializer):
   farmer_name = serializers.CharField(source = 'farmer.user.full_name', read_only=True)
